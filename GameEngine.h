@@ -7,14 +7,14 @@ using std::map;
 class State {
 public:
 	State();
-	State(string * stateName);
+	State(string stateName);
 	State(const State& copyState);
 	string getStateName();
-	State * getTransition(string transitionName);
+	State* getTransition(string transitionName);
 	map<string, State*> getTransitions();
 	void setTransitions(map<string, State*>* transitionsMap);
 private:
-	string* name;
+	string name;
 	map<string, State*>* transitions;
 };
 
@@ -24,7 +24,7 @@ public:
 	Engine(const Engine& copyEngine);
 	State* launchTransitionCommand(string command);
 	State* getCurrentState();
-	void setCurrentState(State * newState);
+	void setCurrentState(State* newState);
 	void buildLevels();
 private:
 	State* currentState;

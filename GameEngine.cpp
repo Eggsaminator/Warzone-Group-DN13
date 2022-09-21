@@ -8,7 +8,7 @@ State::State() : name(NULL), transitions(NULL) {
 
 };
 
-State::State(string * stateName) : name(stateName), transitions(NULL) {};
+State::State(string stateName) : name(stateName), transitions(NULL) {};
 
 State::State(const State &copyState) {
 	name = copyState.name;
@@ -16,12 +16,12 @@ State::State(const State &copyState) {
 }
 
 string State::getStateName() {
-	return *name;
+	return name;
 }
 
-State * State::getTransition(string transitionName) {
+State* State::getTransition(string transitionName) {
 	if (transitions != NULL) {
-		auto trans = transitions->find(transitionName);
+		auto trans = (* transitions).find(transitionName);
 		if (trans == (*transitions).end()) {
 			return nullptr;
 		}
@@ -74,32 +74,23 @@ void Engine::setCurrentState(State* newState) {
 }
 
 void Engine::buildLevels() {
-	string* state0Title = new string("start");
-	State* state0 = new State(state0Title);
+	State* state0 = new State("start");
 
-	string* state1Title = new string("map loaded");
-	State* state1 = new State(state1Title);
+	State* state1 = new State("map loaded");
 
-	string* state2Title = new string("map validated");
-	State* state2 = new State(state2Title);
+	State* state2 = new State("map validated");
 
-	string* state3Title = new string("players added");
-	State* state3 = new State(state3Title);
+	State* state3 = new State("players added");
 
-	string* state4Title = new string("assign reinforcement");
-	State* state4 = new State(state4Title);
+	State* state4 = new State("assign reinforcement");
 
-	string* state5Title = new string("issue orders");
-	State* state5 = new State(state5Title);
+	State* state5 = new State("issue orders");
 
-	string* state6Title = new string("execute orders");
-	State* state6 = new State(state6Title);
+	State* state6 = new State("execute orders");
 
-	string* state7Title = new string("win");
-	State* state7 = new State(state7Title);
+	State* state7 = new State("win");
 
-	string* state8Title = new string("end");
-	State* state8 = new State(state8Title);
+	State* state8 = new State("end");
 
 	map<string, State*>* state0Transitions = new map<string, State*>{
 		{string("loadmap"), state1}
