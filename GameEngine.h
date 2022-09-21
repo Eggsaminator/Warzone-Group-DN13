@@ -25,6 +25,7 @@ public:
 	State* launchTransitionCommand(string command);
 	State* getCurrentState();
 	void setCurrentState(State * newState);
+	void buildLevels();
 private:
 	State* currentState;
 };

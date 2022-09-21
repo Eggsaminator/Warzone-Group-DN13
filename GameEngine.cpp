@@ -46,7 +46,34 @@ void State::setTransitions(map<string, State*>* transitionsMap) {
 
 //Engine methods
 Engine::Engine() {
+	buildLevels();
+};
 
+Engine::Engine(const Engine& copyEngine) {
+	currentState = copyEngine.currentState;
+}
+
+State* Engine::launchTransitionCommand(string command) {
+	State* newState = getCurrentState()->getTransition(command);
+	if (newState) {
+		currentState = newState;
+		return newState;
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+State* Engine::getCurrentState() {
+	return currentState;
+}
+
+void Engine::setCurrentState(State* newState) {
+	currentState = newState;
+}
+
+void Engine::buildLevels() {
 	string* state0Title = new string("start");
 	State* state0 = new State(state0Title);
 
@@ -73,12 +100,12 @@ Engine::Engine() {
 
 	string* state8Title = new string("end");
 	State* state8 = new State(state8Title);
-	
+
 	map<string, State*>* state0Transitions = new map<string, State*>{
 		{string("loadmap"), state1}
 	};
 	state0->setTransitions(state0Transitions);
-	
+
 	map<string, State*>* state1Transitions = new map<string, State*>{
 		{string("loadmap"), state1},
 		{string("validatemap"), state2}
@@ -89,7 +116,7 @@ Engine::Engine() {
 		{string("addplayer"), state3}
 	};
 	state2->setTransitions(state2Transitions);
-	
+
 	map<string, State*>* state3Transitions = new map<string, State*>{
 		{string("addplayer"), state3},
 		{string("assigncountries"), state4}
@@ -100,20 +127,20 @@ Engine::Engine() {
 		{string("issueorder"), state5}
 	};
 	state4->setTransitions(state4Transitions);
-	
+
 	map<string, State*>* state5Transitions = new map<string, State*>{
 		{string("issueorder"), state5},
 		{string("endissueorders"), state6}
 	};
 	state5->setTransitions(state5Transitions);
-	
+
 	map<string, State*>* state6Transitions = new map<string, State*>{
 		{string("execorder"), state6},
 		{string("endexecorders"), state4},
 		{string("win"), state7}
 	};
 	state6->setTransitions(state6Transitions);
-	
+
 	map<string, State*>* state7Transitions = new map<string, State*>{
 		{string("play"), state0},
 		{string("end"), state8}
@@ -121,28 +148,4 @@ Engine::Engine() {
 	state7->setTransitions(state7Transitions);
 
 	currentState = state0;
-};
-
-Engine::Engine(const Engine& copyEngine) {
-	currentState = copyEngine.currentState;
-}
-
-State* Engine::launchTransitionCommand(string command) {
-	State* newState = getCurrentState()->getTransition(command);
-	if (newState) {
-		currentState = newState;
-		return newState;
-	}
-	else
-	{
-		return nullptr;
-	}
-}
-
-State* Engine::getCurrentState() {
-	return currentState;
-}
-
-void Engine::setCurrentState(State* newState) {
-	currentState = newState;
 }
