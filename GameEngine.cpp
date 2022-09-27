@@ -5,6 +5,7 @@ using std::cin;
 using std::cout;
 
 //State methods
+
 State::State() : name(NULL), transitions(NULL) {
 
 };
@@ -27,6 +28,7 @@ State& State::operator=(const State& copyState) {
 //stream insertion operator
 ostream& operator << (ostream& o, State& currentState)
 {
+	//build string listing possible commands from this state
 	map<string, State*>::iterator itr;
 	string possibleCommandsString = "";
 	map<string, State*> transitions = currentState.getTransitions();
@@ -37,7 +39,7 @@ ostream& operator << (ostream& o, State& currentState)
 
 	if (possibleCommandsString != "") {
 		possibleCommandsString = possibleCommandsString.substr(0, possibleCommandsString.size() - 2);
-		o << "State: " << currentState.getStateName() << " [" << possibleCommandsString << "]";
+		o << "State: " << currentState.getStateName() << ". Possible commands: " << possibleCommandsString << ".";
 	}
 	else 
 	{
@@ -53,6 +55,7 @@ string State::getStateName() {
 
 State* State::getTransition(string transitionName) {
 	if (transitions != NULL) {
+		//search for new state given a transition command
 		auto trans = (* transitions).find(transitionName);
 		if (trans == (*transitions).end()) {
 			return nullptr;
@@ -77,6 +80,7 @@ void State::setTransitions(map<string, State*>* transitionsMap) {
 
 
 //Engine methods
+
 Engine::Engine() {
 	buildLevels();
 };
@@ -95,7 +99,7 @@ Engine& Engine::operator=(const Engine& copyEngine) {
 //stream insertion operator
 ostream& operator << (ostream& o, Engine& currentEngine)
 {
-	o << "Engine's current state: " << currentEngine.getCurrentState();
+	o << "Engine's current state: " << currentEngine.getCurrentState()->getStateName();
 	return o;
 }
 
@@ -120,6 +124,7 @@ void Engine::setCurrentState(State* newState) {
 }
 
 void Engine::buildLevels() {
+	//declare all possible states
 	State* state0 = new State("start");
 
 	State* state1 = new State("map loaded");
@@ -138,6 +143,7 @@ void Engine::buildLevels() {
 
 	State* state8 = new State("end");
 
+	//create maps of possible transitions
 	map<string, State*>* state0Transitions = new map<string, State*>{
 		{string("loadmap"), state1}
 	};
