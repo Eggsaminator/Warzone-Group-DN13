@@ -1,5 +1,6 @@
 #include "GameEngine.h"
 #include <iostream>
+using std::ostream;
 using std::cin;
 using std::cout;
 
@@ -10,9 +11,40 @@ State::State() : name(NULL), transitions(NULL) {
 
 State::State(string stateName) : name(stateName), transitions(NULL) {};
 
+//copy constructor
 State::State(const State &copyState) {
 	name = copyState.name;
 	transitions = copyState.transitions;
+}
+
+//assignment operator
+State& State::operator=(const State& copyState) {
+	name = copyState.name;
+	transitions = copyState.transitions;
+	return *this;
+}
+
+//stream insertion operator
+ostream& operator << (ostream& o, State& currentState)
+{
+	map<string, State*>::iterator itr;
+	string possibleCommandsString = "";
+	map<string, State*> transitions = currentState.getTransitions();
+	for (itr = transitions.begin(); itr != transitions.end(); itr++) {
+		possibleCommandsString.append(itr->first);
+		possibleCommandsString += ", ";
+	}
+
+	if (possibleCommandsString != "") {
+		possibleCommandsString = possibleCommandsString.substr(0, possibleCommandsString.size() - 2);
+		o << "State: " << currentState.getStateName() << " [" << possibleCommandsString << "]";
+	}
+	else 
+	{
+		o << "State: " << currentState.getStateName() << " (No possible commands)";
+	}
+
+	return o;
 }
 
 string State::getStateName() {
@@ -49,8 +81,22 @@ Engine::Engine() {
 	buildLevels();
 };
 
+//copy constructor
 Engine::Engine(const Engine& copyEngine) {
 	currentState = copyEngine.currentState;
+}
+
+//assignment operator
+Engine& Engine::operator=(const Engine& copyEngine) {
+	currentState = copyEngine.currentState;
+	return *this;
+}
+
+//stream insertion operator
+ostream& operator << (ostream& o, Engine& currentEngine)
+{
+	o << "Engine's current state: " << currentEngine.getCurrentState();
+	return o;
 }
 
 State* Engine::launchTransitionCommand(string command) {

@@ -23,7 +23,7 @@ void testGameStates() {
 		}
 		if (possibleCommandsString != "") {
 			possibleCommandsString = possibleCommandsString.substr(0, possibleCommandsString.size() - 2);
-			cout << "Enter a command (" + possibleCommandsString + "): ";
+			cout << "Enter a command [" + possibleCommandsString + "]: ";
 		}
 
 		string newCommand;
