@@ -5,12 +5,29 @@
 using namespace std;
 
 #include"Cards.h"
+//#inlude"Orders.h"
+//#include"Player.h"
+
+//Initialization of the cards type
+
+vector<string> all_my_cards={"Bomb","Reinforcement","Blockade","Airlift","Diplomacy"};
+vector<string> Card::cards_list=all_my_cards;
+vector<string> Deck::cards_list=all_my_cards;
 
 Card::Card()
-{
+{ // Random constructor. Create a card of a random type
 int num =rand() % 5;
 card_type=cards_list[num];
 }
+
+Card::Card(Card &card)
+{ // Copy Constructor of the Card Class
+    card_type=card.card_type;
+    belong_to_deck=&(*card.belong_to_deck);
+    belong_to_hand=&(*card.belong_to_hand);
+    
+}
+
 
 Card::Card(string type,Deck* mydeck, Hand* myhand){
     bool valid=false;
@@ -30,15 +47,63 @@ Card::Card(string type,Deck* mydeck, Hand* myhand){
     belong_to_hand=myhand;
 }
 
+void Card::setType(string type)
+{
+    card_type=type;
+}
+
+void Card::setDeck(Deck* deck)
+{
+    belong_to_deck=deck;
+}
+
+void Card::setHand(Hand* hand)
+{
+    belong_to_hand=hand;
+}
+
 
 void Card::display()
 {
-    cout<<card_type<<"\n";
+    cout<<card_type;
 }
 
 
 void Card::play()
-{
+{   //Assert that the hand is indeed asigned to a player
+    assert(belong_to_hand->my_player!=NULL);
+
+    //my_player->order_list.pushback()
+
+
+    //TO_DO!!!!
+    if(card_type=="Bomb")
+    {
+        //new Bomb()
+
+    }
+    if(card_type=="Reinforcement")
+    {
+        //new Reinforcement????
+
+    }
+    if(card_type=="Airlift")
+    {
+        //new Airlift()
+
+    }
+    if(card_type=="Diplomacy")
+    {
+        //new Negociate()
+
+    }   
+    if(card_type=="Blockade")
+    {
+        //new Blockade()
+
+    }
+
+
     //insert code to deal with the order
     assert(belong_to_deck!=NULL);
     assert(belong_to_hand!=NULL);
@@ -59,22 +124,57 @@ Deck Class
 
 */
 
-Deck::Deck(int s)
+Deck::Deck()
 {
+
+}
+
+Deck::Deck(int s,bool is_random)
+{if(is_random){
     for(int i=0;i<s;i++)
     {
      deck_content.push_back(new Card());
      (*deck_content[i]).belong_to_deck=this; 
     }
+}
+else
+{
+    int current_size=0;
+    while(current_size<s)
+    {deck_content.push_back(new Card(cards_list[current_size%5]));
+     (*deck_content[current_size]).setDeck(this); 
+     current_size++;
+        
+
+    }
+}
     
 }
 
+Deck::Deck(Deck &deck)
+{//Copy constructor of the Deck class
+
+
+
+for(int i=0;i<size(deck.deck_content);i++)
+    {
+        // for each card present in the hand we want to copy we will create a copy of this card and place it within the new hand
+        Card* card_p=new Card(*deck.deck_content[i]);
+        (*card_p).belong_to_deck=this;
+        deck_content.push_back(card_p);
+        
+    }
+
+}
+
 void Deck::display()
-{
+{cout<<"[";
     for(int i=0;i<size(deck_content);i++)
     {
         (*deck_content[i]).display();
+        cout<<" ,";
     }
+    cout<<"]"<<endl;
 
 }
 
@@ -99,7 +199,7 @@ void Deck::free_deck()
 {
     for(int i=0;i<size(deck_content);i++)
     {
-        free(deck_content[i]);
+        delete deck_content[i];
     }
 }
 
@@ -113,12 +213,28 @@ Hand::Hand()
 
 }
 
-void Hand::display()
+Hand::Hand(Hand &hand)
 {
+    // Copy Constructor of the hand class
+
+    for(int i=0;i<size(hand.hand_content);i++)
+    {
+        // for each card present in the hand we want to copy we will create a copy of this card and place it within the new hand
+        Card* card_p=new Card(*hand.hand_content[i]);
+        (*card_p).belong_to_hand=this;
+        hand_content.push_back(card_p);
+        
+    }
+}
+
+void Hand::display()
+{cout<<"{";
     for(int i=0;i<size(hand_content);i++)
     {
         (*hand_content[i]).display();
+        cout<<", ";
     }
+cout<<"}"<<endl;
 }
 
 
@@ -153,12 +269,17 @@ void Hand::remove_card(Card* card_out)
     }
 }
 
+void Hand::setPlayer(Player* player)
+{
+    my_player=player;
+}
+
 
 void Hand::free_hand()
 {
     for(int i=0;i<size(hand_content);i++)
     {
-        free(hand_content[i]);
+        delete hand_content[i];
     }
 }
 

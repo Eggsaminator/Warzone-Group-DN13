@@ -1,14 +1,70 @@
 #include<iostream>
 #include<string>
 #include<cstdlib>
+#include<cassert>
 using namespace std;
 
 #include"Cards.h"
 
-void testCards();
-void testDeck();
-void testHand();
-void testplay();
+
+
+
+
+void testnonrandow()
+{
+    Deck d=Deck(23,false);
+    d.display();
+    d.free_deck();
+    
+}
+
+void testcopy()
+{
+    cout<<"test of the copy constructor of card\n";
+    Card* c1=new Card("Bomb");
+    Card* c2=new Card(*c1);
+    cout<<(*c2).card_type<<endl;
+    (*c1).card_type="Airlift";
+    cout<<"C2 is still "<<(*c2).card_type<<endl;
+    cout<<"C1 is now "<<(*c1).card_type<<endl;
+
+    cout<<"test of the copy constructor of hand\n";
+    Hand* h1=new Hand();
+    (*h1).add_card(c1);
+    (*h1).add_card(c2);
+    cout<<"h1 is\n";
+    (*h1).display();
+
+    Hand* h2=new Hand(*h1);
+    cout<<"h2 is \n";
+    (*h2).display();
+
+    (*h1).remove_card(c1);
+    (*c2).card_type="Blockade";
+
+    cout<<"h1 is now\n";
+    (*h1).display();
+
+    cout<<"h2 is still\n";
+    (*h2).display();
+
+    // verification that the belong_to_hand is copied in the right way
+
+    assert((*h2).hand_content[0]->belong_to_hand==h2);
+
+    (*h1).free_hand();
+    (*h2).free_hand();
+    delete c1;
+
+
+
+
+
+
+
+
+
+}
 
 void testplay()
 {cout<<"Test of the play function\n";
@@ -34,7 +90,12 @@ cout<<"my new hand is\n";
 cout<<"Final deck is:\n";
 (*d_p).display();
 
+// Delete
 
+(*d_p).free_deck();
+(*h_p).free_hand();
+delete d_p;
+delete h_p;
 
 }
 
@@ -65,9 +126,9 @@ void testHand()
     (*h_p).display();
 
     (*h_p).free_hand();
-    free(c2);
-    free(c3);
-    free(c4);
+    delete c2;
+    delete c3;
+    delete c4;
 
 }
 
@@ -95,12 +156,12 @@ void testCards()
     
     
     
-    cout<<"We will create a deck of 10 cards and draw 5 of them to compose the hand of a player:\n";
+    cout<<"We will create a deck of 15 cards evenly distributed between each type and draw 5 of them to compose the hand of a player:\n";
 
 
     cout<<"test of deck\n";
 
-    Deck d=Deck(10);
+    Deck d=Deck(15,false);
     Hand* h_p=new Hand();
 
     cout<<"initial deck is:\n";
@@ -119,8 +180,29 @@ void testCards()
 
     (*h_p).display();
 
+    cout<<"We will now play the cards of the hand"<<endl;
+
+    (*((*h_p).hand_content[0])).play();
+    (*((*h_p).hand_content[0])).play();
+    (*((*h_p).hand_content[0])).play();
+    (*((*h_p).hand_content[0])).play();
+    (*((*h_p).hand_content[0])).play();
+
+    cout<<"After playing my new hand is:"<<endl;
+
+    (*h_p).display();
+
+    cout<<"The deck is now"<<endl;
+    d.display();
+
+
+
+
+
+    
+
     (*h_p).free_hand();
-    free(h_p);
+    delete h_p;
     d.free_deck();
 
 
@@ -128,10 +210,11 @@ void testCards()
 }
 
 int main()
-{
-    testplay();
+{//testnonrandow();
+    //testcopy();
+    //testplay();
     
     //testHand();
     //testDeck();
-    //testCards();
+    testCards();
 }
