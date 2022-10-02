@@ -1,16 +1,12 @@
 #pragma once
 #include <string>
+#include <fstream>
 #include <iostream>
 #include <map>
 #include <vector>
 #include "Player.h"
 
 using namespace std;
-
-/*
-Map file format:
-TerritoryName, xCoordinate, yCoordinate, Continent, AdjacencyList[]
-*/
 
 // Forward declarations
 
@@ -26,19 +22,27 @@ public:
     MapLoader();
     ~MapLoader();
     Map loadMap(string filePath);
+    vector<string> readMapFile(string filePath);
 private:
     vector<Territory*> getTerritories();
+    const string CONTINENT_TITLE = "[Continents]";
+    const string TERRITORY_TITLE = "[Territories]";
+    const char CONTINENT_DELIMITER = '=';
+    const char TERRITORY_DELIMITER = ',';
 };
 
 class Map {
 public:
     Map();
     ~Map();
-    void addTerritory(string name);
+    void addTerritory(Territory* territory);
+    void addContinent(Continent* continent);
     vector<Territory*> getTerritories();
+    Continent* getContinentByName(string continentName);
+    Territory* getTerritoryByName(string territoryName);
     bool validate();
     bool isConnected(vector<Territory*> graphTerritoryList);
-    void traverse(Territory* startingTerritory, vector<Territory*> graphTerritoryList, map<Territory*, bool> visited);
+    void traverse(Territory* startingTerritory, vector<Territory*> graphTerritoryList, map<Territory*, bool>& visited);
 private:
     vector<Territory*> territoryList;
     vector<Continent*> continentList;
@@ -46,10 +50,11 @@ private:
 
 class Continent {
 public:
-    Continent(string name);
+    Continent(string name, int val);
     ~Continent();
     void addTerritory(Territory* territory);
     vector<Territory*> getTerritories();
+    string getName();
 private:
     string name;
     int value;
@@ -65,6 +70,7 @@ public:
     vector<Territory*> getAdjacencyList();
     void setContinent(Continent* newContinent);
     Continent* getContinent();
+    string getName();
 private:
     string name;
     Player* owner;
