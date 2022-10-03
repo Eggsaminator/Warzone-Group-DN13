@@ -9,13 +9,17 @@ MapLoader::~MapLoader() {
 }
 
 Map MapLoader::loadMap(string filePath) {
+    cout << "Loading map: " << filePath << "... Please wait." << endl;
 
     Map newMap;
     vector<string> mapFile = readMapFile(filePath);
+
+    // Adjacencies must be kept track of until all territories have been created
     map<Territory*, vector<string>> adjacencyLists;
 
     int mode = 0;
     for (int i = 0; i < mapFile.size(); i++) {
+        // Flag where we are in the file
         if (mapFile[i] == CONTINENT_TITLE) {
             mode = 1;
             continue;
@@ -27,23 +31,17 @@ Map MapLoader::loadMap(string filePath) {
 
         // Skip empty lines
         if (mapFile[i].size() == 0) {
-            cout << "Empty line!" << endl;
+            //cout << "Empty line!" << endl;
             continue;
         }
         
         // Create continents
         if (mode == 1) {
-            size_t delimiterPos = mapFile[i].find(CONTINENT_DELIMITER);
-            if (delimiterPos == string::npos) {
-                throw std::invalid_argument("Invalid map file: improper continent format detected");
-            }
-            string continentName = mapFile[i].substr(0, delimiterPos);
-            mapFile[i].erase(0, delimiterPos + 1);
+            string continentName = removeSubstringByDelimiter(mapFile[i], CONTINENT_DELIMITER);
             int continentValue = stoi(mapFile[i]);
 
             cout << "Continent created: " << continentName << ": " << continentValue << endl;
 
-            // ERROR! Gets overwritten
             Continent* cont = new Continent(continentName, continentValue);
             newMap.addContinent(cont);
             continue;
@@ -52,37 +50,16 @@ Map MapLoader::loadMap(string filePath) {
         // Create territories
         if (mode == 2) {
             // Territory name
-            size_t delimiterPos = mapFile[i].find(TERRITORY_DELIMITER);
-            if (delimiterPos == string::npos) {
-                throw std::invalid_argument("Invalid map file: improper territory format detected");
-            }
-            string territoryName = mapFile[i].substr(0, delimiterPos);
-            mapFile[i].erase(0, delimiterPos + 1);
-
+            string territoryName = removeSubstringByDelimiter(mapFile[i], TERRITORY_DELIMITER);
             // X-coordinate
-            delimiterPos = mapFile[i].find(TERRITORY_DELIMITER);
-            if (delimiterPos == string::npos) {
-                throw std::invalid_argument("Invalid map file: improper territory format detected");
-            }
-            mapFile[i].erase(0, delimiterPos + 1);
-
+            removeSubstringByDelimiter(mapFile[i], TERRITORY_DELIMITER);
             // Y-coordinate
-            delimiterPos = mapFile[i].find(TERRITORY_DELIMITER);
-            if (delimiterPos == string::npos) {
-                throw std::invalid_argument("Invalid map file: improper territory format detected");
-            }
-            mapFile[i].erase(0, delimiterPos + 1);
-
+            removeSubstringByDelimiter(mapFile[i], TERRITORY_DELIMITER);
             // Continent name
-            delimiterPos = mapFile[i].find(TERRITORY_DELIMITER);
-            if (delimiterPos == string::npos) {
-                throw std::invalid_argument("Invalid map file: improper territory format detected");
-            }
-            string continentName = mapFile[i].substr(0, delimiterPos);
-            mapFile[i].erase(0, delimiterPos + 1);
-
-            // Adjacency list
+            string continentName = removeSubstringByDelimiter(mapFile[i], TERRITORY_DELIMITER);
+            // Adjacency list (done manually instead of using the removeSubsstringByDelimiter function)
             vector<string> adjacencyList;
+            size_t delimiterPos;
             while ((delimiterPos = mapFile[i].find(TERRITORY_DELIMITER)) != std::string::npos) {
                 adjacencyList.push_back(mapFile[i].substr(0, delimiterPos));
                 mapFile[i].erase(0, delimiterPos + 1);
@@ -92,10 +69,10 @@ Map MapLoader::loadMap(string filePath) {
             // Get continent from continent name
             Continent* cont = newMap.getContinentByName(continentName);
             if (cont == nullptr) {
-                throw std::invalid_argument("Invalid map file: improper territory format detected - continent not found");
+                throw invalid_argument("Invalid map file: improper territory format detected - continent not found");
             }
 
-            cout << "Created territory " << territoryName << " in continent " << continentName << "with adjacencies: ";
+            cout << "Created territory " << territoryName << " in continent " << continentName << " with adjacencies: ";
             for (int j = 0; j < adjacencyList.size(); j++) {
                 cout << adjacencyList[j] << ", ";
             }
@@ -108,15 +85,24 @@ Map MapLoader::loadMap(string filePath) {
         }
     }
 
+    // Check if any territories or continents have not been created
+    if (mode == 0) {
+        throw invalid_argument("Invalid map file: no Continent or Territory lists");
+    }
+    if (newMap.getTerritories().size() == 0) {
+        throw invalid_argument("Invalid map file: no Territories have been found");
+    }
+    if (newMap.getContinents().size() == 0) {
+        throw invalid_argument("Invalid map file: no Continents have been found");
+    }
+
     // Add adjacencies, now that all territories are constructed
     map<Territory*, vector<string>>::iterator it;
     for (it = adjacencyLists.begin(); it != adjacencyLists.end(); ++it) {
-        //cout << it->second.size() << endl;
         for (int j = 0; j < it->second.size(); j++) {
-            cout << it->second[j] << endl;
             Territory* adjTerr = newMap.getTerritoryByName(it->second[j]);
             if (adjTerr == nullptr) {
-                throw std::invalid_argument("Invalid map file: improper territory format detected - territory not found");
+                throw invalid_argument("Invalid map file: improper territory format detected - territory not found");
             }
 
             it->first->addAdjacency(adjTerr);
@@ -143,6 +129,17 @@ vector<Territory*> MapLoader::getTerritories() {
     return territories;
 }
 
+string MapLoader::removeSubstringByDelimiter(string& largeString, char delimiter) {
+    size_t delimiterPos = largeString.find(delimiter);
+    if (delimiterPos == string::npos) {
+        throw invalid_argument("Delimiter not found. Error.");
+    }
+    string substring = largeString.substr(0, delimiterPos);
+    largeString.erase(0, delimiterPos + 1);
+
+    return substring;
+}
+
 Map::Map() {
 
 }
@@ -157,6 +154,10 @@ void Map::addTerritory(Territory* territory) {
 
 void Map::addContinent(Continent* continent) {
     continentList.push_back(continent);
+}
+
+vector<Continent*> Map::getContinents() {
+    return continentList;
 }
 
 vector<Territory*> Map::getTerritories() {
@@ -185,26 +186,41 @@ bool Map::validate() {
     // Assume the map is valid then attempt to disprove it
     bool isValid = true;
 
-    // Check that the map is a connected graph
-    if (!isConnected(territoryList)) {
+    try {
+        // Check that the map is a connected graph
+        if (!isConnected(territoryList)) {
+
+            cout << "Map not connected graph" << endl;
+
+            isValid = false;
+            return isValid;
+        }
+
+        // Check that the continents are connected subgraphs
+        for (int i = 0; i < continentList.size(); i++) {
+            if (!isConnected(continentList[i]->getTerritories())) {
+
+                cout << "Continent: " << continentList[i]->getName() << " is not a connected graph" << endl;
+
+                isValid = false;
+                return isValid;
+            }
+        }
+
+        // Check that each territory belongs to one and only one continent
+        for (int i = 0; i < territoryList.size(); i++) {
+            if (territoryList[i]->getContinent() == nullptr) {
+
+                cout << "Territory " << territoryList[i]->getName() << " not parented to exactly 1 continent" << endl;
+
+                isValid = false;
+                return isValid;
+            }
+        }
+    }
+    catch (invalid_argument) {
+        cout << "Error encountered when validating. Invalid map." << endl;
         isValid = false;
-        return isValid;
-    }
-
-    // Check that the continents are connected subgraphs
-    for (int i = 0; i < continentList.size(); i++) {
-        if (!isConnected(continentList[i]->getTerritories())) {
-            isValid = false;
-            return isValid;
-        }
-    }
-
-    // Check that each territory belongs to one and only one continent
-    for (int i = 0; i < territoryList.size(); i++) {
-        if (territoryList[i]->getContinent() == nullptr) {
-            isValid = false;
-            return isValid;
-        }
     }
 
     return isValid;
@@ -216,7 +232,9 @@ bool Map::isConnected(vector<Territory*> graphTerritoryList) {
         visited[graphTerritoryList[i]] = false;
     }
 
-    traverse(graphTerritoryList[0], graphTerritoryList, visited);
+    if (graphTerritoryList.size() > 0) {
+        traverse(graphTerritoryList[0], graphTerritoryList, visited);
+    }
 
     // Check if any node has not been visited
     for (int i = 0; i < visited.size(); i++) {
@@ -308,4 +326,18 @@ Continent* Territory::getContinent() {
 
 string Territory::getName() {
     return name;
+}
+
+void Territory::setOwner(Player* newOwner) {
+    owner = newOwner;
+}
+void Territory::setOwner(Player* newOwner, int newNumArmies) {
+    setOwner(newOwner);
+    setArmies(newNumArmies);
+}
+void Territory::setArmies(int newNumArmies) {
+    numArmies = newNumArmies;
+}
+void Territory::addArmies(int newNumArmies) {
+    numArmies += newNumArmies;
 }

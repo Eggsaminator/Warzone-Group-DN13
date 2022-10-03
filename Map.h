@@ -25,6 +25,7 @@ public:
     vector<string> readMapFile(string filePath);
 private:
     vector<Territory*> getTerritories();
+    string removeSubstringByDelimiter(string& largeString, char delimiter);
     const string CONTINENT_TITLE = "[Continents]";
     const string TERRITORY_TITLE = "[Territories]";
     const char CONTINENT_DELIMITER = '=';
@@ -37,6 +38,7 @@ public:
     ~Map();
     void addTerritory(Territory* territory);
     void addContinent(Continent* continent);
+    vector<Continent*> getContinents();
     vector<Territory*> getTerritories();
     Continent* getContinentByName(string continentName);
     Territory* getTerritoryByName(string territoryName);
@@ -71,6 +73,10 @@ public:
     void setContinent(Continent* newContinent);
     Continent* getContinent();
     string getName();
+    void setOwner(Player* newOwner);
+    void setOwner(Player* newOwner, int newNumArmies);
+    void setArmies(int newNumArmies);
+    void addArmies(int newNumArmies);
 private:
     string name;
     Player* owner;
