@@ -1,103 +1,185 @@
 #include <string>
+#include <vector>
 #pragma once
 using namespace std;
+
+class Player;
+class Territory;
+
 
 class Orders
 {
 private:
-	// current user
-	string curUser = "";
+	string name;
 public:
+	//default constructor
 	Orders();
-	//Orders(const Orders& o);
-	Orders(string curUser);
+	//parametized constructor
+	//Orders(Orders& o);
+	//copy constructor
+	Orders(Orders& orders);
+
+	vector<Orders> order = {};
+	Player* curUser;
+
+	//methods
+	void execute();
+	bool validate();
 };
 
-class OrderList {
+class OrderList : public Orders{
+private:
+	vector<Orders*> orders;
+	// current user (player section)
+	string curUser = "";
+	//also needs territory (map section)
 
+public:
+	//default constructor
+	OrderList();
+	//parametized constructor
+	OrderList(vector<Orders> o);
+	//copy constructor
+	OrderList(OrderList &orderlist);
+
+	//methods
+	bool remove();
+	bool move();
 };
 
 class Deploy : public Orders
 {
 private:
 	//name - current user - number of army units - target territory
-	string name = "deploy";
+	const string name = "deploy"; // may not need these (could be deleted later on if found)
 	int numArmyUnit = 0;
 public:
+	//default constructor
 	Deploy();
-	Deploy(string name, int numArmyUnit);
-	void setCurrentUser(string curUser);
-	void setName(string name);
-	std::string getCurrentUser();
-	std::string getName();
+	//parametized constructor
+	Deploy(Player* curUser, int numArmyUnit, Territory* tarTerritory);
+	//copy constructor
+	Deploy(Deploy& deploy);
+
+	Player* curUser;
+	Territory* tarTerritory;
+
+	//methods
 	bool validate();
 	void execute();
 };
 
-inline string Deploy::getName() { return name; }
 
 
-class Advance : public Orders
+class Advance
 {
 
 private:
-	//name - current user - umber of army territory - source territory(vector from Map) - target territory(vector from Map)
-	string name = "deploy";
+	//name - current user(player) - number of army territory - source territory(vector from Map) - target territory(vector from Map)
+	const string name = "advance";
 	int numArmyUnit = 0;
 public:
+	//default constructor
 	Advance();
-	Advance(string name, int numArmyUnit);
+	//parametized constructor
+	Advance(Player* curUser, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
+	//copy constructor
+	Advance(Advance& advance);
+
+	Player* curUser;
+	Territory* souTerritory;
+	Territory* tarTerritory;
+
+	//methods
 	bool validate();
 	void execute();
 };
 
-class Bomb : public Orders // usable only if user has Bomb card on hand
+class Bomb// usable only if user has Bomb card on hand
 {
 private:
 	//name - current user - target territory
-	string name = "bomb";
+	const string name = "bomb";
 	
 public:
+	//default constructor
 	Bomb();
-	Bomb(string name);
+	//parametized constructor
+	Bomb(Player* curUser, Territory* tarTerritory);
+	//copy constructor
+	Bomb(Bomb& bomb);
+
+	Player* curUser;
+	Territory* tarTerritory;
+
+	//methods
 	bool validate();
 	void execute();
 };
 
-class Blockade : public Orders // usable if user has blockade card on hand - validate()
+class Blockade // usable if user has blockade card on hand - validate()
 {
 private:
 	//name - current user - target territory
-	string name = "blockade";
+	const string name = "blockade";
 public:
+	//default constructor
 	Blockade();
-	Blockade(std::string name);
+	//parametized constructor
+	Blockade(Player* curUser, Territory* tarTerritory);
+	//copy constructor
+	Blockade(Blockade& blockade);
+
+	Player* curUser;
+	Territory* tarTerritory;
+
+	//methods
 	bool validate();
 	void execute();
 };
 
-class Airlift : public Orders // usable only if user has Airlift card on hand
+class Airlift// usable only if user has Airlift card on hand
 {
 private:
 	//name - current user - number og army units - source territory - target territory
-	string name = "airlift";
+	const string name = "airlift";
 	int numArmyUnit = 0;
 public:
+	//default constructor
 	Airlift();
-	Airlift(string name, int numArmyUnit);
+	//parametized constructor
+	Airlift(Player* curUser, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
+	//copy constructor
+	Airlift(Airlift& airlift);
+
+	Player* curUser;
+	Territory* souTerritory;
+	Territory* tarTerritory;
+
+	//methods
 	bool validate();
 	void execute();
 };
 
-class Negotiate : public Orders // usable if user has Diplomacy card in hand
+class Negotiate// usable if user has Diplomacy card in hand
 {
 private:
 	//name - current user - target players
-	string name = "negotiate";
+	const string name = "negotiate";
 	string tarUser = "";
 public:
+	//default constructor
 	Negotiate();
-	Negotiate(string tarUser, string name);
+	//parametized constructor
+	Negotiate(Player* curUser, Territory* tarTerritory);
+	//copy constructor
+	Negotiate(Negotiate& negotiate);
+
+	Player* curUser;
+	Territory* souTerritory;
+	Territory* tarTerritory;
+
+	//methods
 	bool validate();
 	void execute();
 };
