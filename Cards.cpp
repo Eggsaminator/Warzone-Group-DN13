@@ -5,8 +5,8 @@
 using namespace std;
 
 #include"Cards.h"
-//#inlude"Orders.h"
-//#include"Player.h"
+#include"Orders.h"
+#include"Player.h"
 
 //Initialization of the cards type
 
@@ -70,43 +70,50 @@ void Card::display()
 
 
 void Card::play()
-{   //Assert that the hand is indeed asigned to a player
+{   //Assert that thecard belong to a deck and a hand and that the hand is indeed asigned to a player
+    assert(belong_to_deck!=NULL);
+    assert(belong_to_hand!=NULL);
     assert(belong_to_hand->my_player!=NULL);
 
-    //my_player->order_list.pushback()
 
 
-    //TO_DO!!!!
+    
     if(card_type=="Bomb")
     {
-        //new Bomb()
+        //belong_to_hand->my_player->ordersList->add_orders(new Bomb());
+        //belong_to_hand->my_player->ordersList->add_orders();
 
     }
     if(card_type=="Reinforcement")
     {
-        //new Reinforcement????
+        // cannot be implemented yet
 
     }
     if(card_type=="Airlift")
     {
-        //new Airlift()
+        //belong_to_hand->my_player->ordersList->add_orders(new Airlift());
+        //belong_to_hand->my_player->ordersList->add_orders();
+        
 
     }
     if(card_type=="Diplomacy")
     {
-        //new Negociate()
+        //belong_to_hand->my_player->ordersList->add_orders(new Negociate());
+        //belong_to_hand->my_player->ordersList->add_orders();
+        
 
     }   
     if(card_type=="Blockade")
     {
-        //new Blockade()
+        //belong_to_hand->my_player->ordersList->add_orders();
+        //belong_to_hand->my_player->ordersList->add_orders(new Blockade());
+        
 
     }
 
 
     //insert code to deal with the order
-    assert(belong_to_deck!=NULL);
-    assert(belong_to_hand!=NULL);
+    
 
     // remove from hand
     (*belong_to_hand).remove_card(this);
