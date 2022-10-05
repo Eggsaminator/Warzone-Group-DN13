@@ -5,6 +5,8 @@
 using namespace std;
 
 #include"Cards.h"
+#include"Player.h"
+#include"Orders.h"
 
 
 
@@ -163,6 +165,8 @@ void testCards()
 
     Deck d=Deck(15,false);
     Hand* h_p=new Hand();
+    Player* player=new Player("test_player");
+    h_p->setPlayer(player);
 
     cout<<"initial deck is:\n";
     
@@ -192,6 +196,10 @@ void testCards()
 
     (*h_p).display();
 
+    cout<<"The orderList of the player that played the cards is:"<<endl;
+
+    (*player).ordersList->toString();
+
     cout<<"The deck is now"<<endl;
     d.display();
 
@@ -210,11 +218,16 @@ void testCards()
 }
 
 int main()
-{//testnonrandow();
+{   
+    // Test function to test the used functions individually 
+
+    //testnonrandow();
     //testcopy();
     //testplay();
     
     //testHand();
     //testDeck();
+
+    // Test function that test the global functionment of this part 
     testCards();
 }
