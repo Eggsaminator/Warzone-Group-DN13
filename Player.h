@@ -14,13 +14,11 @@ public:
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
 	void issueOrder(Orders newOrder);
-	vector<int*> getNums();
-	void setNum(int newVal);
-
+	OrderList* ordersList;
+	
 private:
 	string name;
 	Hand* hand;
 	vector<Territory*> territories;
-	vector<int*> nums;
-	OrderList* ordersList;
+	
 };
