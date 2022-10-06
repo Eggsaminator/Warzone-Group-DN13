@@ -23,12 +23,21 @@
 */
 
 /*----------------------------------------------------------------------order class---------------------------------------------------------------------*/
-Orders::Orders() {}
+
 
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
-/*OrderList::OrderList(vector<Orders>& o) {
+OrderList::OrderList() {
+
+}
+
+OrderList::OrderList(vector<shared_ptr<Orders*>> o) {
 	orders = o;
-}*/
+}
+//copy constructor
+
+void OrderList::addOrder(shared_ptr<Orders*> const& order) {
+	orders.push_back(order);
+}
 
 /*----------------------------------------------------------------------deploy class---------------------------------------------------------------------*/
 Deploy::Deploy(Player* p, int naw, Territory* tt) {
@@ -52,10 +61,18 @@ bool Deploy::validate() {
 
 //execute
 void Deploy::execute() {
-	cout << "\nexecute for deploy order";
+	cout << "\nexecute for deploy order\n";
 }
 
+ostream& operator << (ostream& os, const Deploy& air) {
+	return (os << "Order: " << air.name << " Player: " << air.curUser << " Army: " << std::to_string(air.numArmyUnit) << " Target: " << air.tarTerritory << std::endl);
+}
 
+string Deploy::toString() {
+	stringstream str;
+	str << (*this);
+	return str.str();
+}
 /*----------------------------------------------------------------------advance class---------------------------------------------------------------------*/
 Advance::Advance(Player* p, int naw, Territory* st, Territory* tt) {
 	curUser = p;
@@ -80,9 +97,18 @@ bool Advance::validate() {
 
 //execute
 void Advance::execute() {
-	cout << "\nexecute for advance order";
+	cout << "\nexecute for advance order\n";
 }
 
+ostream& operator << (ostream& os, const Advance& air) {
+	return (os << "Order: " << air.name << " Player: " << air.curUser << " Army: " << std::to_string(air.numArmyUnit) << " Source: " << air.souTerritory << " Target: " << air.tarTerritory << std::endl);
+}
+
+string Advance::toString() {
+	stringstream str;
+	str << (*this);
+	return str.str();
+}
 /*----------------------------------------------------------------------bomb class---------------------------------------------------------------------*/
 Bomb::Bomb(Player* p, Territory* tt) {
 	curUser = p;
@@ -106,10 +132,18 @@ bool Bomb::validate() {
 
 //execute
 void Bomb::execute() {
-	cout << "\nexecute for bomb order";
+	cout << "\nexecute for bomb order\n";
 }
 
+ostream& operator << (ostream& os, const Bomb& air) {
+	return (os << "Order: " << air.name << " Player: " << air.curUser << " Target: " << air.tarTerritory << std::endl);
+}
 
+string Bomb::toString() {
+	stringstream str;
+	str << (*this);
+	return str.str();
+}
 /*----------------------------------------------------------------------blockade class---------------------------------------------------------------------*/
 Blockade::Blockade(Player* p, Territory* tt) {
 	curUser = p;
@@ -133,10 +167,18 @@ bool Blockade::validate() {
 
 //execute
 void Blockade::execute() {
-	cout << "\nexecute for blockade order";
+	cout << "\nexecute for blockade order\n";
 }
 
+ostream& operator << (ostream& os, const Blockade& air) {
+	return (os << "Order: " << air.name << " Player: " << air.curUser << " Target: " << air.tarTerritory << std::endl);
+}
 
+string Blockade::toString() const{
+	stringstream str;
+	str << (*this);
+	return str.str();
+}
 /*----------------------------------------------------------------------airlift class---------------------------------------------------------------------*/
 Airlift::Airlift(Player* p, int naw, Territory* st, Territory* tt) {
 	curUser = p;
@@ -164,7 +206,17 @@ bool Airlift::validate() {
 
 //execute
 void Airlift::execute() {
-	cout << "\nexecute for airlift order";
+	cout << "\nexecute for airlift order\n";
+}
+
+ostream& operator << (ostream& os, const Airlift& air) {
+	return (os << "Order: " << air.name << " Player: " << air.curUser << " Army: " << std::to_string(air.numArmyUnit) << " Source: " << air.souTerritory << " Target: " << air.tarTerritory << std::endl);
+}
+
+string Airlift::toString() {
+	stringstream str;
+	str << (*this);
+	return str.str();
 }
 
 /*----------------------------------------------------------------------negotiate class---------------------------------------------------------------------*/
@@ -192,10 +244,18 @@ bool Negotiate::validate() {
 
 //execute
 void Negotiate::execute() {
-	cout << "\nvalidate for negotiate order";
+	cout << "\nvalidate for negotiate order\n";
 }
 
+ostream& operator << (ostream& os, const Negotiate& neg) {
+	return (os << "Order: " << neg.name << " Player: " << neg.curUser << " Target: " << neg.tarTerritory << std::endl);
+}
 
+string Negotiate::toString() {
+	stringstream str;
+	str << (*this);
+	return str.str();
+}
 /*----------------------------------------------------------------------main---------------------------------------------------------------------*/
 int main() {
 	cout << "hello world!";
@@ -210,27 +270,39 @@ int main() {
 	Deploy* testDeploy = new Deploy(sampleP, 100, sampleTarget);
 	testDeploy->validate();
 	testDeploy->execute();
+	cout<<testDeploy->toString();
 	//advance
 	Advance* testAdvance = new Advance(sampleP, 100, sampleSource, sampleTarget);
 	testAdvance->validate();
 	testAdvance->execute();
+	cout<<testAdvance->toString();
 	//bomb
 	Bomb* testBomb = new Bomb(sampleP, sampleTarget);
 	testBomb->validate();
 	testBomb->execute();
+	cout<<testBomb->toString();
 	//blockade
 	Blockade* testBlockade = new Blockade(sampleP, sampleTarget);
 	testBlockade->validate();
 	testBlockade->execute();
+	cout<<testBlockade->toString();
 	//airlift
 	Airlift* testAirlift = new Airlift(sampleP, 100, sampleSource, sampleTarget);
 	testAirlift->validate();
 	testAirlift->execute();
+	cout<<testAirlift->toString();
 	//negotiate
 	Negotiate* testNegotiate = new Negotiate(sampleP, sampleTarget);
 	testNegotiate->validate();
 	testNegotiate->execute();
+	cout<<testNegotiate->toString();
 
 	//test to see if order class can contain the different action classes correctly
-	//Orders* tODep = new Orders(testDeploy);
+	OrderList tODep;
+	tODep.addOrder(make_shared<Orders*>(testDeploy));
+	/*tODep.addOrder(make_shared<Orders*>(testAdvance));
+	tODep.addOrder(make_shared<Orders*>(testBomb));
+	tODep.addOrder(make_shared<Orders*>(testBlockade));
+	tODep.addOrder(make_shared<Orders*>(testAirlift));
+	tODep.addOrder(make_shared<Orders*>(testNegotiate));*/
 }

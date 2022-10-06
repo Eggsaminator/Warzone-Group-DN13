@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <sstream>
 #pragma once
 using namespace std;
 
@@ -13,36 +14,40 @@ private:
 	string name;
 public:
 	//default constructor
-	Orders();
+	Orders() = default;
 	//parametized constructor
 	//Orders(Orders& o);
 	//copy constructor
 	Orders(Orders& orders);
 
-	vector<Orders> order = {};
-	Player* curUser;
 
 	//methods
 	void execute();
 	bool validate();
 };
 
-class OrderList : public Orders{
+class OrderList {
 private:
-	vector<Orders*> orders;
-	// current user (player section)
-	string curUser = "";
+	vector<shared_ptr<Orders*>> orders;
+	int numArmyUnit = 0;
 	//also needs territory (map section)
 
 public:
 	//default constructor
 	OrderList();
 	//parametized constructor
-	OrderList(vector<Orders> o);
+	OrderList(vector<shared_ptr<Orders*>> orderlist);
 	//copy constructor
 	OrderList(OrderList &orderlist);
 
+	Player* curUser;
+	Territory* souTerritory;
+	Territory* tarTerritory;
+
 	//methods
+	friend ostream& operator << (ostream& os, const OrderList& air);
+	string toString();
+	void addOrder(shared_ptr<Orders*> const& order);
 	bool remove();
 	bool move();
 };
@@ -65,13 +70,15 @@ public:
 	Territory* tarTerritory;
 
 	//methods
+	friend ostream& operator << (ostream& os, const Deploy& air);
+	string toString();
 	bool validate();
 	void execute();
 };
 
 
 
-class Advance
+class Advance : public Orders
 {
 
 private:
@@ -91,11 +98,13 @@ public:
 	Territory* tarTerritory;
 
 	//methods
+	friend ostream& operator << (ostream& os, const Advance& air);
+	string toString();
 	bool validate();
 	void execute();
 };
 
-class Bomb// usable only if user has Bomb card on hand
+class Bomb : public Orders// usable only if user has Bomb card on hand
 {
 private:
 	//name - current user - target territory
@@ -113,11 +122,13 @@ public:
 	Territory* tarTerritory;
 
 	//methods
+	friend ostream& operator << (ostream& os, const Bomb& air);
+	string toString();
 	bool validate();
 	void execute();
 };
 
-class Blockade // usable if user has blockade card on hand - validate()
+class Blockade : public Orders// usable if user has blockade card on hand - validate()
 {
 private:
 	//name - current user - target territory
@@ -134,11 +145,13 @@ public:
 	Territory* tarTerritory;
 
 	//methods
+	friend ostream& operator << (ostream& os, const Blockade& air);
+	string toString() const;
 	bool validate();
 	void execute();
 };
 
-class Airlift// usable only if user has Airlift card on hand
+class Airlift : public Orders // usable only if user has Airlift card on hand
 {
 private:
 	//name - current user - number og army units - source territory - target territory
@@ -157,16 +170,17 @@ public:
 	Territory* tarTerritory;
 
 	//methods
+	friend ostream& operator << (ostream& os, const Airlift& air);
+	string toString();
 	bool validate();
 	void execute();
 };
 
-class Negotiate// usable if user has Diplomacy card in hand
+class Negotiate : public Orders// usable if user has Diplomacy card in hand
 {
 private:
 	//name - current user - target players
 	const string name = "negotiate";
-	string tarUser = "";
 public:
 	//default constructor
 	Negotiate();
@@ -176,10 +190,11 @@ public:
 	Negotiate(Negotiate& negotiate);
 
 	Player* curUser;
-	Territory* souTerritory;
 	Territory* tarTerritory;
 
 	//methods
+	friend ostream& operator << (ostream& os, const Negotiate& air);
+	string toString();
 	bool validate();
 	void execute();
 };
