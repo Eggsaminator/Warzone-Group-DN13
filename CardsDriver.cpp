@@ -2,6 +2,8 @@
 #include<string>
 #include<cstdlib>
 #include<cassert>
+
+
 using namespace std;
 
 #include"Cards.h"
@@ -198,7 +200,7 @@ void testCards()
 
     cout<<"The orderList of the player that played the cards is:"<<endl;
 
-    (*player).ordersList->toString();
+   (*player).ordersList->toString();
 
     cout<<"The deck is now"<<endl;
     d.display();

@@ -76,38 +76,35 @@ void Card::play()
 
 
 
+
     
     if(card_type=="Bomb")
     {
-        //belong_to_hand->my_player->ordersList->add_orders(new Bomb());
-        //belong_to_hand->my_player->ordersList->add_orders();
-        belong_to_hand->my_player->issueOrder("Bomb");
+        
+    belong_to_hand->my_player->issueOrder("Bomb");
 
     }
     if(card_type=="Reinforcement")
     {
-        belong_to_hand->my_player->issueOrder("Reinforcement");
+        //belong_to_hand->my_player->issueOrder("Reinforcement");
 
     }
     if(card_type=="Airlift")
     {
-        //belong_to_hand->my_player->ordersList->add_orders(new Airlift());
-        //belong_to_hand->my_player->ordersList->add_orders();
+       
         belong_to_hand->my_player->issueOrder("Airlift");
 
     }
     if(card_type=="Diplomacy")
     {
-        //belong_to_hand->my_player->ordersList->add_orders(new Negociate());
-        //belong_to_hand->my_player->ordersList->add_orders();
-        belong_to_hand->my_player->issueOrder("Diplomacy");
+       
+        belong_to_hand->my_player->issueOrder("Negociate");
         
 
     }   
     if(card_type=="Blockade")
     {
-        //belong_to_hand->my_player->ordersList->add_orders();
-        //belong_to_hand->my_player->ordersList->add_orders(new Blockade());
+        
         belong_to_hand->my_player->issueOrder("Blockade");
         
 
