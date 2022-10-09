@@ -81,3 +81,31 @@ Player::toAttack() {
 	}
 	cout << "those were all the territories to defend.\n";
 }
+
+Player::setHand(Hand* newHand){
+	hand = newHand;
+}
+Player::getHand(){
+	return hand;
+}
+
+Player::setName(string newName){
+	name = newName;
+}
+Player::getName(){
+	return name;
+}
+
+Player::setTerritories(vector<Territory*> newTerritories){
+	territories = newTerritories;
+}
+Player::getTerritories(){
+	return territories;
+}
+
+Player::setHand(OrderList* newOrdersList){
+	ordersList = newOrdersList;
+}
+Player::getOrdersList(){
+	return ordersList;
+}

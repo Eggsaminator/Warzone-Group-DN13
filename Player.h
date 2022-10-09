@@ -14,11 +14,21 @@ public:
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
 	void issueOrder(String name);
+	
+	OrderList* getOrdersList();
+	void setOrdersList(OrderList* newOrdersList);
 	OrderList* ordersList;
-	string name;
-	Hand* hand;
-	vector<Territory*> territories;
+	
+	string getName();
+	void setName(string newName);
+	
+	Hand* getHand();
+	void setHand(Hand*);
+	
+	vector<Territory*> getTerritories();
+	void setTerritories(vector<Territory*> newTerritories);
 private:
-	
-	
+	Hand* hand;
+	string name;
+	vector<Territory*> territories;
 };
