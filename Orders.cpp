@@ -1,8 +1,4 @@
 #include <iostream>
-#include <algorithm>
-
-#include <cstdlib>
-#include <utility>
 #include "Orders.h"
 #include "Map.h"
 #include "Player.h"
@@ -16,8 +12,12 @@ Orders::~Orders() {
 
 }
 
-string Orders::toString() {
-	return string("\ntesting order");
+ostream& operator << (ostream& os, const Orders& order) {
+	return os;
+}
+
+string Orders::toString() const{
+	return "\norder string: ";
 }
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
@@ -35,7 +35,6 @@ OrderList::OrderList(OrderList& order) {
 }
 
 void OrderList::move(int i, int j) {
-	//todo
 	if (i < 0 || i >= orders.size() || j < 0 || j >= orders.size()) {
 		cout << "\nIndexes specified not in range of vector size";
 	}
@@ -51,15 +50,9 @@ void OrderList::move(int i, int j) {
 }
 
 void OrderList::remove(int i) {
-	//todo
 	if (i < 0 || i >= orders.size()) {
 		cout << "\nSpecified location is outside the range";
-	}
-	else if (i + 1 == orders.size()) {
-		orders.pop_back();
-		cout << "\nLast order in list removed";
-	}
-	else {
+	}else {
 		orders.erase(orders.begin() + i);
 		cout << "\nOrder removed";
 	}
@@ -102,12 +95,16 @@ bool Deploy::validate() {
 	return true;
 }
 
-void Deploy::execute() {
+bool Deploy::execute() {
 	cout << "\nexecute for deploy order\n";
+	executed = true;
+	return executed;
 }
 
 string Deploy::toString() const{
-	return string("\ntesting deploy");
+	string s1 = name;
+	string s2 = to_string(numArmyUnit);
+	return string("\ntesting deploy: " + s1 + " " + s2);
 }
 
 /*----------------------------------------------------------------------advance class---------------------------------------------------------------------*/
@@ -136,12 +133,16 @@ bool Advance::validate() {
 	return true;
 }
 
-void Advance::execute() {
+bool Advance::execute() {
 	cout << "\nexecute for advance order\n";
+	executed = true;
+	return executed;
 }
 
 string Advance::toString() const {
-	return string("\ntesting advance");
+	string s1 = name;
+	string s2 = to_string(numArmyUnit);
+	return string("\ntesting advance: " + s1 + " " + s2);
 }
 
 /*----------------------------------------------------------------------bomb class---------------------------------------------------------------------*/
@@ -167,12 +168,15 @@ bool Bomb::validate() {
 	return true;
 }
 
-void Bomb::execute() {
+bool Bomb::execute() {
 	cout << "\nexecute for bomb order\n";
+	executed = true;
+	return executed;
 }
 
 string Bomb::toString() const {
-	return string("\ntesting bomb");
+	string s1 = name;
+	return string("\ntesting bomb: " + s1);
 }
 
 /*----------------------------------------------------------------------blockade class---------------------------------------------------------------------*/
@@ -198,12 +202,15 @@ bool Blockade::validate() {
 	return true;
 }
 
-void Blockade::execute() {
+bool Blockade::execute() {
 	cout << "\nexecute for blockade order\n";
+	executed = true;
+	return executed;
 }
 
 string Blockade::toString() const {
-	return string("\ntesting blockade");
+	string s1 = name;
+	return string("\ntesting blockade: " + s1);
 }
 
 /*----------------------------------------------------------------------airlift class---------------------------------------------------------------------*/
@@ -233,12 +240,16 @@ bool Airlift::validate() {
 	return true;
 }
 
-void Airlift::execute() {
+bool Airlift::execute() {
 	cout << "\nexecute for airlift order\n";
+	executed = true;
+	return executed;
 }
 
 string Airlift::toString() const {
-	return string("\ntesting airlift");
+	string s1 = name;
+	string s2 = to_string(numArmyUnit);
+	return string("\ntesting advance: " + s1 + " " + s2);
 }
 
 /*----------------------------------------------------------------------negotiate class---------------------------------------------------------------------*/
@@ -264,10 +275,13 @@ bool Negotiate::validate() {
 	return true;
 }
 
-void Negotiate::execute() {
+bool Negotiate::execute() {
 	cout << "\nvalidate for negotiate order\n";
+	executed = true;
+	return executed;
 }
 
 string Negotiate::toString() const {
-	return string("\ntesting negotiate");
+	string s1 = name;
+	return string("\ntesting negotiate: " + s1);
 }

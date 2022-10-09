@@ -1,6 +1,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <algorithm>
+#include <cstdlib>
+#include <utility>
 #pragma once
 using namespace std;
 
@@ -17,8 +20,8 @@ public:
 	~Orders();
 
 	//critical methods
-	friend ostream& operator << (ostream& os, const Orders& air); //stream insertion operator
-	string toString();
+	friend ostream& operator << (ostream& os, const Orders& order); //stream insertion operator
+	virtual string toString() const;
 };
 
 class OrderList 
@@ -58,6 +61,7 @@ public:
 	//data needed for the order
 	int numArmyUnit = 0;
 	Territory* tarTerritory;
+	bool executed = false;
 
 	//assigning datas
 	Deploy(); //unresolved
@@ -67,7 +71,7 @@ public:
 
 	//critical methods
 	bool validate();
-	void execute();
+	bool execute();
 
 	//extra methods
 	virtual string toString() const;
@@ -85,6 +89,7 @@ public:
 	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;
+	bool executed = false;
 
 	//assigning datas
 	Advance();
@@ -94,7 +99,7 @@ public:
 
 	//critical methods
 	bool validate();
-	void execute();
+	bool execute();
 
 	//extra methods
 	virtual string toString() const;
@@ -108,6 +113,7 @@ public:
 	const string name = "bomb";
 	//data needed for the order
 	Territory* tarTerritory;
+	bool executed = false;
 
 	//assigning datas
 	Bomb();
@@ -117,7 +123,7 @@ public:
 
 	//critical methods
 	bool validate();
-	void execute();
+	bool execute();
 
 	//extra methods
 	virtual string toString() const;
@@ -131,6 +137,7 @@ public:
 	const string name = "blockade";
 	//data needed for the order
 	Territory * tarTerritory;
+	bool executed = false;
 
 	//assigning datas
 	Blockade();
@@ -140,7 +147,7 @@ public:
 
 	//critical methods
 	bool validate();
-	void execute();
+	bool execute();
 
 	//extra methods
 	virtual string toString() const;
@@ -156,6 +163,7 @@ public:
 	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;
+	bool executed = false;
 
 	//assigning datas
 	Airlift();
@@ -165,7 +173,7 @@ public:
 
 	//critical methods
 	bool validate();
-	void execute();
+	bool execute();
 
 	//extra methods
 	virtual string toString() const;
@@ -179,6 +187,7 @@ public:
 	const string name = "negotiate";
 	//data needed for the order
 	Territory* tarTerritory;
+	bool executed = false;
 
 	//assigning datas
 	Negotiate();
@@ -188,7 +197,7 @@ public:
 
 	//critical methods
 	bool validate();
-	void execute();
+	bool execute();
 
 	//extra methods
 	virtual string toString() const;
