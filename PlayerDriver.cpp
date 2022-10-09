@@ -2,10 +2,6 @@
 #include <iostream>
 using namespace std;
 
-int main() {
-	testPLayers();
-}
-
 void testPlayers(){
  cout << "now testing player implementations : \n";
 

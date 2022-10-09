@@ -218,18 +218,3 @@ void testCards()
 
 
 }
-
-int main()
-{   
-    // Test function to test the used functions individually 
-
-    //testnonrandow();
-    //testcopy();
-    //testplay();
-    
-    //testHand();
-    //testDeck();
-
-    // Test function that test the global functionment of this part 
-    testCards();
-}
