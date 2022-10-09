@@ -17,7 +17,7 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	void issueOrder(String name);
+	void issueOrder(string name);
 	
 	OrderList* getOrdersList();
 	void setOrdersList(OrderList* newOrdersList);

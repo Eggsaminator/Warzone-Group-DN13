@@ -55,9 +55,3 @@ void testOrdersList() {
 	//show updated list
 	cout << tODep->toString();
 }
-
-
-int main() {
-	cout << "testing order tasks\n----\n";
-	testOrdersList();
-}
