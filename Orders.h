@@ -7,194 +7,225 @@ using namespace std;
 class Player;
 class Territory;
 
-
 class Orders
 {
 private:
-	string name;
 public:
-	//default constructor
-	Orders() = default;
-	//parametized constructor
-	//Orders(Orders& o);
-	//copy constructor
+	//assigning datas
+	Orders();
 	Orders(Orders& orders);
+	~Orders();
 
+	//critical methods
+	friend ostream& operator << (ostream& os, const Deploy& air); //stream insertion operator
+	string toString();
 
+	/*
 	//methods
 	void execute();
-	bool validate();
+	bool validate();*/
 };
 
 class OrderList {
 private:
-	vector<shared_ptr<Orders*>> orders;
-	int numArmyUnit = 0;
-	//also needs territory (map section)
-
 public:
-	//default constructor
-	OrderList();
-	//parametized constructor
-	OrderList(vector<shared_ptr<Orders*>> orderlist);
-	//copy constructor
-	OrderList(OrderList &orderlist);
-
+	//orderlist should contain player so it can discern them
 	Player* curUser;
+	//order list for teh player
+	vector<Orders*> orders;
+	//overall data present in the order list
+	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;
 
-	//methods
-	friend ostream& operator << (ostream& os, const OrderList& air);
-	string toString();
-	void addOrder(shared_ptr<Orders*> const& order);
+	//assigning datas
+	OrderList();
+	OrderList(Player* user, vector<Orders*> order);
+	OrderList(OrderList& orderlist);
+	~OrderList();
+
+	//critical methods
 	bool remove();
 	bool move();
+
+	//extra methods
+	void addOrder(Orders* order);
+
+	/*
+	//methods
+	//friend ostream& operator << (ostream& os, const OrderList& air);
+	string toString();
+	
+	void execute();
+	bool validate();*/
 };
+
+
+inline ostream& operator << (ostream& os, OrderList const& air);
 
 class Deploy : public Orders
 {
 private:
-	//name - current user - number of army units - target territory
-	const string name = "deploy"; // may not need these (could be deleted later on if found)
-	int numArmyUnit = 0;
 public:
-	//default constructor
-	Deploy();
-	//parametized constructor
-	Deploy(Player* curUser, int numArmyUnit, Territory* tarTerritory);
-	//copy constructor
-	Deploy(Deploy& deploy);
-
-	Player* curUser;
+	//name of the order
+	const string name = "deploy";
+	//data needed for the order
+	int numArmyUnit = 0;
 	Territory* tarTerritory;
 
+	//assigning datas
+	Deploy();
+	Deploy(int armyNum, Territory* tarT);
+	Deploy(Deploy& deploy);
+	~Deploy();
+
+	//critical methods
+	bool validate();
+	void execute();
+
+	/*
 	//methods
 	friend ostream& operator << (ostream& os, const Deploy& air);
 	string toString();
 	bool validate();
-	void execute();
+	void execute();*/
 };
 
 
 
 class Advance : public Orders
 {
-
 private:
-	//name - current user(player) - number of army territory - source territory(vector from Map) - target territory(vector from Map)
-	const string name = "advance";
-	int numArmyUnit = 0;
 public:
-	//default constructor
-	Advance();
-	//parametized constructor
-	Advance(Player* curUser, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
-	//copy constructor
-	Advance(Advance& advance);
-
-	Player* curUser;
+	//name of the order
+	const string name = "advance";
+	//data needed for the order
+	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;
 
+	//assigning datas
+	Advance();
+	Advance(int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
+	Advance(Advance& advance);
+	~Advance();
+
+	//critical methods
+	bool validate();
+	void execute();
+
+	/*
 	//methods
 	friend ostream& operator << (ostream& os, const Advance& air);
 	string toString();
 	bool validate();
-	void execute();
+	void execute();*/
 };
 
 class Bomb : public Orders// usable only if user has Bomb card on hand
 {
-private:
-	//name - current user - target territory
-	const string name = "bomb";
-	
+private:	
 public:
-	//default constructor
-	Bomb();
-	//parametized constructor
-	Bomb(Player* curUser, Territory* tarTerritory);
-	//copy constructor
-	Bomb(Bomb& bomb);
-
-	Player* curUser;
+	//name of the order
+	const string name = "bomb";
+	//data needed for the order
 	Territory* tarTerritory;
 
+	//assigning datas
+	Bomb();
+	Bomb(Territory* tarTerritory);
+	Bomb(Bomb& bomb);
+	~Bomb();
+
+	//critical methods
+	bool validate();
+	void execute();
+	/*
 	//methods
 	friend ostream& operator << (ostream& os, const Bomb& air);
 	string toString();
 	bool validate();
-	void execute();
+	void execute();*/
 };
 
 class Blockade : public Orders// usable if user has blockade card on hand - validate()
 {
 private:
-	//name - current user - target territory
-	const string name = "blockade";
 public:
-	//default constructor
+	//name of the order
+	const string name = "blockade";
+	//data needed for the order
+	Territory * tarTerritory;
+
+	//assigning datas
 	Blockade();
-	//parametized constructor
-	Blockade(Player* curUser, Territory* tarTerritory);
-	//copy constructor
+	Blockade(Territory* tarTerritory);
 	Blockade(Blockade& blockade);
+	~Blockade();
 
-	Player* curUser;
-	Territory* tarTerritory;
+	//critical methods
+	bool validate();
+	void execute();
 
+	/*
 	//methods
 	friend ostream& operator << (ostream& os, const Blockade& air);
 	string toString() const;
 	bool validate();
-	void execute();
+	void execute();*/
 };
 
 class Airlift : public Orders // usable only if user has Airlift card on hand
 {
 private:
-	//name - current user - number og army units - source territory - target territory
-	const string name = "airlift";
-	int numArmyUnit = 0;
 public:
-	//default constructor
-	Airlift();
-	//parametized constructor
-	Airlift(Player* curUser, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
-	//copy constructor
-	Airlift(Airlift& airlift);
-
-	Player* curUser;
+	//name of the order
+	const string name = "airlift";
+	//data needed for the order
+	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;
 
+	//assigning datas
+	Airlift();
+	Airlift(int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
+	Airlift(Airlift& airlift);
+
+	//critical methods
+	bool validate();
+	void execute();
+
+	/*
 	//methods
 	friend ostream& operator << (ostream& os, const Airlift& air);
 	string toString();
 	bool validate();
-	void execute();
+	void execute();*/
 };
 
 class Negotiate : public Orders// usable if user has Diplomacy card in hand
 {
 private:
-	//name - current user - target players
-	const string name = "negotiate";
 public:
-	//default constructor
-	Negotiate();
-	//parametized constructor
-	Negotiate(Player* curUser, Territory* tarTerritory);
-	//copy constructor
-	Negotiate(Negotiate& negotiate);
-
-	Player* curUser;
+	//name of the order
+	const string name = "negotiate";
+	//data needed for the order
 	Territory* tarTerritory;
 
-	//methods
-	friend ostream& operator << (ostream& os, const Negotiate& air);
-	string toString();
+	//assigning datas
+	Negotiate();
+	Negotiate(Territory* tarTerritory);
+	Negotiate(Negotiate& negotiate);
+	~Negotiate();
+
+	//critical methods
 	bool validate();
 	void execute();
+
+	/*
+	//methods
+	friend ostream& operator << (ostream& os, const Negotiate& air);
+	string toString();*/
 };
+
+//string toString();
