@@ -81,6 +81,7 @@ Player::toAttack() {
 	}
 	cout << "those were all the territories to defend.\n";
 }
+<<<<<<< HEAD
 
 Player::setHand(Hand* newHand){
 	hand = newHand;
@@ -109,3 +110,4 @@ Player::setHand(OrderList* newOrdersList){
 Player::getOrdersList(){
 	return ordersList;
 }
+
