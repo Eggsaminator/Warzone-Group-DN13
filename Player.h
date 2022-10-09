@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+
+#include <iostream>
+
 #include <vector>
 #include "Cards.h"
 #include "Map.h"
@@ -8,6 +11,7 @@
 using namespace std;
 
 class Player {
+
 public:
 	Player();
 	Player(string name);
@@ -31,7 +35,4 @@ private:
 	string name;
 	Hand* hand;
 	vector<Territory*> territories;
-private:
-	
-	
 };
