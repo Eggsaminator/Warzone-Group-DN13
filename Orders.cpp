@@ -14,6 +14,16 @@ string Orders::toString() const{
 	return ss.str();
 }
 
+bool Orders::validate() {
+	cout << "Order class of validate()";
+	return false;
+}
+
+bool Orders::execute() {
+	cout << "Order class of Execute()";
+	return false;
+}
+
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
 
@@ -70,7 +80,7 @@ ostream& operator << (ostream& os, const OrderList& o) {
 	for (size_t i = 0; i < o.orders.size(); i++) {
 		str = str + o.orders.at(i)->toString();
 	}
-	return (os << "\nDisplaying order list for player " << o.curUser << "\n----" << str);
+	return (os << "\nDisplaying order list for player " << o.curUser << "\n----" << str << "\n----\n");
 }
 
 string OrderList::toString() const{
@@ -101,7 +111,7 @@ Deploy::~Deploy() {
 }
 
 bool Deploy::validate() {
-	cout << "\nvalidate for deploy order";
+	cout << "\nvalidate for deploy order\n";
 	return true;
 }
 
@@ -148,7 +158,7 @@ Advance::~Advance() {
 }
 
 bool Advance::validate() {
-	cout << "\nvalidate for advance order";
+	cout << "\nvalidate for advance order\n";
 	return true;
 }
 
@@ -190,7 +200,7 @@ Bomb::~Bomb() {
 
 bool Bomb::validate() {
 	//if user has card "bomb" return true
-	cout << "\nvalidate for bomb order";
+	cout << "\nvalidate for bomb order\n";
 	return true;
 }
 
@@ -232,7 +242,7 @@ Blockade::~Blockade() {
 
 bool Blockade::validate() {
 	//if user has card "blockade" return true
-	cout << "\nvalidate for blockade order";
+	cout << "\nvalidate for blockade order\n";
 	return true;
 }
 
@@ -280,7 +290,7 @@ Airlift::~Airlift() {
 
 bool Airlift::validate() {
 	//if user has card "airlift" return true
-	cout << "\nvalidate for airlift order";
+	cout << "\nvalidate for airlift order\n";
 	return true;
 }
 
@@ -321,7 +331,7 @@ Negotiate::~Negotiate() {
 
 bool Negotiate::validate() {
 	//if user has card "diplomacy" return true
-	cout << "\nvalidate for negotiate order";
+	cout << "\nvalidate for negotiate order\n";
 	return true;
 }
 

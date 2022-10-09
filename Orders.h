@@ -19,6 +19,9 @@ public:
 	//critical methods
 	friend ostream& operator << (ostream& os, const Orders& order); //stream insertion operator
 	virtual string toString() const;
+
+	virtual bool validate();
+	virtual bool execute();
 };
 
 class OrderList 
