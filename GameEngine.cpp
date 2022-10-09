@@ -6,7 +6,7 @@ using std::cout;
 
 //State methods
 
-State::State() : name(NULL), transitions(NULL) {
+State::State() : name(""), transitions(NULL) {
 
 };
 
