@@ -1,8 +1,5 @@
 #pragma once
-#include <string>
-
 #include <iostream>
-
 #include <vector>
 #include "Cards.h"
 #include "Map.h"
@@ -17,7 +14,9 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	void issueOrder(String name);
+	void issueOrder(string name);
+
+	void addTerritory(Territory*);
 	
 	OrderList* getOrdersList();
 	void setOrdersList(OrderList* newOrdersList);
