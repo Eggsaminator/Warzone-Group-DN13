@@ -28,10 +28,6 @@ public:
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
 private:
-	Hand* hand;
-	string name;
-	vector<Territory*> territories;
-	OrderList* ordersList;
 	string name;
 	Hand* hand;
 	vector<Territory*> territories;
