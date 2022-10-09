@@ -5,16 +5,6 @@
 
 using namespace std;
 
-void testLoadMaps();
-
-int main() {
-
-    testLoadMaps();
-    cin.get();
-
-    return 0;
-}
-
 void testLoadMaps() {
     vector<string> mapList;
     // Map Canada.map is valid
