@@ -1,12 +1,24 @@
 #include <iostream>
+#include <algorithm>
+
+#include <cstdlib>
+#include <utility>
 #include "Orders.h"
 #include "Map.h"
 #include "Player.h"
 
 /*----------------------------------------------------------------------order class---------------------------------------------------------------------*/
+Orders::Orders() {
 
+}
 
+Orders::~Orders() {
 
+}
+
+string Orders::toString() {
+	return string("testing order");
+}
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
 
@@ -22,19 +34,32 @@ OrderList::OrderList(OrderList& order) {
 	orders = order.orders;
 }
 
-bool OrderList::move() {
-
+void OrderList::move(int i, int j) {
+	//todo
 }
 
-bool OrderList::remove() {
-
+void OrderList::remove(int i) {
+	//todo
 }
 
 void OrderList::addOrder(Orders* order) {
-	orders.push_back(order);
+	this->orders.push_back(order);
+}
+
+string OrderList::toString() const{
+	//calls toString() method in Order class for the order data
+	string str;
+	for (size_t i = 0; i < orders.size(); i++) {
+		str = str + "\n" + orders.at(i)->toString(); //doesnt call ???
+	}
+	return str;
 }
 
 /*----------------------------------------------------------------------deploy class---------------------------------------------------------------------*/
+Deploy::Deploy() {
+
+}
+
 Deploy::Deploy(int naw, Territory* tt) {
 	numArmyUnit = naw;
 	tarTerritory = tt;
@@ -43,6 +68,10 @@ Deploy::Deploy(int naw, Territory* tt) {
 Deploy::Deploy(Deploy& deploy) {
 	numArmyUnit = deploy.numArmyUnit;
 	tarTerritory = &(*deploy.tarTerritory);
+}
+
+Deploy::~Deploy() {
+
 }
 
 bool Deploy::validate() {
@@ -54,7 +83,15 @@ void Deploy::execute() {
 	cout << "\nexecute for deploy order\n";
 }
 
+string Deploy::toString() const{
+	return string("testing");
+}
+
 /*----------------------------------------------------------------------advance class---------------------------------------------------------------------*/
+Advance::Advance() {
+
+}
+
 Advance::Advance(int naw, Territory* st, Territory* tt) {
 	numArmyUnit = naw;
 	souTerritory = st;
@@ -67,6 +104,10 @@ Advance::Advance(Advance& advance) {
 	tarTerritory = &(*advance.tarTerritory);
 }
 
+Advance::~Advance() {
+
+}
+
 bool Advance::validate() {
 	cout << "\nvalidate for advance order";
 	return true;
@@ -76,13 +117,25 @@ void Advance::execute() {
 	cout << "\nexecute for advance order\n";
 }
 
+string Advance::toString() const {
+	return string("testing");
+}
+
 /*----------------------------------------------------------------------bomb class---------------------------------------------------------------------*/
+Bomb::Bomb() {
+
+}
+
 Bomb::Bomb(Territory* tt) {
 	tarTerritory = tt;
 }
 
 Bomb::Bomb(Bomb& bomb) {
 	tarTerritory = &(*bomb.tarTerritory);
+}
+
+Bomb::~Bomb() {
+
 }
 
 bool Bomb::validate() {
@@ -95,13 +148,25 @@ void Bomb::execute() {
 	cout << "\nexecute for bomb order\n";
 }
 
+string Bomb::toString() const {
+	return string("testing");
+}
+
 /*----------------------------------------------------------------------blockade class---------------------------------------------------------------------*/
+Blockade::Blockade() {
+
+}
+
 Blockade::Blockade(Territory* tt) {
 	tarTerritory = tt;
 }
 
 Blockade::Blockade(Blockade& blockade) {
 	tarTerritory = &(*blockade.tarTerritory);
+}
+
+Blockade::~Blockade() {
+
 }
 
 bool Blockade::validate() {
@@ -114,7 +179,15 @@ void Blockade::execute() {
 	cout << "\nexecute for blockade order\n";
 }
 
+string Blockade::toString() const {
+	return string("testing");
+}
+
 /*----------------------------------------------------------------------airlift class---------------------------------------------------------------------*/
+Airlift::Airlift() {
+
+}
+
 Airlift::Airlift(int naw, Territory* st, Territory* tt) {
 	numArmyUnit = naw;
 	souTerritory = st;
@@ -127,6 +200,10 @@ Airlift::Airlift(Airlift& airlift) {
 	tarTerritory = &(*airlift.tarTerritory);
 }
 
+Airlift::~Airlift() {
+
+}
+
 bool Airlift::validate() {
 	//if user has card "airlift" return true
 	cout << "\nvalidate for airlift order";
@@ -137,13 +214,25 @@ void Airlift::execute() {
 	cout << "\nexecute for airlift order\n";
 }
 
+string Airlift::toString() const {
+	return string("testing");
+}
+
 /*----------------------------------------------------------------------negotiate class---------------------------------------------------------------------*/
+Negotiate::Negotiate() {
+
+}
+
 Negotiate::Negotiate(Territory* tt) {
 	tarTerritory = tt;
 }
 
 Negotiate::Negotiate(Negotiate& negotiate) {
 	tarTerritory = &(*negotiate.tarTerritory);
+}
+
+Negotiate::~Negotiate() {
+
 }
 
 bool Negotiate::validate() {
@@ -154,4 +243,8 @@ bool Negotiate::validate() {
 
 void Negotiate::execute() {
 	cout << "\nvalidate for negotiate order\n";
+}
+
+string Negotiate::toString() const {
+	return string("testing");
 }

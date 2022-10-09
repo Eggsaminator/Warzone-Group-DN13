@@ -17,16 +17,12 @@ public:
 	~Orders();
 
 	//critical methods
-	friend ostream& operator << (ostream& os, const Deploy& air); //stream insertion operator
+	friend ostream& operator << (ostream& os, const Orders& air); //stream insertion operator
 	string toString();
-
-	/*
-	//methods
-	void execute();
-	bool validate();*/
 };
 
-class OrderList {
+class OrderList 
+{
 private:
 public:
 	//orderlist should contain player so it can discern them
@@ -45,23 +41,13 @@ public:
 	~OrderList();
 
 	//critical methods
-	bool remove();
-	bool move();
+	void move(int i, int j);
+	void remove(int i);
 
 	//extra methods
 	void addOrder(Orders* order);
-
-	/*
-	//methods
-	//friend ostream& operator << (ostream& os, const OrderList& air);
-	string toString();
-	
-	void execute();
-	bool validate();*/
+	virtual string toString() const;
 };
-
-
-inline ostream& operator << (ostream& os, OrderList const& air);
 
 class Deploy : public Orders
 {
@@ -74,21 +60,17 @@ public:
 	Territory* tarTerritory;
 
 	//assigning datas
-	Deploy();
+	Deploy(); //unresolved
 	Deploy(int armyNum, Territory* tarT);
 	Deploy(Deploy& deploy);
-	~Deploy();
+	~Deploy(); //unresolved
 
 	//critical methods
 	bool validate();
 	void execute();
 
-	/*
-	//methods
-	friend ostream& operator << (ostream& os, const Deploy& air);
-	string toString();
-	bool validate();
-	void execute();*/
+	//extra methods
+	virtual string toString() const;
 };
 
 
@@ -114,12 +96,8 @@ public:
 	bool validate();
 	void execute();
 
-	/*
-	//methods
-	friend ostream& operator << (ostream& os, const Advance& air);
-	string toString();
-	bool validate();
-	void execute();*/
+	//extra methods
+	virtual string toString() const;
 };
 
 class Bomb : public Orders// usable only if user has Bomb card on hand
@@ -140,12 +118,9 @@ public:
 	//critical methods
 	bool validate();
 	void execute();
-	/*
-	//methods
-	friend ostream& operator << (ostream& os, const Bomb& air);
-	string toString();
-	bool validate();
-	void execute();*/
+
+	//extra methods
+	virtual string toString() const;
 };
 
 class Blockade : public Orders// usable if user has blockade card on hand - validate()
@@ -167,12 +142,8 @@ public:
 	bool validate();
 	void execute();
 
-	/*
-	//methods
-	friend ostream& operator << (ostream& os, const Blockade& air);
-	string toString() const;
-	bool validate();
-	void execute();*/
+	//extra methods
+	virtual string toString() const;
 };
 
 class Airlift : public Orders // usable only if user has Airlift card on hand
@@ -190,17 +161,14 @@ public:
 	Airlift();
 	Airlift(int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
 	Airlift(Airlift& airlift);
+	~Airlift();
 
 	//critical methods
 	bool validate();
 	void execute();
 
-	/*
-	//methods
-	friend ostream& operator << (ostream& os, const Airlift& air);
-	string toString();
-	bool validate();
-	void execute();*/
+	//extra methods
+	virtual string toString() const;
 };
 
 class Negotiate : public Orders// usable if user has Diplomacy card in hand
@@ -222,10 +190,6 @@ public:
 	bool validate();
 	void execute();
 
-	/*
-	//methods
-	friend ostream& operator << (ostream& os, const Negotiate& air);
-	string toString();*/
+	//extra methods
+	virtual string toString() const;
 };
-
-//string toString();
