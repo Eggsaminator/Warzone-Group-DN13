@@ -34,11 +34,37 @@ Player::Player(string username) {
 	territories.push_back(new Territory("TestTerritory of " + username, NULL));
 }
 
+//method for a player to issue an order, takes the order's name as parameter
 Player::issueOrder(string name) {
-Order orderToAdd = new Order(name);
-*ordersList.orders.push_back(&orderToAdd);
+	switch(name){
+		case "deploy": 
+			Order orderToAdd = new Deploy(5,territories[0]);
+			*ordersList.orders.push_back(&orderToAdd);
+		break;
+		case "advance":
+			Order orderToAdd = new Advande(5,territories[0],territories[1]);
+			*ordersList.orders.push_back(&orderToAdd);
+		break;
+		case "bomb":
+			Order orderToAdd = new Bome(territories[0]);
+			*ordersList.orders.push_back(&orderToAdd);
+		break;
+		case "blockade": 
+			Order orderToAdd = new Blockade(territories[0]);
+			*ordersList.orders.push_back(&orderToAdd);
+		break;
+		case "airlift": 
+			Order orderToAdd = new Airlift(5,territories[0],territories[1]);
+			*ordersList.orders.push_back(&orderToAdd);
+		break;
+		case "negociate": 
+			Order orderToAdd = new Negociate(territories[0]);
+			*ordersList.orders.push_back(&orderToAdd);
+		break;
+	}
 }
 
+//method that prints out teritories to defend, would return them in future
 Player::toDefend() {
 	cout << "territories to defend : \n";
 	for (int i = 0; i < territories.size; i++) {
@@ -47,6 +73,7 @@ Player::toDefend() {
 	cout << "those were all the territories to defend.\n";
 }
 
+//method that prints out teritories to attack, would return them in future
 Player::toAttack() {
 	vector<Territory> otherTerritories;
 	for (int i = 0; i < 10; i++) {
