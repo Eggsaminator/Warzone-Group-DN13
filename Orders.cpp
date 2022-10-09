@@ -4,20 +4,12 @@
 #include "Player.h"
 
 /*----------------------------------------------------------------------order class---------------------------------------------------------------------*/
-Orders::Orders() {
-
-}
-
-Orders::~Orders() {
-
-}
-
 ostream& operator << (ostream& os, const Orders& order) {
 	return os;
 }
 
 string Orders::toString() const{
-	return "\norder string: ";
+	return "\norder class called";
 }
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
@@ -34,9 +26,13 @@ OrderList::OrderList(OrderList& order) {
 	orders = order.orders;
 }
 
+OrderList::~OrderList() {
+
+}
+
 void OrderList::move(int i, int j) {
 	if (i < 0 || i >= orders.size() || j < 0 || j >= orders.size()) {
-		cout << "\nIndexes specified not in range of vector size";
+		cout << "\nIndexes specified not in range of vector size\n";
 	}
 	else {
 		if (i > j) {
@@ -45,16 +41,16 @@ void OrderList::move(int i, int j) {
 		else {
 			rotate(orders.begin() + i, orders.begin() + 1, orders.begin() + j + 1);
 		}
-		cout << "\nOrder position successfully switched";
+		cout << "\nOrder position moved\n";
 	}
 }
 
 void OrderList::remove(int i) {
 	if (i < 0 || i >= orders.size()) {
-		cout << "\nSpecified location is outside the range";
+		cout << "\nSpecified location is outside the range\n";
 	}else {
 		orders.erase(orders.begin() + i);
-		cout << "\nOrder removed";
+		cout << "\nOrder removed\n";
 	}
 }
 
@@ -62,13 +58,20 @@ void OrderList::addOrder(Orders* order) {
 	this->orders.push_back(order);
 }
 
+
+ostream& operator << (ostream& os, const OrderList& o) {
+	string str;
+	for (size_t i = 0; i < o.orders.size(); i++) {
+		str = str + o.orders.at(i)->toString();
+	}
+	return (os << "\nDisplaying order list for player " << o.curUser << "\n----" << str);
+}
+
 string OrderList::toString() const{
 	//calls toString() method in Order class for the order data
-	string str;
-	for (size_t i = 0; i < orders.size(); i++) {
-		str = str + orders.at(i)->toString();
-	}
-	return str;
+	stringstream ss;
+	ss << (*this);
+	return ss.str();
 }
 
 /*----------------------------------------------------------------------deploy class---------------------------------------------------------------------*/
@@ -101,10 +104,17 @@ bool Deploy::execute() {
 	return executed;
 }
 
+ostream& operator << (ostream& os, const Deploy& d){
+	if (d.executed == true) {
+		return (os << "\ntesting order: " <<d.name << " Army count: " << d.numArmyUnit << " Target Location: " << d.tarTerritory << " order has already been executed");
+	}
+	return (os << "\ntesting order: " << d.name << " Army count: " << d.numArmyUnit << " Target Location: " << d.tarTerritory);
+}
+
 string Deploy::toString() const{
-	string s1 = name;
-	string s2 = to_string(numArmyUnit);
-	return string("\ntesting deploy: " + s1 + " " + s2);
+	stringstream ss;
+	ss << (*this);
+	return ss.str();
 }
 
 /*----------------------------------------------------------------------advance class---------------------------------------------------------------------*/
@@ -139,10 +149,17 @@ bool Advance::execute() {
 	return executed;
 }
 
+ostream& operator << (ostream& os, const Advance& ad){
+	if (ad.executed == true) {
+		return (os << "\ntesting order: " << ad.name << " Army count: " << ad.numArmyUnit << " Source Location " << ad.souTerritory << " Target Location: " << ad.tarTerritory << " order has already been executed");
+	}
+	return (os << "\ntesting order: " << ad.name << " Army count: " << ad.numArmyUnit << " Source Location " << ad.souTerritory << " Target Location: " << ad.tarTerritory);
+}
+
 string Advance::toString() const {
-	string s1 = name;
-	string s2 = to_string(numArmyUnit);
-	return string("\ntesting advance: " + s1 + " " + s2);
+	stringstream ss;
+	ss << (*this);
+	return ss.str();
 }
 
 /*----------------------------------------------------------------------bomb class---------------------------------------------------------------------*/
@@ -174,9 +191,17 @@ bool Bomb::execute() {
 	return executed;
 }
 
+ostream& operator << (ostream& os, const Bomb& b){
+	if (b.executed == true) {
+		return (os << "\ntesting order: " << b.name << " Target Location: " << b.tarTerritory << " order has already been executed");
+	}
+	return (os << "\ntesting order: " << b.name << " Target Location: " << b.tarTerritory);
+}
+
 string Bomb::toString() const {
-	string s1 = name;
-	return string("\ntesting bomb: " + s1);
+	stringstream ss;
+	ss << (*this);
+	return ss.str();
 }
 
 /*----------------------------------------------------------------------blockade class---------------------------------------------------------------------*/
@@ -208,9 +233,17 @@ bool Blockade::execute() {
 	return executed;
 }
 
+ostream& operator << (ostream& os, const Blockade& bl){
+	if (bl.executed == true) {
+		return (os << "\ntesting order: " << bl.name << " Target Location: " << bl.tarTerritory << " order has already been executed");
+	}
+	return (os << "\ntesting order: " << bl.name << " Target Location: " << bl.tarTerritory);
+}
+
 string Blockade::toString() const {
-	string s1 = name;
-	return string("\ntesting blockade: " + s1);
+	stringstream ss;
+	ss << (*this);
+	return ss.str();
 }
 
 /*----------------------------------------------------------------------airlift class---------------------------------------------------------------------*/
@@ -246,10 +279,17 @@ bool Airlift::execute() {
 	return executed;
 }
 
+ostream& operator << (ostream& os, const Airlift& ai) {
+	if (ai.executed == true) {
+		return (os << "\ntesting order: " << ai.name << " Army count: " << ai.numArmyUnit << " Source Location " << ai.souTerritory << " Target Location: " << ai.tarTerritory << " order has already been executed");
+	}
+	return (os << "\ntesting order: " << ai.name << " Army count: " << ai.numArmyUnit << " Source Location " << ai.souTerritory << " Target Location: " << ai.tarTerritory);
+}
+
 string Airlift::toString() const {
-	string s1 = name;
-	string s2 = to_string(numArmyUnit);
-	return string("\ntesting advance: " + s1 + " " + s2);
+	stringstream ss;
+	ss << (*this);
+	return ss.str();
 }
 
 /*----------------------------------------------------------------------negotiate class---------------------------------------------------------------------*/
@@ -281,7 +321,15 @@ bool Negotiate::execute() {
 	return executed;
 }
 
+ostream& operator << (ostream& os, const Negotiate& n) {
+	if (n.executed == true) {
+		return (os << "\ntesting order: " << n.name << " Target Location: " << n.tarTerritory << " order has already been executed");
+	}
+	return (os << "\ntesting order: " << n.name << " Target Location: " << n.tarTerritory);
+}
+
 string Negotiate::toString() const {
-	string s1 = name;
-	return string("\ntesting negotiate: " + s1);
+	stringstream ss;
+	ss << (*this);
+	return ss.str();
 }

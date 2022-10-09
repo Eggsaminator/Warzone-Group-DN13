@@ -15,9 +15,6 @@ class Orders
 private:
 public:
 	//assigning datas
-	Orders();
-	Orders(Orders& orders);
-	~Orders();
 
 	//critical methods
 	friend ostream& operator << (ostream& os, const Orders& order); //stream insertion operator
@@ -48,6 +45,7 @@ public:
 	void remove(int i);
 
 	//extra methods
+	friend ostream& operator << (ostream& os, const OrderList& order);
 	void addOrder(Orders* order);
 	virtual string toString() const;
 };
@@ -74,6 +72,7 @@ public:
 	bool execute();
 
 	//extra methods
+	friend ostream& operator << (ostream& os, const Deploy& order);
 	virtual string toString() const;
 };
 
@@ -102,6 +101,7 @@ public:
 	bool execute();
 
 	//extra methods
+	friend ostream& operator << (ostream& os, const Advance& order);
 	virtual string toString() const;
 };
 
@@ -126,6 +126,7 @@ public:
 	bool execute();
 
 	//extra methods
+	friend ostream& operator << (ostream& os, const Bomb& order);
 	virtual string toString() const;
 };
 
@@ -150,6 +151,7 @@ public:
 	bool execute();
 
 	//extra methods
+	friend ostream& operator << (ostream& os, const Blockade& order);
 	virtual string toString() const;
 };
 
@@ -176,6 +178,7 @@ public:
 	bool execute();
 
 	//extra methods
+	friend ostream& operator << (ostream& os, const Airlift& order);
 	virtual string toString() const;
 };
 
@@ -200,5 +203,6 @@ public:
 	bool execute();
 
 	//extra methods
+	friend ostream& operator << (ostream& os, const Negotiate& order);
 	virtual string toString() const;
 };
