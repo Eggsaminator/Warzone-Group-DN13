@@ -17,7 +17,7 @@ Orders::~Orders() {
 }
 
 string Orders::toString() {
-	return string("testing order");
+	return string("\ntesting order");
 }
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
@@ -36,10 +36,33 @@ OrderList::OrderList(OrderList& order) {
 
 void OrderList::move(int i, int j) {
 	//todo
+	if (i < 0 || i >= orders.size() || j < 0 || j >= orders.size()) {
+		cout << "\nIndexes specified not in range of vector size";
+	}
+	else {
+		if (i > j) {
+			rotate(orders.rend() - i - 1, orders.rend() - i, orders.rend() - j);
+		}
+		else {
+			rotate(orders.begin() + i, orders.begin() + 1, orders.begin() + j + 1);
+		}
+		cout << "\nOrder position successfully switched";
+	}
 }
 
 void OrderList::remove(int i) {
 	//todo
+	if (i < 0 || i >= orders.size()) {
+		cout << "\nSpecified location is outside the range";
+	}
+	else if (i + 1 == orders.size()) {
+		orders.pop_back();
+		cout << "\nLast order in list removed";
+	}
+	else {
+		orders.erase(orders.begin() + i);
+		cout << "\nOrder removed";
+	}
 }
 
 void OrderList::addOrder(Orders* order) {
@@ -50,7 +73,7 @@ string OrderList::toString() const{
 	//calls toString() method in Order class for the order data
 	string str;
 	for (size_t i = 0; i < orders.size(); i++) {
-		str = str + "\n" + orders.at(i)->toString(); //doesnt call ???
+		str = str + orders.at(i)->toString();
 	}
 	return str;
 }
@@ -84,7 +107,7 @@ void Deploy::execute() {
 }
 
 string Deploy::toString() const{
-	return string("testing");
+	return string("\ntesting deploy");
 }
 
 /*----------------------------------------------------------------------advance class---------------------------------------------------------------------*/
@@ -118,7 +141,7 @@ void Advance::execute() {
 }
 
 string Advance::toString() const {
-	return string("testing");
+	return string("\ntesting advance");
 }
 
 /*----------------------------------------------------------------------bomb class---------------------------------------------------------------------*/
@@ -149,7 +172,7 @@ void Bomb::execute() {
 }
 
 string Bomb::toString() const {
-	return string("testing");
+	return string("\ntesting bomb");
 }
 
 /*----------------------------------------------------------------------blockade class---------------------------------------------------------------------*/
@@ -180,7 +203,7 @@ void Blockade::execute() {
 }
 
 string Blockade::toString() const {
-	return string("testing");
+	return string("\ntesting blockade");
 }
 
 /*----------------------------------------------------------------------airlift class---------------------------------------------------------------------*/
@@ -215,7 +238,7 @@ void Airlift::execute() {
 }
 
 string Airlift::toString() const {
-	return string("testing");
+	return string("\ntesting airlift");
 }
 
 /*----------------------------------------------------------------------negotiate class---------------------------------------------------------------------*/
@@ -246,5 +269,5 @@ void Negotiate::execute() {
 }
 
 string Negotiate::toString() const {
-	return string("testing");
+	return string("\ntesting negotiate");
 }
