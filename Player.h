@@ -13,12 +13,12 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	void issueOrder(Orders newOrder);
+	void issueOrder(String name);
 	OrderList* ordersList;
-	
-private:
 	string name;
 	Hand* hand;
 	vector<Territory*> territories;
+private:
+	
 	
 };
