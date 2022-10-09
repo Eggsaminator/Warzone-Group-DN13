@@ -3,28 +3,18 @@
 #include "Player.h"
 #include "Map.h"
 
-
-//testOrdersList() method to be implemented
-//main driver
-int main() {
-	cout << "hello world!";
-
-	Player* sampleP = new Player();
+void testOrdersList() {
+	Player* sampleP = new Player("thomas");
 	Territory* sampleTarget = new Territory();
 	Territory* sampleSource = new Territory();
+	Orders* d = new Deploy(1000, nullptr);
+	Orders* ad = new Advance(2000, nullptr, nullptr);
+	Orders* bo = new Bomb(nullptr);
+	Orders* bl = new Blockade(nullptr);
+	Orders* ai = new Airlift(1000, nullptr, nullptr);
+	Orders* n = new Negotiate(nullptr);
 
-
-	Deploy* d = new Deploy();
-	cout << d->toString();
-	Advance* ad = new Advance();
-	Bomb* bo = new Bomb();
-	Blockade* bl = new Blockade();
-	Airlift* ai = new Airlift();
-	Negotiate* n = new Negotiate();
-
-	vector<int> i = {11,21,31,41,51};
-	cout << i.at(1);
-
+	//creating list
 	OrderList* tODep = new OrderList;
 	tODep->addOrder(d);
 	tODep->addOrder(ad);
@@ -32,7 +22,36 @@ int main() {
 	tODep->addOrder(bl);
 	tODep->addOrder(ai);
 	tODep->addOrder(n);
-	cout << tODep->toString();
-	//cout << tODep->orders.at(0)->toString();
 
+	//show current list
+	cout << tODep->toString();
+
+	//test valid method of subclasses
+	d->validate();
+	bo->validate();
+	ai->validate();
+
+	//test execute method of subclasses
+	ad->execute();
+	bl->execute();
+	n->execute();
+
+	//list with executed orders
+	cout << tODep->toString();
+
+	//move method of orderlist
+	tODep->move(0, 4);
+	tODep->move(1, 6);
+	tODep->move(3, 2);
+
+	//show modified list
+	cout << tODep->toString();
+
+	//remove method of orderlist
+	tODep->remove(5);
+	tODep->remove(9);
+	tODep->remove(0);
+
+	//show updated list
+	cout << tODep->toString();
 }

@@ -16,7 +16,9 @@ public:
 	vector<Territory*> toAttack();
 	void issueOrder(string name);
 
+
 	void addTerritory(Territory*);
+
 	
 	OrderList* getOrdersList();
 	void setOrdersList(OrderList* newOrdersList);
