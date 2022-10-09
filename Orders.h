@@ -62,10 +62,10 @@ public:
 	bool executed = false;
 
 	//assigning datas
-	Deploy(); //unresolved
+	Deploy();
 	Deploy(int armyNum, Territory* tarT);
 	Deploy(Deploy& deploy);
-	~Deploy(); //unresolved
+	~Deploy();
 
 	//critical methods
 	bool validate();

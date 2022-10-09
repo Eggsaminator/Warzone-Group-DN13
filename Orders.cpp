@@ -5,12 +5,15 @@
 
 /*----------------------------------------------------------------------order class---------------------------------------------------------------------*/
 ostream& operator << (ostream& os, const Orders& order) {
-	return os;
+	return (os << "\norder class called");
 }
 
 string Orders::toString() const{
-	return "\norder class called";
+	stringstream ss;
+	ss << (*this);
+	return ss.str();
 }
+
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
 
@@ -27,7 +30,11 @@ OrderList::OrderList(OrderList& order) {
 }
 
 OrderList::~OrderList() {
-
+	curUser = nullptr;
+	for (size_t i = 0; i < orders.size(); i++) {
+		delete orders.at(i);
+	}
+	orders.clear();
 }
 
 void OrderList::move(int i, int j) {
@@ -57,7 +64,6 @@ void OrderList::remove(int i) {
 void OrderList::addOrder(Orders* order) {
 	this->orders.push_back(order);
 }
-
 
 ostream& operator << (ostream& os, const OrderList& o) {
 	string str;
@@ -90,7 +96,8 @@ Deploy::Deploy(Deploy& deploy) {
 }
 
 Deploy::~Deploy() {
-
+	numArmyUnit = 0;
+	tarTerritory = nullptr;
 }
 
 bool Deploy::validate() {
@@ -106,9 +113,9 @@ bool Deploy::execute() {
 
 ostream& operator << (ostream& os, const Deploy& d){
 	if (d.executed == true) {
-		return (os << "\ntesting order: " <<d.name << " Army count: " << d.numArmyUnit << " Target Location: " << d.tarTerritory << " order has already been executed");
+		return (os << "\nDisplaying order: " <<d.name << " Army count: " << d.numArmyUnit << " Target Location: " << d.tarTerritory << " order has already been executed");
 	}
-	return (os << "\ntesting order: " << d.name << " Army count: " << d.numArmyUnit << " Target Location: " << d.tarTerritory);
+	return (os << "\nDisplaying order: " << d.name << " Army count: " << d.numArmyUnit << " Target Location: " << d.tarTerritory);
 }
 
 string Deploy::toString() const{
@@ -135,7 +142,9 @@ Advance::Advance(Advance& advance) {
 }
 
 Advance::~Advance() {
-
+	numArmyUnit = 0;
+	souTerritory = nullptr;
+	tarTerritory = nullptr;
 }
 
 bool Advance::validate() {
@@ -151,9 +160,9 @@ bool Advance::execute() {
 
 ostream& operator << (ostream& os, const Advance& ad){
 	if (ad.executed == true) {
-		return (os << "\ntesting order: " << ad.name << " Army count: " << ad.numArmyUnit << " Source Location " << ad.souTerritory << " Target Location: " << ad.tarTerritory << " order has already been executed");
+		return (os << "\nDisplaying order: " << ad.name << " Army count: " << ad.numArmyUnit << " Source Location " << ad.souTerritory << " Target Location: " << ad.tarTerritory << " order has already been executed");
 	}
-	return (os << "\ntesting order: " << ad.name << " Army count: " << ad.numArmyUnit << " Source Location " << ad.souTerritory << " Target Location: " << ad.tarTerritory);
+	return (os << "\nDisplaying order: " << ad.name << " Army count: " << ad.numArmyUnit << " Source Location " << ad.souTerritory << " Target Location: " << ad.tarTerritory);
 }
 
 string Advance::toString() const {
@@ -176,7 +185,7 @@ Bomb::Bomb(Bomb& bomb) {
 }
 
 Bomb::~Bomb() {
-
+	tarTerritory = nullptr;
 }
 
 bool Bomb::validate() {
@@ -193,9 +202,9 @@ bool Bomb::execute() {
 
 ostream& operator << (ostream& os, const Bomb& b){
 	if (b.executed == true) {
-		return (os << "\ntesting order: " << b.name << " Target Location: " << b.tarTerritory << " order has already been executed");
+		return (os << "\nDisplaying order: " << b.name << " Target Location: " << b.tarTerritory << " order has already been executed");
 	}
-	return (os << "\ntesting order: " << b.name << " Target Location: " << b.tarTerritory);
+	return (os << "\nDisplaying order: " << b.name << " Target Location: " << b.tarTerritory);
 }
 
 string Bomb::toString() const {
@@ -218,7 +227,7 @@ Blockade::Blockade(Blockade& blockade) {
 }
 
 Blockade::~Blockade() {
-
+	tarTerritory = nullptr;
 }
 
 bool Blockade::validate() {
@@ -235,9 +244,9 @@ bool Blockade::execute() {
 
 ostream& operator << (ostream& os, const Blockade& bl){
 	if (bl.executed == true) {
-		return (os << "\ntesting order: " << bl.name << " Target Location: " << bl.tarTerritory << " order has already been executed");
+		return (os << "\nDisplaying order: " << bl.name << " Target Location: " << bl.tarTerritory << " order has already been executed");
 	}
-	return (os << "\ntesting order: " << bl.name << " Target Location: " << bl.tarTerritory);
+	return (os << "\nDisplaying order: " << bl.name << " Target Location: " << bl.tarTerritory);
 }
 
 string Blockade::toString() const {
@@ -264,7 +273,9 @@ Airlift::Airlift(Airlift& airlift) {
 }
 
 Airlift::~Airlift() {
-
+	numArmyUnit = 0;
+	souTerritory = nullptr;
+	tarTerritory = nullptr;
 }
 
 bool Airlift::validate() {
@@ -281,9 +292,9 @@ bool Airlift::execute() {
 
 ostream& operator << (ostream& os, const Airlift& ai) {
 	if (ai.executed == true) {
-		return (os << "\ntesting order: " << ai.name << " Army count: " << ai.numArmyUnit << " Source Location " << ai.souTerritory << " Target Location: " << ai.tarTerritory << " order has already been executed");
+		return (os << "\nDisplaying order: " << ai.name << " Army count: " << ai.numArmyUnit << " Source Location " << ai.souTerritory << " Target Location: " << ai.tarTerritory << " order has already been executed");
 	}
-	return (os << "\ntesting order: " << ai.name << " Army count: " << ai.numArmyUnit << " Source Location " << ai.souTerritory << " Target Location: " << ai.tarTerritory);
+	return (os << "\nDisplaying order: " << ai.name << " Army count: " << ai.numArmyUnit << " Source Location " << ai.souTerritory << " Target Location: " << ai.tarTerritory);
 }
 
 string Airlift::toString() const {
@@ -294,7 +305,6 @@ string Airlift::toString() const {
 
 /*----------------------------------------------------------------------negotiate class---------------------------------------------------------------------*/
 Negotiate::Negotiate() {
-
 }
 
 Negotiate::Negotiate(Territory* tt) {
@@ -306,7 +316,7 @@ Negotiate::Negotiate(Negotiate& negotiate) {
 }
 
 Negotiate::~Negotiate() {
-
+	tarTerritory = nullptr;
 }
 
 bool Negotiate::validate() {
@@ -316,16 +326,16 @@ bool Negotiate::validate() {
 }
 
 bool Negotiate::execute() {
-	cout << "\nvalidate for negotiate order\n";
+	cout << "\nexecute for negotiate order\n";
 	executed = true;
 	return executed;
 }
 
 ostream& operator << (ostream& os, const Negotiate& n) {
 	if (n.executed == true) {
-		return (os << "\ntesting order: " << n.name << " Target Location: " << n.tarTerritory << " order has already been executed");
+		return (os << "\nDisplaying order: " << n.name << " Target Location: " << n.tarTerritory << " order has already been executed");
 	}
-	return (os << "\ntesting order: " << n.name << " Target Location: " << n.tarTerritory);
+	return (os << "\nDisplaying order: " << n.name << " Target Location: " << n.tarTerritory);
 }
 
 string Negotiate::toString() const {
