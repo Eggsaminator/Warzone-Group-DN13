@@ -299,8 +299,6 @@ Territory::Territory(string territoryName, Continent* newContinent) {
     setContinent(newContinent);
 }
 
-Territory::Territory() {}
-
 Territory::~Territory() {
 
 }

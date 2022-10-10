@@ -15,13 +15,15 @@ territories.push_back(new Territory("TestTerritory of " + name, NULL));
 //player constructor
 Player::Player(string username) {
 	name = username;
-	// vector<Territory*> firstTerritories;
-	// firstTerritories.push_back(new Territory("TestTerritory of " + username, NULL));
-	// territories = firstTerritories;
+	vector<Territory*> firstTerritories;
+	Continent* tempCont = new Continent("dummy", 0);
+	firstTerritories.push_back(new Territory("TestTerritory of " + username, tempCont));
+	territories = firstTerritories;
+	ordersList = new OrderList(username);
 }
 
 void Player::addTerritory(Territory* newTerritory){
-	territories.push_back(newTerritory);
+	this->territories.push_back(newTerritory);
 }
 //method for a player to issue an order, takes the order's name as parameter
 void Player::issueOrder(string name) {

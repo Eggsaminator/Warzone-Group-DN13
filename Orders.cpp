@@ -15,22 +15,27 @@ string Orders::toString() const{
 }
 
 bool Orders::validate() {
-	cout << "Order class of validate()";
+	cout << "\nOrder class of validate()\n";
 	return false;
 }
 
 bool Orders::execute() {
-	cout << "Order class of Execute()";
+	cout << "\nOrder class of Execute()\n";
 	return false;
 }
 
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
+	player = "";
 
 }
 
-OrderList::OrderList(Player* user, vector<Orders*> o) {
-	curUser = user;
+OrderList::OrderList(string user) {
+	player = user;
+}
+
+OrderList::OrderList(string user, vector<Orders*> o) {
+	player = user;
 	orders = o;
 }
 
@@ -77,10 +82,11 @@ void OrderList::addOrder(Orders* order) {
 
 ostream& operator << (ostream& os, const OrderList& o) {
 	string str;
-	for (size_t i = 0; i < o.orders.size(); i++) {
-		str = str + o.orders.at(i)->toString();
-	}
-	return (os << "\nDisplaying order list for player " << o.curUser << "\n----" << str << "\n----\n");
+
+		for (size_t i = 0; i < o.orders.size(); i++) {
+			str = str + o.orders.at(i)->toString();
+		}
+		return (os << o.player << str);
 }
 
 string OrderList::toString() const{

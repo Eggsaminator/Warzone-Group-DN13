@@ -5,17 +5,18 @@
 
 void testOrdersList() {
 	Player* sampleP = new Player("thomas");
-	Territory* sampleTarget = new Territory();
-	Territory* sampleSource = new Territory();
-	Orders* d = new Deploy(1000, nullptr);
-	Orders* ad = new Advance(2000, nullptr, nullptr);
-	Orders* bo = new Bomb(nullptr);
-	Orders* bl = new Blockade(nullptr);
-	Orders* ai = new Airlift(1000, nullptr, nullptr);
-	Orders* n = new Negotiate(nullptr);
+	Continent* continent = new Continent("test",0);
+	Territory* sampleTarget = new Territory("territory #1", continent);
+	Territory* sampleSource = new Territory("territory #2", continent);
+	Orders* d = new Deploy(1000, sampleTarget);
+	Orders* ad = new Advance(2000, sampleSource, sampleTarget);
+	Orders* bo = new Bomb(sampleTarget);
+	Orders* bl = new Blockade(sampleTarget);
+	Orders* ai = new Airlift(1000, sampleSource, sampleTarget);
+	Orders* n = new Negotiate(sampleTarget);
 
 	//creating list
-	OrderList* tODep = new OrderList;
+	OrderList* tODep = new OrderList("welp");
 	tODep->addOrder(d);
 	tODep->addOrder(ad);
 	tODep->addOrder(bo);
@@ -24,7 +25,7 @@ void testOrdersList() {
 	tODep->addOrder(n);
 
 	//show current list
-	cout << tODep->toString();
+	cout << "\n----\nDisplaying order list for player " << tODep->toString();
 
 	//test valid method of subclasses
 	d->validate();
@@ -51,7 +52,8 @@ void testOrdersList() {
 	tODep->remove(5);
 	tODep->remove(9);
 	tODep->remove(0);
-
+	
 	//show updated list
 	cout << tODep->toString();
 }
+

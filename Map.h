@@ -66,7 +66,6 @@ private:
 class Territory {
 public:
     Territory(string territoryName, Continent* newContinent);
-    Territory();
     ~Territory();
     void addAdjacency(Territory* territory);
     static void addAdjacency(Territory* firstTerritory, Territory* secondTerritory);

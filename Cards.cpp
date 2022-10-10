@@ -19,15 +19,6 @@ int num =rand() % 5;
 card_type=cards_list[num];
 }
 
-Card::Card(Card &card)
-{ // Copy Constructor of the Card Class
-    card_type=card.card_type;
-    belong_to_deck=&(*card.belong_to_deck);
-    belong_to_hand=&(*card.belong_to_hand);
-    
-}
-
-
 Card::Card(string type,Deck* mydeck, Hand* myhand){
     bool valid=false;
     for(int i=0;i<size(cards_list);i++)
@@ -44,6 +35,13 @@ Card::Card(string type,Deck* mydeck, Hand* myhand){
     }
     belong_to_deck=mydeck;
     belong_to_hand=myhand;
+}
+
+Card::Card(Card& card)
+{ // Copy Constructor of the Card Class
+    card_type = card.card_type;
+    belong_to_deck = &(*card.belong_to_deck);
+    belong_to_hand = &(*card.belong_to_hand);
 }
 
 void Card::setType(string type)
