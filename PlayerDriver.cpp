@@ -34,18 +34,8 @@ void testPlayers(){
 	
 	}
 	
-
-for(int i = 0; i<players.size();i++){
-
-
-	}
-
-
-
-
-
 	cout << "now entering to defend methods.\n";
-
+	
 	for(int i = 0; i<players.size();i++){
 		vector<Territory*> todefend = players.at(i)->toDefend();
 	
@@ -57,11 +47,10 @@ for(int i = 0; i<players.size();i++){
 	
 	}
 	
-
 	cout << "now exiting to defend methods.\n";
-
+	
 	cout << "-------------------------------------------------------------------------------------------------------------------------\n";
-
+	
 	cout << "now entering to attack method.\n";
 	for(int i = 0; i<players.size();i++){
 		vector<Territory*> toattack = players.at(i)->toAttack();
@@ -74,4 +63,11 @@ for(int i = 0; i<players.size();i++){
 	
 	}
 	cout << "now exiting to attack method.\n";
+
+	for (int i = 0; i < players.size(); i++) {
+		delete(players.at(i));
+	}
+	delete(tempCont);
+	players.clear();
+	
 }
