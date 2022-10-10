@@ -33,7 +33,7 @@ public:
 	//order list for teh player
 	vector<Orders*> orders;
 	//overall data present in the order list
-	string player = "test";
+	string player = "user";
 	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;

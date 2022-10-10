@@ -9,10 +9,10 @@ int main()
     //Part 1: Map
     //testLoadMaps();
     //
-    ////Part 2: Player
+    //Part 2: Player
     //testPlayers();
     //
-    ////Part 3: Orders
+    //Part 3: Orders
     testOrdersList();
 
     //Part 4: Cards
