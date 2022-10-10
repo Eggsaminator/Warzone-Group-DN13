@@ -33,13 +33,15 @@ public:
 	//order list for teh player
 	vector<Orders*> orders;
 	//overall data present in the order list
+	string player = "user";
 	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;
 
 	//assigning datas
 	OrderList();
-	OrderList(Player* user, vector<Orders*> order);
+	OrderList(string user);
+	OrderList(string user, vector<Orders*> order);
 	OrderList(OrderList& orderlist);
 	~OrderList();
 
@@ -209,3 +211,5 @@ public:
 	friend ostream& operator << (ostream& os, const Negotiate& order);
 	virtual string toString() const;
 };
+
+void testOrdersList();

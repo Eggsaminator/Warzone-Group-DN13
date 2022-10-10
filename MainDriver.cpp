@@ -1,21 +1,21 @@
-void testLoadMaps();
-void testPlayers();
-void testOrdersList();
-void testCards();
-void testGameStates();
+#include "Cards.h"
+#include "GameEngine.h"
+#include "Map.h"
+#include "Orders.h"
+#include "Player.h"
 
 int main()
 {
-    //Part 1: Map
+    //Part 1: Map good
     testLoadMaps();
-
+    
     //Part 2: Player
     testPlayers();
 
-    //Part 3: Orders
+    //Part 3: Orders good
     testOrdersList();
 
-    //Part 4: Cards
+    //Part 4: Cards good
     testCards();
 
     //Part 5: Game Engine

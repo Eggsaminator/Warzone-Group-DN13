@@ -85,3 +85,6 @@ private:
     Continent* continent;
     vector<Territory*> adjacencyList;
 };
+
+
+void testLoadMaps();

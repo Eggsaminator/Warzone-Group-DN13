@@ -37,3 +37,5 @@ private:
 	Hand* hand;
 	vector<Territory*> territories;
 };
+
+void testPlayers();

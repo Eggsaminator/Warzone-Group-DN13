@@ -9,6 +9,9 @@ class Deck;
 class Hand;
 class Player;
 
+
+
+
 //The Class card defines the Card object that can be drawn from a Deck, placed in a Hand and played by the player
 
 class Card
@@ -34,13 +37,22 @@ class Card
     //Service method
     void play();
 
+    
+    
+    
+
     Deck* belong_to_deck;
     Hand* belong_to_hand;
     
+
 // string defining the type of the card. Should be in the form of one of the card_list members
     string card_type;
     static vector<string> cards_list;
 };
+
+
+
+
 
 // The Hand class defines a collection of Card owned by one player
 
@@ -57,6 +69,7 @@ class Hand
     //Destructor 
     void free_hand();
 
+
     // Stream insertion operator
     void display();
     
@@ -65,6 +78,9 @@ class Hand
     void remove_card(Card* card_out);
     void setPlayer(Player* player);
 
+    
+
+    
     vector<Card*> hand_content;
     Player* my_player;
 };
@@ -80,6 +96,7 @@ class Deck
     Deck();
 
     //Constructor of an even Deck
+    
 
     //Constructor that generates a random deck with the given size
     Deck(int size_of_deck,bool is_random = true);
@@ -103,4 +120,27 @@ class Deck
 
     vector<Card*> deck_content;
     static vector<string> cards_list;
+
 };
+
+
+//Test functions
+
+//Test of the global functionment of this part: creates a deck, draw and play Cards
+void testCards();
+
+//Test of members function of the Deck Class
+void testDeck();
+
+//Test of members function of the Hand Class
+void testHand();
+
+//Test of members function of the Card Class
+void testplay();
+
+//Test of the copy constructors
+void testcopy();
+
+//Test of the non-random constructor of the Deck Class
+void testnonrandow();
+
