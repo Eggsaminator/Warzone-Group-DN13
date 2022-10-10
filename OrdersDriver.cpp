@@ -25,7 +25,7 @@ void testOrdersList() {
 	tODep->addOrder(n);
 
 	//show current list
-	cout << "\n----\nDisplaying order list for player " << tODep->toString() << "\n----\n";
+	cout << tODep->toString();
 
 	//test valid method of subclasses
 	d->validate();
@@ -38,7 +38,7 @@ void testOrdersList() {
 	n->execute();
 
 	//list with executed orders
-	cout << "\n----\nDisplaying order list for player " << tODep->toString() << "\n----\n";
+	cout << tODep->toString();
 
 	//move method of orderlist
 	tODep->move(0, 4);
@@ -46,7 +46,7 @@ void testOrdersList() {
 	tODep->move(3, 2);
 
 	//show modified list
-	cout << "\n----\nDisplaying order list for player " << tODep->toString() << "\n----\n";
+	cout << tODep->toString();
 
 	//remove method of orderlist
 	tODep->remove(5);
@@ -54,6 +54,8 @@ void testOrdersList() {
 	tODep->remove(0);
 	
 	//show updated list
-	cout << "\n----\nDisplaying order list for player " << tODep->toString() << "\n----\n";
+	cout << tODep->toString();
+
+	tODep->~OrderList();
 }
 

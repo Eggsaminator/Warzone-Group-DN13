@@ -34,3 +34,5 @@ public:
 private:
 	State* currentState;
 };
+
+void testGameStates();

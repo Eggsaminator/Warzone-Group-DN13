@@ -51,24 +51,17 @@ void Player::issueOrder(string name) {
 
 //method that prints out teritories to defend, would return them in future
 vector<Territory*> Player::toDefend() {
-	cout << "territories to defend : \n";
-	for (int i = 0; i < territories.size(); i++) {
-		cout << "territory to defend number " << (i + 1) << " of player " << name << "\n";
-	}
-	cout << "those were all the territories to defend.\n";
+
 	return territories;
 }
 
 //method that prints out teritories to attack, would return them in future
 vector<Territory*> Player::toAttack() {
 	vector<Territory*> otherTerritories;
-	Territory* tempPointer;
+	Continent* tempCont = new Continent("dummy", 0);
 	for (int i = 0; i < 10; i++) {
-	tempPointer = new Territory("Base #" + to_string(i+1), nullptr);
-	otherTerritories.push_back(tempPointer);
-		cout << "arbitraty territory to attack number " << (i + 1) << " of player : Base #" << i+1 << "\n"; 
+		otherTerritories.push_back(new Territory("Base #" + to_string(i + 1), tempCont));
 	}
-	cout << "those were all the territories to defend.\n";
 	return otherTerritories;
 }
 

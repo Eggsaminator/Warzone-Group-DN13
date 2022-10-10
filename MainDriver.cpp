@@ -6,17 +6,17 @@
 
 int main()
 {
-    //Part 1: Map
+    //Part 1: Map good
     //testLoadMaps();
-    //
+    
     //Part 2: Player
     //testPlayers();
-    //
-    //Part 3: Orders
-    testOrdersList();
 
-    //Part 4: Cards
-    testCards();
+    //Part 3: Orders good
+    //testOrdersList();
+
+    //Part 4: Cards good
+    //testCards();
 
     //Part 5: Game Engine
 	//testGameStates();
