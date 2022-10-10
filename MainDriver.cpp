@@ -1,24 +1,23 @@
-#include "GameEngineDriver.cpp"
-#include "CardsDriver.cpp"
-#include "MapDriver.cpp"
-#include "OrdersDriver.cpp"
-#include "PlayerDriver.cpp"
-
+void testLoadMaps();
+void testPlayers();
+void testOrdersList();
+void testCards();
+void testGameStates();
 
 int main()
 {
     //Part 1: Map
-    testLoadMaps();
+    //testLoadMaps();
 
     //Part 2: Player
-    testPlayers();
+    //testPlayers();
 
     //Part 3: Orders
-    testOrdersList();
+    //testOrdersList();
 
     //Part 4: Cards
     testCards();
 
-    //Part 5: Game Engine
-	testGameStates();
+   //Part 5: Game Engine
+	//testGameStates();
 }
