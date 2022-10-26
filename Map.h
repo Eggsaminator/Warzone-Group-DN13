@@ -57,6 +57,7 @@ public:
     void addTerritory(Territory* territory);
     vector<Territory*> getTerritories();
     string getName();
+    int getBonusValue();
 private:
     string name;
     int value;

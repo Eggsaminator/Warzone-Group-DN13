@@ -286,6 +286,10 @@ string Continent::getName() {
     return name;
 }
 
+int Continent::getBonusValue() {
+    return value;
+}
+
 void Continent::addTerritory(Territory* territory) {
     territoryList.push_back(territory);
 }

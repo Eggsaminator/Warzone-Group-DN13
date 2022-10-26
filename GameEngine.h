@@ -29,6 +29,10 @@ public:
 	State* launchTransitionCommand(string command);
 	State* getCurrentState();
 	void setCurrentState(State* newState);
+	void mainGameLoop();
+	void reinforcementPhase();
+	void issueOrdersPhase();
+	void executeOrdersPhase();
 	void buildLevels();
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
 private:
@@ -36,3 +40,4 @@ private:
 };
 
 void testGameStates();
+void testMainGameLoop();

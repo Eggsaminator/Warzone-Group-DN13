@@ -1,8 +1,11 @@
 #include "GameEngine.h"
 #include <iostream>
+#include "Player.h"
 using std::ostream;
 using std::cin;
 using std::cout;
+using std::floor;
+using std::map;
 
 //State methods
 
@@ -191,4 +194,65 @@ void Engine::buildLevels() {
 	state7->setTransitions(state7Transitions);
 
 	currentState = state0;
+}
+
+Player playersList[] = { Player("John"), Player("Tim"), Player("Marc") };
+Map gameMap;
+
+void Engine::mainGameLoop() {
+	int i = 0;
+	while (i < 1) {
+		reinforcementPhase();
+		i++;
+	}
+}
+
+void Engine::reinforcementPhase() {
+	int nbPlayers = sizeof(playersList) / sizeof(Player);
+	for (int index = 0; index < nbPlayers; index++) {
+		vector<Territory*> ownedTerritories = playersList[index].getTerritories();
+		int qtyArmyUnits = floor(ownedTerritories.size() / 3);
+
+		//create a map of qty of territories owned by continent 
+		map<string, int> qtyTerritoriesOwnedByContinents;
+		for (Territory* territoryPtr : ownedTerritories) {
+			string continentName = territoryPtr->getContinent()->getName();
+			if (qtyTerritoriesOwnedByContinents.find(continentName) == qtyTerritoriesOwnedByContinents.end()) {
+				qtyTerritoriesOwnedByContinents[continentName] = 1;
+			}
+			else {
+				int nbTerritoriesInContinent = qtyTerritoriesOwnedByContinents[continentName];
+				qtyTerritoriesOwnedByContinents[continentName] = nbTerritoriesInContinent + 1;
+			}
+		}
+		//check if nb of territories owned by continent = max nb territories in continent
+		for (map<string, int>::iterator iter = qtyTerritoriesOwnedByContinents.begin(); iter != qtyTerritoriesOwnedByContinents.end(); ++iter)
+		{
+			string continentName = iter->first;
+			int nbTerritories = iter->second;
+			Continent* continentPtr = gameMap.getContinentByName(continentName);
+			if (continentPtr != nullptr) {
+				if (continentPtr->getTerritories().size() == nbTerritories) {
+					qtyArmyUnits += continentPtr->getBonusValue();
+				}
+			}
+		}
+
+		//minimum nb reinforcement arm per turn is 3
+		if (qtyArmyUnits < 3) {
+			qtyArmyUnits = 3;
+		}
+
+		//TODO: NEED TO ADD THE NB OF ARMY UNITS TO PLAYER
+
+		cout << playersList[index].getName() << qtyArmyUnits << endl;
+	}
+}
+
+void Engine::issueOrdersPhase() {
+
+}
+
+void Engine::executeOrdersPhase() {
+
 }

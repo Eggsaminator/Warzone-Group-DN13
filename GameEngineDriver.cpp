@@ -44,3 +44,8 @@ void testGameStates() {
 		cout << endl;
 	}
 }
+
+void testMainGameLoop() {
+	Engine mainEngine = Engine();
+	mainEngine.mainGameLoop();
+}
