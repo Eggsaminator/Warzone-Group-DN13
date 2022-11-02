@@ -44,3 +44,8 @@ void testGameStates() {
 		cout << endl;
 	}
 }
+
+int main()
+{
+	testGameStates();
+}

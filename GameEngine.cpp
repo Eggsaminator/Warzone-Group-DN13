@@ -1,8 +1,20 @@
 #include "GameEngine.h"
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include "Cards.h"
+#include "Player.h"
+#include "Map.h"
+
 using std::ostream;
 using std::cin;
 using std::cout;
+
+//#include "CommandProcessing.h"
+
+class Deck;
+class Player;
+class Map;
 
 //State methods
 
@@ -119,6 +131,19 @@ State* Engine::getCurrentState() {
 	return currentState;
 }
 
+Deck* Engine::getDeck(){
+	return myDeck;
+}
+
+vector<Player*> Engine::getPlayers(){
+	return myPlayers;
+}
+
+Map* Engine::getMap(){
+	return myMap;
+}
+
+
 void Engine::setCurrentState(State* newState) {
 	currentState = newState;
 }
@@ -162,7 +187,7 @@ void Engine::buildLevels() {
 
 	map<string, State*>* state3Transitions = new map<string, State*>{
 		{string("addplayer"), state3},
-		{string("assigncountries"), state4}
+		{string("gamestart"), state4} //CHANGE!!!!!!!!!! assigncountries
 	};
 	state3->setTransitions(state3Transitions);
 
@@ -192,3 +217,105 @@ void Engine::buildLevels() {
 
 	currentState = state0;
 }
+
+void Engine::startupPhase(CommandProcessor* mCommandProcess)
+{
+//get Command
+// Command loadmap
+State* currentState = mainEngine.getCurrentState();
+while(this.getCurrentState()->getStateName()!="assign reinforcement")
+{
+	// we get a new command
+	string mCommand=mCommandProcess->getCommand();
+	if(mCommand.validate())
+	// if the command is valid in the current state of the Game Engine then we can apply its effect
+	{
+
+	if(mCommand.substr(0,6)=="loadmap")
+	{
+		Maploader* mMapLoader =new MapLoader();
+		mMap=mMapLoader.loadmap(mCommand.substr(9,mCommand.lenght()-2)); //need to get that from the command !
+// transition to state map loaded
+		this.setCurrentState(this.launchTransitionCommand("loadmap"));
+
+	}
+	if(mCommand=="validatemap")
+	{
+		if(mMap->validate()){
+		//TODO this.launchTransitionCommand("validatemap")
+		this.setCurrentState(this.launchTransitionCommand("validatemap"));
+		}
+	}
+
+	if(mCommand.substr(0,9)=="add player")
+	{
+		if(this.getCurrentState()->getStateName()!="players added")
+		{
+			this.setCurrentState(this.launchTransitionCommand("addplayer"));
+
+		}
+		
+		myPlayers.push_back(new Player(mCommand.substr(12,mCommand.lenght()-2))); // need to get the name from the command ?
+
+	}
+
+	if(mCommand=="game start")
+	{
+		// have to make somehow the transition to that
+
+		// Game Start
+	//fair distribution
+	// random order of play
+	// 50 army/person
+	//2 cards /player
+
+	myDeck=new Deck(50);
+
+	// we get the list of territories
+	
+	vector <Territory*> list_of_territories=mMap->getTerritories();
+
+	 std::random_shuffle(list_of_territories.begin(), list_of_territories.end());
+
+	// fair distribution of the territories
+
+	for(int j=0;j<size(list_of_territories);j++)
+	{
+		list_of_territories[j]->setOwner(list_of_player[j%size(list_of_player)]);
+
+	}
+
+	// shuffle order of the player
+
+	 std::random_shuffle(list_of_player.begin(), list_of_player.end());
+
+
+	 // 50 army in the reinforcement pool of the player
+
+
+	 // each player shall draw 2 cards
+
+	for(int i=0;i<size(list_of_player);i++)
+	{
+		Hand* h_p=new Hand();
+		h_p.setPlayer(list_of_player[i]);
+		list_of_player[i]->setHand(h_p);
+		myDeck->draw(h_p);
+		myDeck->draw(h_p);
+
+	}
+
+	
+this.setCurrentState(this.launchTransitionCommand("gamestart"));
+
+	}
+}
+
+
+
+
+}
+
+
+}
+
