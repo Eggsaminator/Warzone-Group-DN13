@@ -35,7 +35,7 @@ class Card
     void setDeck(Deck* mydeck);
 
     //Service method
-    void play();
+    void play(int numberArmyUnits, int sourceTerritoryIndex, int targetTerritoryIndex);
 
     
     

@@ -66,7 +66,7 @@ void Card::display()
 }
 
 
-void Card::play()
+void Card::play(int numberArmyUnits, int sourceTerritoryIndex, int targetTerritoryIndex)
 {   //Assert that thecard belong to a deck and a hand and that the hand is indeed asigned to a player
     assert(belong_to_deck!=NULL);
     assert(belong_to_hand!=NULL);
@@ -78,34 +78,29 @@ void Card::play()
     
     if(card_type=="Bomb")
     {
-        
-    belong_to_hand->my_player->issueOrder("Bomb");
-
+        Orders* orderToAdd = new Bomb(belong_to_hand->my_player->getTerritories()[0]);
+        belong_to_hand->my_player->getOrdersList()->addOrder(orderToAdd);
     }
     if(card_type=="Reinforcement")
     {
-        //belong_to_hand->my_player->issueOrder("Reinforcement");
-
+        //WHAT DO WE DO WITH REINFORCEMENT CARDS?
     }
     if(card_type=="Airlift")
     {
        
-        belong_to_hand->my_player->issueOrder("Airlift");
+        Orders* orderToAdd = new Airlift(belong_to_hand->my_player->getTerritories()[targetTerritoryIndex]);
+        belong_to_hand->my_player->getOrdersList()->addOrder(orderToAdd);
 
     }
     if(card_type=="Diplomacy")
     {
-       
-        belong_to_hand->my_player->issueOrder("Negociate");
-        
-
+        Orders* orderToAdd = new Negotiate(belong_to_hand->my_player->getTerritories()[targetTerritoryIndex]);
+        belong_to_hand->my_player->getOrdersList()->addOrder(orderToAdd);
     }   
     if(card_type=="Blockade")
     {
-        
-        belong_to_hand->my_player->issueOrder("Blockade");
-        
-
+        Orders* orderToAdd = new Blockade(belong_to_hand->my_player->getTerritories()[targetTerritoryIndex]);
+        belong_to_hand->my_player->getOrdersList()->addOrder(orderToAdd);
     }
 
 

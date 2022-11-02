@@ -196,21 +196,34 @@ void Engine::buildLevels() {
 	currentState = state0;
 }
 
-Player playersList[] = { Player("John"), Player("Tim"), Player("Marc") };
+vector<Player> playersList = { Player("John"), Player("Tim"), Player("Marc") };
 Map gameMap;
 
 void Engine::mainGameLoop() {
 	int i = 0;
 	while (i < 1) {
+		//run game loop
 		reinforcementPhase();
-		i++;
+		issueOrdersPhase();
+		executeOrdersPhase();
+
+		//check if a player has no territories owned, then eliminate him
+		auto iterator = playersList.begin();
+		while (iterator != playersList.end()) {
+			if ((* iterator).getTerritories().empty()) {
+				iterator = playersList.erase(iterator);
+			}
+		}
+
+		//check if a player owns all the territories
+		if (playersList.size() == 1) {
+		}
 	}
 }
 
 void Engine::reinforcementPhase() {
-	int nbPlayers = sizeof(playersList) / sizeof(Player);
-	for (int index = 0; index < nbPlayers; index++) {
-		vector<Territory*> ownedTerritories = playersList[index].getTerritories();
+	for (int index = 0; index < playersList.size(); index++) {
+		vector<Territory*> ownedTerritories = playersList.at(index).getTerritories();
 		int qtyArmyUnits = floor(ownedTerritories.size() / 3);
 
 		//create a map of qty of territories owned by continent 
@@ -225,6 +238,7 @@ void Engine::reinforcementPhase() {
 				qtyTerritoriesOwnedByContinents[continentName] = nbTerritoriesInContinent + 1;
 			}
 		}
+
 		//check if nb of territories owned by continent = max nb territories in continent
 		for (map<string, int>::iterator iter = qtyTerritoriesOwnedByContinents.begin(); iter != qtyTerritoriesOwnedByContinents.end(); ++iter)
 		{
@@ -238,21 +252,92 @@ void Engine::reinforcementPhase() {
 			}
 		}
 
-		//minimum nb reinforcement arm per turn is 3
+		//minimum nb reinforcement army per turn is 3
 		if (qtyArmyUnits < 3) {
 			qtyArmyUnits = 3;
 		}
 
 		//TODO: NEED TO ADD THE NB OF ARMY UNITS TO PLAYER
 
-		cout << playersList[index].getName() << qtyArmyUnits << endl;
+		cout << playersList.at(index).getName() << qtyArmyUnits << endl;
 	}
 }
 
 void Engine::issueOrdersPhase() {
+	//create list of players index who still want to issue orders
+	vector<int> activePlayersIndexes;
+	for (int i = 0; i < playersList.size(); i++) {
+		activePlayersIndexes.push_back(i);
+	}
 
+	while (!activePlayersIndexes.empty()) {
+		auto iterator = activePlayersIndexes.begin();
+		while (iterator != activePlayersIndexes.end()) {
+
+			//TODO: get parameters from console
+			string order = "test";
+			int numberArmyUnits = 2;
+			int sourceTerritoryIndex = 0;
+			int targetTerritoryIndex = 0;
+			string advanceType = "Attack";
+
+			int currentReinforcmentPool = playersList.at(*iterator).getReinforcementPool();
+
+			if (order == "End" && currentReinforcmentPool == 0) {
+				//Can only stop issuing orders if all army units have been deployed
+				iterator = activePlayersIndexes.erase(iterator);
+			}
+
+			playersList.at(*iterator).issueOrder(order, numberArmyUnits, sourceTerritoryIndex, targetTerritoryIndex, advanceType);
+			++iterator;
+		}
+	}
 }
 
 void Engine::executeOrdersPhase() {
+	//create list of players index who still want to execute order
+	vector<int> activePlayersIndexes;
+	for (int i = 0; i < playersList.size(); i++) {
+		activePlayersIndexes.push_back(i);
+	}
 
+	//re-run loop until no more active players
+	while (!activePlayersIndexes.empty()) {
+		auto iterator = activePlayersIndexes.begin();
+		//iterate through all active players
+		while (iterator != activePlayersIndexes.end()) {
+			if (!playersList.at(*iterator).getOrdersList()->orders.empty()) {
+				int indexOfDeployOrder = -1;
+				int currentIndex = 0;
+				for (Orders* orderPtr : playersList.at(*iterator).getOrdersList()->orders) {
+					//check if order is a Deploy order
+					if (dynamic_cast<Deploy*>(orderPtr) != nullptr) {
+						indexOfDeployOrder = currentIndex;
+						break;
+					}
+					else
+					{
+						currentIndex++;
+					}
+				}
+
+				//if Deploy order exists in orderList, run it first. Else, run orders in order.
+				if (indexOfDeployOrder != -1) {
+					playersList.at(*iterator).getOrdersList()->orders.at(indexOfDeployOrder)->execute();
+					playersList.at(*iterator).getOrdersList()->remove(indexOfDeployOrder);
+				}
+				else
+				{
+					playersList.at(*iterator).getOrdersList()->orders.at(0)->execute();
+					playersList.at(*iterator).getOrdersList()->remove(0);
+				}
+				
+				++iterator;
+			}
+			else 
+			{
+				iterator = activePlayersIndexes.erase(iterator);
+			}
+		}
+	}
 }

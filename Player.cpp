@@ -25,27 +25,44 @@ Player::Player(string username) {
 void Player::addTerritory(Territory* newTerritory){
 	territories.push_back(newTerritory);
 }
-//method for a player to issue an order, takes the order's name as parameter
-void Player::issueOrder(string name) {
-	
+//method for a player to issue an order, takes the order's name and related value (nb army troops)as parameter
+void Player::issueOrder(string name, int numberArmyUnits, int sourceTerritoryIndex, int targetTerritoryIndex, string advanceType) {
+	if (name != "Deploy" && reinforcementPool > 0) {
+		//INVALID BC STILL HAS ARMY UNITS TO DEPLOY
+		return;
+	}
+
 	if(name == "Deploy"){
-		Orders* orderToAdd = new Deploy(5,territories[0]);
-		(*ordersList).addOrder(orderToAdd);
+		if (numberArmyUnits <= reinforcementPool) {
+			reinforcementPool -= numberArmyUnits;
+			Orders* orderToAdd = new Deploy(numberArmyUnits, toDefend().at(0));
+			(*ordersList).addOrder(orderToAdd);
+		}
 	}else if(name == "Advance"){
-		Orders* orderToAdd = new Advance(5,territories[0],territories[1]);
+		Territory* destinationTerritory = nullptr;
+		
+		if (advanceType == "Attack") {
+			destinationTerritory = toAttack().at(0);
+		}
+		else
+		{
+			destinationTerritory = toDefend().at(0);
+		}
+
+		Orders* orderToAdd = new Advance(numberArmyUnits,territories[sourceTerritoryIndex], destinationTerritory);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Bomb"){
-		Orders* orderToAdd = new Bomb(territories[0]);
-		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Blockade"){
-		Orders* orderToAdd = new Blockade(territories[0]);
-		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Airlift"){
-		Orders* orderToAdd = new Blockade(territories[0]);
-		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Negociate"){
-		Orders* orderToAdd = new Negotiate(territories[0]);
-		(*ordersList).addOrder(orderToAdd);
+	}
+	else 
+	{
+		vector<Card*> cardsInHand = getHand()->hand_content;
+		auto iterator = cardsInHand.begin();
+		while (iterator != cardsInHand.end()) {
+
+			Card* cardPtr = *iterator;
+			if (name == cardPtr->card_type) {
+				cardPtr->play(numberArmyUnits, sourceTerritoryIndex, targetTerritoryIndex);
+			}
+		}
 	}
 }
 
@@ -91,4 +108,12 @@ void Player::setOrdersList(OrderList* newOrdersList){
 }
 OrderList* Player::getOrdersList(){
 	return ordersList;
+}
+
+int Player::getReinforcementPool() {
+	return reinforcementPool;
+}
+
+void Player::setReinforcementPool(int armyUnits) {
+	reinforcementPool = armyUnits;
 }
