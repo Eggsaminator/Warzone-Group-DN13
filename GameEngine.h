@@ -30,6 +30,7 @@ public:
 	State* getCurrentState();
 	void setCurrentState(State* newState);
 	void mainGameLoop();
+	void gameLoopWinnerLoserCheckup();
 	void reinforcementPhase();
 	void issueOrdersPhase();
 	void executeOrdersPhase();

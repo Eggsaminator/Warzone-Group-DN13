@@ -207,17 +207,21 @@ void Engine::mainGameLoop() {
 		issueOrdersPhase();
 		executeOrdersPhase();
 
-		//check if a player has no territories owned, then eliminate him
-		auto iterator = playersList.begin();
-		while (iterator != playersList.end()) {
-			if ((* iterator).getTerritories().empty()) {
-				iterator = playersList.erase(iterator);
-			}
-		}
+		gameLoopWinnerLoserCheckup();
+	}
+}
 
-		//check if a player owns all the territories
-		if (playersList.size() == 1) {
+void Engine::gameLoopWinnerLoserCheckup() {
+	//check if a player has no territories owned, then eliminate him
+	auto iterator = playersList.begin();
+	while (iterator != playersList.end()) {
+		if ((*iterator).getTerritories().empty()) {
+			iterator = playersList.erase(iterator);
 		}
+	}
+
+	//check if a player owns all the territories
+	if (playersList.size() == 1) {
 	}
 }
 
