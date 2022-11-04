@@ -1,11 +1,13 @@
 #include "GameEngine.h"
 #include <iostream>
 #include "Player.h"
+#include "set";
 using std::ostream;
 using std::cin;
 using std::cout;
 using std::floor;
 using std::map;
+using std::set;
 
 //State methods
 
@@ -274,8 +276,36 @@ void Engine::issueOrdersPhase() {
 		activePlayersIndexes.push_back(i);
 	}
 
+	//set the toDefend and toAttack lists of every player
+	auto iterator = activePlayersIndexes.begin();
+	while (iterator != activePlayersIndexes.end()) {
+		vector<Territory*> ownedTerritories = playersList.at(*iterator).getTerritories();
+		playersList.at(*iterator).setTerritoriesToDefend(ownedTerritories);
+
+		set<Territory*> territoriesToAttackSet;
+		auto territoryIterator = ownedTerritories.begin();
+		while (territoryIterator != ownedTerritories.end()) {
+			vector<Territory*> adjacentTerr = (*territoryIterator)->getAdjacencyList();
+			for (int i = 0; i < adjacentTerr.size(); i++) {
+				territoriesToAttackSet.insert(adjacentTerr[i]);
+			}
+			++territoryIterator;
+		}
+		vector<Territory*> territoriesToAttack;
+		auto territoryIteratorSet = territoriesToAttackSet.begin();
+		while (territoryIteratorSet != territoriesToAttackSet.end()) {
+			if ((*territoryIteratorSet)->getOwner() != (&playersList.at(*iterator))) {
+				territoriesToAttack.push_back(*territoryIteratorSet);
+			}
+			++territoryIteratorSet;
+		}
+		playersList.at(*iterator).setTerritoriesToAttack(territoriesToAttack);
+
+		++iterator;
+	}
+
 	while (!activePlayersIndexes.empty()) {
-		auto iterator = activePlayersIndexes.begin();
+		iterator = activePlayersIndexes.begin();
 		while (iterator != activePlayersIndexes.end()) {
 
 			//TODO: get parameters from console
@@ -290,6 +320,7 @@ void Engine::issueOrdersPhase() {
 			if (order == "End" && currentReinforcmentPool == 0) {
 				//Can only stop issuing orders if all army units have been deployed
 				iterator = activePlayersIndexes.erase(iterator);
+				break;
 			}
 
 			playersList.at(*iterator).issueOrder(order, numberArmyUnits, sourceTerritoryIndex, targetTerritoryIndex, advanceType);

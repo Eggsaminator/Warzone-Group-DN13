@@ -36,6 +36,7 @@ void Player::issueOrder(string name, int numberArmyUnits, int sourceTerritoryInd
 		if (numberArmyUnits <= reinforcementPool) {
 			reinforcementPool -= numberArmyUnits;
 			Orders* orderToAdd = new Deploy(numberArmyUnits, toDefend().at(0));
+			territoriesToDefend.erase(territoriesToDefend.begin());
 			(*ordersList).addOrder(orderToAdd);
 		}
 	}else if(name == "Advance"){
@@ -43,10 +44,12 @@ void Player::issueOrder(string name, int numberArmyUnits, int sourceTerritoryInd
 		
 		if (advanceType == "Attack") {
 			destinationTerritory = toAttack().at(0);
+			territoriesToAttack.erase(territoriesToAttack.begin());
 		}
 		else
 		{
 			destinationTerritory = toDefend().at(0);
+			territoriesToDefend.erase(territoriesToDefend.begin());
 		}
 
 		Orders* orderToAdd = new Advance(numberArmyUnits,territories[sourceTerritoryIndex], destinationTerritory);
@@ -68,18 +71,12 @@ void Player::issueOrder(string name, int numberArmyUnits, int sourceTerritoryInd
 
 //method that prints out teritories to defend, would return them in future
 vector<Territory*> Player::toDefend() {
-
-	return territories;
+	return territoriesToDefend;
 }
 
 //method that prints out teritories to attack, would return them in future
 vector<Territory*> Player::toAttack() {
-	vector<Territory*> otherTerritories;
-	Continent* tempCont = new Continent("dummy", 0);
-	for (int i = 0; i < 10; i++) {
-		otherTerritories.push_back(new Territory("Base #" + to_string(i + 1), tempCont));
-	}
-	return otherTerritories;
+	return territoriesToAttack;
 }
 
 void Player::setHand(Hand* newHand){
@@ -106,6 +103,15 @@ vector<Territory*> Player::getTerritories(){
 void Player::setOrdersList(OrderList* newOrdersList){
 	ordersList = newOrdersList;
 }
+
+void Player::setTerritoriesToAttack(vector<Territory*> territoriesList) {
+	territoriesToAttack = territoriesList;
+}
+
+void Player::setTerritoriesToDefend(vector<Territory*> territoriesList) {
+	territoriesToDefend = territoriesList;
+}
+
 OrderList* Player::getOrdersList(){
 	return ordersList;
 }

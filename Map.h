@@ -76,6 +76,7 @@ public:
     Continent* getContinent();
     string getName();
     void setOwner(Player* newOwner);
+    Player* getOwner();
     void setOwner(Player* newOwner, int newNumArmies);
     void setArmies(int newNumArmies);
     void addArmies(int newNumArmies);

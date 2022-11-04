@@ -35,11 +35,17 @@ public:
 	
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
+
+	void setTerritoriesToAttack(vector<Territory*>);
+	void setTerritoriesToDefend(vector<Territory*>);
+
 private:
 	string name;
 	Hand* hand;
 	int reinforcementPool = 50;
 	vector<Territory*> territories;
+	vector<Territory*> territoriesToAttack;
+	vector<Territory*> territoriesToDefend;
 };
 
 void testPlayers();
