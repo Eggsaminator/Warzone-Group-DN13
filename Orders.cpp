@@ -23,29 +23,27 @@ bool Orders::execute() {
 	cout << "\nOrder class of Execute()\n";
 	return false;
 }
-
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
-	player = "";
-
+	setPlayer("user");
 }
 
 OrderList::OrderList(string user) {
-	player = user;
+	setPlayer(user);
 }
 
 OrderList::OrderList(string user, vector<Orders*> o) {
-	player = user;
+	setPlayer(user);
 	orders = o;
 }
 
 OrderList::OrderList(OrderList& order) {
-	curUser = order.curUser;
+	player = order.player;
 	orders = order.orders;
 }
 
 OrderList::~OrderList() {
-	curUser = nullptr;
+	player = "";
 	for (size_t i = 0; i < orders.size(); i++) {
 		delete orders.at(i);
 	}
@@ -80,6 +78,16 @@ void OrderList::addOrder(Orders* order) {
 	this->orders.push_back(order);
 }
 
+void OrderList::setPlayer(string p) {
+	cout << "setPlayer from OrderList called" << endl;
+	player = p;
+}
+
+string OrderList::getPlayer() {
+	cout << "getPlayer from OrderList called" << endl;
+	return player;
+}
+
 ostream& operator << (ostream& os, const OrderList& o) {
 	string str;
 
@@ -101,7 +109,8 @@ Deploy::Deploy() {
 
 }
 
-Deploy::Deploy(int naw, Territory* tt) {
+Deploy::Deploy(string p, int naw, Territory* tt) {
+	player = p;
 	numArmyUnit = naw;
 	tarTerritory = tt;
 }
@@ -117,13 +126,24 @@ Deploy::~Deploy() {
 }
 
 bool Deploy::validate() {
+	//done except for designating which player's territory to look
 	cout << "\nvalidate for deploy order\n";
-	return true;
+	cout << tarTerritory->getOwner() << "|" << player << endl;
+	if (tarTerritory->getOwner() == player) {
+		validated = true;
+		cout << "target territory belongs to the player" << endl;
+	}
+	return validated;
 }
 
 bool Deploy::execute() {
 	cout << "\nexecute for deploy order\n";
-	executed = true;
+	if (validated == true && executed != true) {
+		//execution
+		tarTerritory->addArmies(numArmyUnit);
+		//end execution
+		executed = true;
+	}
 	return executed;
 }
 
@@ -145,7 +165,8 @@ Advance::Advance() {
 
 }
 
-Advance::Advance(int naw, Territory* st, Territory* tt) {
+Advance::Advance(string p, int naw, Territory* st, Territory* tt) {
+	player = p;
 	numArmyUnit = naw;
 	souTerritory = st;
 	tarTerritory = tt;
@@ -164,13 +185,46 @@ Advance::~Advance() {
 }
 
 bool Advance::validate() {
+	//also need to check for adjacency
 	cout << "\nvalidate for advance order\n";
-	return true;
+	bool ownSource = false, adjacent = false;
+	if (souTerritory->getOwner() == player) {
+		ownSource = true;
+		cout << "source territory belongs to the player" << endl;
+	}
+	//for adjacency, use getAdjacencyList() from Map to iterate through and verify owner
+	for (int i = 0; i < souTerritory->getAdjacencyList().size(); i ++) {
+		if (souTerritory->getAdjacencyList().at(i) == tarTerritory) {
+			adjacent = true;
+			cout << "target territory is adjacent to the source territory" << endl;
+		}
+	}
+	if (ownSource == true && adjacent == true) {
+		validated = true;
+		cout << "advance order is valid" << endl;
+	}
+	else {
+		cout << "advance order is not valid" << endl;
+	}
+	return validated;
 }
 
 bool Advance::execute() {
 	cout << "\nexecute for advance order\n";
-	executed = true;
+	Player* testPlayer = new Player("player");
+	if (validated == true && executed != true) {
+		//execution
+		//if both ter belong to player
+		souTerritory->addArmies(-numArmyUnit);
+		tarTerritory->addArmies(numArmyUnit);
+
+		//take over
+		if (tarTerritory->getArmies() == 0) {
+			tarTerritory->setOwner(testPlayer);
+		}
+		//end execution
+		executed = true;
+	}
 	return executed;
 }
 
@@ -192,7 +246,8 @@ Bomb::Bomb() {
 
 }
 
-Bomb::Bomb(Territory* tt) {
+Bomb::Bomb(string p, Territory* tt) {
+	player = p;
 	tarTerritory = tt;
 }
 
@@ -205,14 +260,34 @@ Bomb::~Bomb() {
 }
 
 bool Bomb::validate() {
-	//if user has card "bomb" return true
 	cout << "\nvalidate for bomb order\n";
-	return true;
+	bool target = false, adjacent = false;
+	if (tarTerritory->getOwner() != player) {
+		target = true;
+		cout << "target territory belongs to an opponent" << endl;
+	}
+	//need verification for adjacency//for adjacency, use getAdjacencyList() from Map to iterate through and verify owner
+	for (int i = 0; i < tarTerritory->getAdjacencyList().size(); i++) {
+		if (tarTerritory->getAdjacencyList().at(i)->getOwner() == player) {
+			adjacent = true;
+			cout << "target territory is adjacent to a player's territory" << endl;
+		}
+	}
+	if (target == true && adjacent == true) {
+		validated = true;
+		cout << "bomb order is valid" << endl;
+	}
+	return validated;
 }
 
 bool Bomb::execute() {
 	cout << "\nexecute for bomb order\n";
-	executed = true;
+	if (validated == true && executed != true) {
+		//execution
+		tarTerritory->setArmies(2);
+		//end execution
+		executed = true;
+	}
 	return executed;
 }
 
@@ -234,7 +309,8 @@ Blockade::Blockade() {
 
 }
 
-Blockade::Blockade(Territory* tt) {
+Blockade::Blockade(string p, Territory* tt) {
+	player = p;
 	tarTerritory = tt;
 }
 
@@ -247,14 +323,24 @@ Blockade::~Blockade() {
 }
 
 bool Blockade::validate() {
-	//if user has card "blockade" return true
 	cout << "\nvalidate for blockade order\n";
-	return true;
+	//done except for specifying player
+	if (tarTerritory->getOwner() == player) {
+		validated = true;
+		cout << "target territory belongs to the player" << endl;
+		cout << "blockade order is valid" << endl;
+	}
+	return validated;
 }
 
 bool Blockade::execute() {
 	cout << "\nexecute for blockade order\n";
-	executed = true;
+	if (validated == true && executed != true) {
+		//execution
+
+		//end execution
+		executed = true;
+	}
 	return executed;
 }
 
@@ -276,7 +362,8 @@ Airlift::Airlift() {
 
 }
 
-Airlift::Airlift(int naw, Territory* st, Territory* tt) {
+Airlift::Airlift(string p, int naw, Territory* st, Territory* tt) {
+	player = p;
 	numArmyUnit = naw;
 	souTerritory = st;
 	tarTerritory = tt;
@@ -295,14 +382,34 @@ Airlift::~Airlift() {
 }
 
 bool Airlift::validate() {
-	//if user has card "airlift" return true
 	cout << "\nvalidate for airlift order\n";
-	return true;
+	//done except for specifying player
+	bool source = false;
+	bool target = false;
+	if (souTerritory->getOwner() == player) {
+		source = true;
+		cout << "source territory belongs to the player" << endl;
+	}
+	if (tarTerritory->getOwner() == player) {
+		target = true;
+		cout << "target territory belongs to the player" << endl;
+	}
+	if (source == true && target == true) {
+		validated = true;
+		cout << "airlift order is valid" << endl;
+	}
+	return validated;
 }
 
 bool Airlift::execute() {
 	cout << "\nexecute for airlift order\n";
-	executed = true;
+	if (validated == true && executed != true) {
+		//execution
+		souTerritory->addArmies(-numArmyUnit);
+		tarTerritory->addArmies(numArmyUnit);
+		//end execution
+		executed = true;
+	}
 	return executed;
 }
 
@@ -323,7 +430,8 @@ string Airlift::toString() const {
 Negotiate::Negotiate() {
 }
 
-Negotiate::Negotiate(Territory* tt) {
+Negotiate::Negotiate(string p, Territory* tt) {
+	player = p;
 	tarTerritory = tt;
 }
 
@@ -336,14 +444,22 @@ Negotiate::~Negotiate() {
 }
 
 bool Negotiate::validate() {
-	//if user has card "diplomacy" return true
 	cout << "\nvalidate for negotiate order\n";
-	return true;
+	//done except for specifying player
+	if (tarTerritory->getOwner() != player) {
+		validated = true;
+	}
+	return validated;
 }
 
 bool Negotiate::execute() {
 	cout << "\nexecute for negotiate order\n";
-	executed = true;
+	if (validated == true && executed != true) {
+		//execution
+
+		//end execution
+		executed = true;
+	}
 	return executed;
 }
 

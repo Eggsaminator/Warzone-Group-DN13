@@ -8,8 +8,8 @@ using namespace std;
 
 //dont know if we will need/keep this
 Player::Player() {
-name = "nameless player";
-territories.push_back(new Territory("TestTerritory of " + name, NULL));
+	name = "nameless player";
+	territories.push_back(new Territory("TestTerritory of " + name, NULL));
 }
 
 //player constructor
@@ -26,25 +26,25 @@ void Player::addTerritory(Territory* newTerritory){
 	territories.push_back(newTerritory);
 }
 //method for a player to issue an order, takes the order's name as parameter
-void Player::issueOrder(string name) {
+void Player::issueOrder(string n) {
 	
-	if(name == "Deploy"){
-		Orders* orderToAdd = new Deploy(5,territories[0]);
+	if(n == "Deploy"){
+		Orders* orderToAdd = new Deploy(name, 5,territories[0]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Advance"){
-		Orders* orderToAdd = new Advance(5,territories[0],territories[1]);
+	}else if(n == "Advance"){
+		Orders* orderToAdd = new Advance(name, 5,territories[0],territories[1]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Bomb"){
-		Orders* orderToAdd = new Bomb(territories[0]);
+	}else if(n == "Bomb"){
+		Orders* orderToAdd = new Bomb(name, territories[0]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Blockade"){
-		Orders* orderToAdd = new Blockade(territories[0]);
+	}else if(n == "Blockade"){
+		Orders* orderToAdd = new Blockade(name, territories[0]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Airlift"){
-		Orders* orderToAdd = new Blockade(territories[0]);
+	}else if(n == "Airlift"){
+		Orders* orderToAdd = new Blockade(name, territories[0]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Negociate"){
-		Orders* orderToAdd = new Negotiate(territories[0]);
+	}else if(n == "Negotiate"){
+		Orders* orderToAdd = new Negotiate(name, territories[0]);
 		(*ordersList).addOrder(orderToAdd);
 	}
 }
@@ -92,3 +92,4 @@ void Player::setOrdersList(OrderList* newOrdersList){
 OrderList* Player::getOrdersList(){
 	return ordersList;
 }
+

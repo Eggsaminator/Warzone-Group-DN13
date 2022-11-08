@@ -32,6 +32,10 @@ public:
 	
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
+
+	//for part 4
+	void setPlayer(Player* p);
+	const Player* getPlayer();
 private:
 	string name;
 	Hand* hand;

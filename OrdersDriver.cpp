@@ -4,16 +4,21 @@
 #include "Map.h"
 
 void testOrdersList() {
-	Player* sampleP = new Player("thomas");
+	vector<string> mapList;
+	// Map Canada.map is valid
+	mapList.push_back("Canada.map");
+	Player* sampleP = new Player("player");
+	Player* sampleP2 = new Player("not player");
 	Continent* continent = new Continent("test",0);
 	Territory* sampleTarget = new Territory("territory #1", continent);
+	Territory* sampleTarget1 = new Territory("territory #3", continent);
 	Territory* sampleSource = new Territory("territory #2", continent);
-	Orders* d = new Deploy(1000, sampleTarget);
-	Orders* ad = new Advance(2000, sampleSource, sampleTarget);
-	Orders* bo = new Bomb(sampleTarget);
-	Orders* bl = new Blockade(sampleTarget);
-	Orders* ai = new Airlift(1000, sampleSource, sampleTarget);
-	Orders* n = new Negotiate(sampleTarget);
+	Orders* d = new Deploy(sampleP->getName(), 1000, sampleTarget);
+	Orders* ad = new Advance(sampleP->getName(), 2000, sampleSource, sampleTarget);
+	Orders* bo = new Bomb(sampleP->getName(), sampleTarget);
+	Orders* bl = new Blockade(sampleP->getName(), sampleTarget);
+	Orders* ai = new Airlift(sampleP->getName(), 1000, sampleSource, sampleTarget);
+	Orders* n = new Negotiate(sampleP->getName(), sampleTarget);
 
 	//creating list
 	OrderList* tODep = new OrderList((*sampleP).getName());
@@ -27,10 +32,15 @@ void testOrdersList() {
 	//show current list
 	cout << tODep->toString();
 
+	sampleSource->setOwner(sampleP);
+	sampleTarget->setOwner(sampleP2);
 	//test valid method of subclasses
 	d->validate();
+	ad->validate();
 	bo->validate();
+	bl->validate();
 	ai->validate();
+	n->validate();
 
 	//test execute method of subclasses
 	ad->execute();
