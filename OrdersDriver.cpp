@@ -13,15 +13,15 @@ void testOrdersList() {
 	Territory* sampleTarget = new Territory("territory #1", continent);
 	Territory* sampleTarget1 = new Territory("territory #3", continent);
 	Territory* sampleSource = new Territory("territory #2", continent);
-	Orders* d = new Deploy(sampleP->getName(), 1000, sampleTarget);
-	Orders* ad = new Advance(sampleP->getName(), 2000, sampleSource, sampleTarget);
-	Orders* bo = new Bomb(sampleP->getName(), sampleTarget);
-	Orders* bl = new Blockade(sampleP->getName(), sampleTarget);
-	Orders* ai = new Airlift(sampleP->getName(), 1000, sampleSource, sampleTarget);
-	Orders* n = new Negotiate(sampleP->getName(), sampleTarget);
+	Orders* d = new Deploy(sampleP, 1000, sampleTarget);
+	Orders* ad = new Advance(sampleP, 2000, sampleSource, sampleTarget);
+	Orders* bo = new Bomb(sampleP, sampleTarget);
+	Orders* bl = new Blockade(sampleP, sampleTarget);
+	Orders* ai = new Airlift(sampleP, 1000, sampleSource, sampleTarget);
+	Orders* n = new Negotiate(sampleP, sampleTarget);
 
 	//creating list
-	OrderList* tODep = new OrderList((*sampleP).getName());
+	OrderList* tODep = new OrderList(sampleP);
 	tODep->addOrder(d);
 	tODep->addOrder(ad);
 	tODep->addOrder(bo);

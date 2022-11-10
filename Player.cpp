@@ -19,7 +19,7 @@ Player::Player(string username) {
 	Continent* tempCont = new Continent("dummy", 0);
 	firstTerritories.push_back(new Territory("TestTerritory of " + username, tempCont));
 	territories = firstTerritories;
-	ordersList = new OrderList(username);
+	ordersList = new OrderList(nameP);
 }
 
 void Player::addTerritory(Territory* newTerritory){
