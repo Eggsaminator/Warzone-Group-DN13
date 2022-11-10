@@ -99,7 +99,7 @@ Deploy::Deploy() {
 
 }
 
-Deploy::Deploy(string p, int naw, Territory* tt) {
+Deploy::Deploy(Player* p, int naw, Territory* tt) {
 	player = p;
 	numArmyUnit = naw;
 	tarTerritory = tt;
@@ -160,7 +160,7 @@ Advance::Advance() {
 
 }
 
-Advance::Advance(string p, int naw, Territory* st, Territory* tt) {
+Advance::Advance(Player* p, int naw, Territory* st, Territory* tt) {
 	player = p;
 	numArmyUnit = naw;
 	souTerritory = st;
@@ -208,18 +208,23 @@ bool Advance::validate() {
 
 bool Advance::execute() {
 	cout << "\nexecute for advance order\n";
-	Player* testPlayer = new Player("player");
 	if (validated == true) {
 		//execution
-		//if both ter belong to player
+		//if both territories belong to player (incorporated in other conditions)
 		if (souTerritory->getOwner() == player && tarTerritory->getOwner() == player) {
 			souTerritory->addArmies(-numArmyUnit);
 			tarTerritory->addArmies(numArmyUnit);
 		}
-
-		//take over
-		if (tarTerritory->getArmies() == 0) {
-			tarTerritory->setOwner(testPlayer);
+		//target territory belongs to an ennemy or is neutral
+		if (tarTerritory->getOwner() != player) {
+			//check if has enemy armies
+			if (tarTerritory->getArmies() != 0) {
+				//fight
+			}
+			else {
+				//take over target territory
+				tarTerritory->setOwner(player);
+			}
 		}
 		//end execution
 		executed = true;
@@ -245,7 +250,7 @@ Bomb::Bomb() {
 
 }
 
-Bomb::Bomb(string p, Territory* tt) {
+Bomb::Bomb(Player* p, Territory* tt) {
 	player = p;
 	tarTerritory = tt;
 }
@@ -290,7 +295,7 @@ bool Bomb::execute() {
 	cout << "\nexecute for bomb order\n";
 	if (validated == true) {
 		//execution
-		tarTerritory->setArmies(2);
+		tarTerritory->setArmies(tarTerritory->getArmies()/2);
 		//end execution
 		executed = true;
 	}
@@ -315,7 +320,7 @@ Blockade::Blockade() {
 
 }
 
-Blockade::Blockade(string p, Territory* tt) {
+Blockade::Blockade(Player* p, Territory* tt) {
 	player = p;
 	tarTerritory = tt;
 }
@@ -369,7 +374,7 @@ Airlift::Airlift() {
 
 }
 
-Airlift::Airlift(string p, int naw, Territory* st, Territory* tt) {
+Airlift::Airlift(Player* p, int naw, Territory* st, Territory* tt) {
 	player = p;
 	numArmyUnit = naw;
 	souTerritory = st;
@@ -444,7 +449,7 @@ string Airlift::toString() const {
 Negotiate::Negotiate() {
 }
 
-Negotiate::Negotiate(string p, Territory* tt) {
+Negotiate::Negotiate(Player* p, Territory* tt) {
 	player = p;
 	tarTerritory = tt;
 }

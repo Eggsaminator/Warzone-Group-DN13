@@ -26,25 +26,25 @@ void Player::addTerritory(Territory* newTerritory){
 	territories.push_back(newTerritory);
 }
 //method for a player to issue an order, takes the order's name as parameter
-void Player::issueOrder(string n) {
+void Player::issueOrder(string name) {
 	
-	if(n == "Deploy"){
-		Orders* orderToAdd = new Deploy(name, 5,territories[0]);
+	if(name == "Deploy"){
+		Orders* orderToAdd = new Deploy(nameP, 5,territories[0]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(n == "Advance"){
-		Orders* orderToAdd = new Advance(name, 5,territories[0],territories[1]);
+	}else if(name == "Advance"){
+		Orders* orderToAdd = new Advance(nameP, 5,territories[0],territories[1]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(n == "Bomb"){
-		Orders* orderToAdd = new Bomb(name, territories[0]);
+	}else if(name == "Bomb"){
+		Orders* orderToAdd = new Bomb(nameP, territories[0]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(n == "Blockade"){
-		Orders* orderToAdd = new Blockade(name, territories[0]);
+	}else if(name == "Blockade"){
+		Orders* orderToAdd = new Blockade(nameP, territories[0]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(n == "Airlift"){
-		Orders* orderToAdd = new Blockade(name, territories[0]);
+	}else if(name == "Airlift"){
+		Orders* orderToAdd = new Blockade(nameP, territories[0]);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(n == "Negotiate"){
-		Orders* orderToAdd = new Negotiate(name, territories[0]);
+	}else if(name == "Negotiate"){
+		Orders* orderToAdd = new Negotiate(nameP, territories[0]);
 		(*ordersList).addOrder(orderToAdd);
 	}
 }

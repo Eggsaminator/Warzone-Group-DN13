@@ -47,9 +47,6 @@ public:
 	void move(int i, int j);
 	void remove(int i);
 
-	void setPlayer(string p);
-	string getPlayer();
-
 	//extra methods
 	friend ostream& operator << (ostream& os, const OrderList& order);
 	void addOrder(Orders* order);
@@ -60,7 +57,7 @@ class Deploy : public Orders
 {
 private:
 public:
-	string player;
+	Player* player;
 	//name of the order
 	const string name = "deploy";
 	//data needed for the order
@@ -71,7 +68,7 @@ public:
 
 	//assigning datas
 	Deploy();
-	Deploy(string p, int armyNum, Territory* tarT);
+	Deploy(Player* p, int armyNum, Territory* tarT);
 	Deploy(Deploy& deploy);
 	~Deploy();
 
@@ -90,7 +87,7 @@ class Advance : public Orders
 {
 private:
 public:
-	string player;
+	Player* player;
 	//name of the order
 	const string name = "advance";
 	//data needed for the order
@@ -102,7 +99,7 @@ public:
 
 	//assigning datas
 	Advance();
-	Advance(string p, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
+	Advance(Player* p, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
 	Advance(Advance& advance);
 	~Advance();
 
@@ -119,7 +116,7 @@ class Bomb : public Orders// usable only if user has Bomb card on hand
 {
 private:	
 public:
-	string player;
+	Player* player;
 	//name of the order
 	const string name = "bomb";
 	//data needed for the order
@@ -129,7 +126,7 @@ public:
 
 	//assigning datas
 	Bomb();
-	Bomb(string p, Territory* tarTerritory);
+	Bomb(Player* p, Territory* tarTerritory);
 	Bomb(Bomb& bomb);
 	~Bomb();
 
@@ -146,7 +143,7 @@ class Blockade : public Orders// usable if user has blockade card on hand - vali
 {
 private:
 public:
-	string player;
+	Player* player;
 	//name of the order
 	const string name = "blockade";
 	//data needed for the order
@@ -156,7 +153,7 @@ public:
 
 	//assigning datas
 	Blockade();
-	Blockade(string p, Territory* tarTerritory);
+	Blockade(Player* p, Territory* tarTerritory);
 	Blockade(Blockade& blockade);
 	~Blockade();
 
@@ -173,7 +170,7 @@ class Airlift : public Orders // usable only if user has Airlift card on hand
 {
 private:
 public:
-	string player;
+	Player* player;
 	//name of the order
 	const string name = "airlift";
 	//data needed for the order
@@ -185,7 +182,7 @@ public:
 
 	//assigning datas
 	Airlift();
-	Airlift(string p, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
+	Airlift(Player* p, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
 	Airlift(Airlift& airlift);
 	~Airlift();
 
@@ -202,7 +199,7 @@ class Negotiate : public Orders// usable if user has Diplomacy card in hand
 {
 private:
 public:
-	string player;
+	Player* player;
 	//name of the order
 	const string name = "negotiate";
 	//data needed for the order
@@ -212,7 +209,7 @@ public:
 
 	//assigning datas
 	Negotiate();
-	Negotiate(string p,Territory* tarTerritory);
+	Negotiate(Player* p,Territory* tarTerritory);
 	Negotiate(Negotiate& negotiate);
 	~Negotiate();
 

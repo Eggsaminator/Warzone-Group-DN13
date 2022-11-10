@@ -38,6 +38,7 @@ public:
 	const Player* getPlayer();
 private:
 	string name;
+	Player* nameP;
 	Hand* hand;
 	vector<Territory*> territories;
 };

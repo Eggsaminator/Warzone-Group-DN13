@@ -79,7 +79,7 @@ public:
     void setArmies(int newNumArmies);
     void addArmies(int newNumArmies);
     //addition from part 4
-    string getOwner();
+    Player* getOwner();
     int getArmies();
 private:
     string name;
