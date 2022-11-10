@@ -66,55 +66,39 @@ void Card::display()
 }
 
 
-void Card::play(int numberArmyUnits, int sourceTerritoryIndex, int targetTerritoryIndex)
+void Card::play()
 {   //Assert that thecard belong to a deck and a hand and that the hand is indeed asigned to a player
     assert(belong_to_deck!=NULL);
     assert(belong_to_hand!=NULL);
     assert(belong_to_hand->my_player!=NULL);
 
-
-
-
-    
-    if(card_type=="Bomb")
+    if (card_type == "Bomb")
     {
-        Orders* orderToAdd = new Bomb(belong_to_hand->my_player->getTerritories()[0]);
-        belong_to_hand->my_player->getOrdersList()->addOrder(orderToAdd);
+        belong_to_hand->my_player->issueOrder("Bomb");
     }
-    if(card_type=="Reinforcement")
+    if (card_type == "Reinforcement")
     {
-        //WHAT DO WE DO WITH REINFORCEMENT CARDS?
+        //belong_to_hand->my_player->issueOrder("Reinforcement");
     }
-    if(card_type=="Airlift")
+    if (card_type == "Airlift")
     {
-       
-        Orders* orderToAdd = new Airlift(belong_to_hand->my_player->getTerritories()[targetTerritoryIndex]);
-        belong_to_hand->my_player->getOrdersList()->addOrder(orderToAdd);
-
+        belong_to_hand->my_player->issueOrder("Airlift");
     }
-    if(card_type=="Diplomacy")
+    if (card_type == "Diplomacy")
     {
-        Orders* orderToAdd = new Negotiate(belong_to_hand->my_player->getTerritories()[targetTerritoryIndex]);
-        belong_to_hand->my_player->getOrdersList()->addOrder(orderToAdd);
-    }   
-    if(card_type=="Blockade")
-    {
-        Orders* orderToAdd = new Blockade(belong_to_hand->my_player->getTerritories()[targetTerritoryIndex]);
-        belong_to_hand->my_player->getOrdersList()->addOrder(orderToAdd);
+        belong_to_hand->my_player->issueOrder("Negociate");
     }
-
-
-    //insert code to deal with the order
-    
+    if (card_type == "Blockade")
+    {
+        belong_to_hand->my_player->issueOrder("Blockade");
+    }
 
     // remove from hand
     (*belong_to_hand).remove_card(this);
 
     // place back in deck
 
-    (*belong_to_deck).add_card(this); 
-
-
+    (*belong_to_deck).add_card(this);
 }
 
 

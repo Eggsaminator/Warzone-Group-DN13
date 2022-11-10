@@ -14,7 +14,7 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	void issueOrder(string name, int numberArmyUnits, int sourceTerritoryIndex, int targetTerritoryIndex, string advanceType);
+	void issueOrder(string name);
 
 
 	void addTerritory(Territory*);
@@ -32,6 +32,9 @@ public:
 
 	int getReinforcementPool();
 	void setReinforcementPool(int armyUnits);
+
+	int getReinforcementPoolLeftToDeploy();
+	void setReinforcementPoolLeftToDeploy(int armyUnits);
 	
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
@@ -43,6 +46,7 @@ private:
 	string name;
 	Hand* hand;
 	int reinforcementPool = 50;
+	int reinforcementPoolLeftToDeploy = 0;
 	vector<Territory*> territories;
 	vector<Territory*> territoriesToAttack;
 	vector<Territory*> territoriesToDefend;

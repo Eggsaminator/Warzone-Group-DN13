@@ -28,6 +28,7 @@ public:
 	Engine& operator=(const Engine& copyState); //assignment operator
 	State* launchTransitionCommand(string command);
 	State* getCurrentState();
+	vector<Player*> getPlayers();
 	void setCurrentState(State* newState);
 	void mainGameLoop();
 	void gameLoopWinnerLoserCheckup();
@@ -38,6 +39,7 @@ public:
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
 private:
 	State* currentState;
+	vector <Player*> myPlayers;
 };
 
 void testGameStates();

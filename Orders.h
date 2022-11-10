@@ -194,12 +194,12 @@ public:
 	//name of the order
 	const string name = "negotiate";
 	//data needed for the order
-	Territory* tarTerritory;
+	Player* tarPlayer;
 	bool executed = false;
 
 	//assigning datas
 	Negotiate();
-	Negotiate(Territory* tarTerritory);
+	Negotiate(Player* tarPlayer);
 	Negotiate(Negotiate& negotiate);
 	~Negotiate();
 

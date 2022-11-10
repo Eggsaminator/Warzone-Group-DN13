@@ -26,46 +26,73 @@ void Player::addTerritory(Territory* newTerritory){
 	territories.push_back(newTerritory);
 }
 //method for a player to issue an order, takes the order's name and related value (nb army troops)as parameter
-void Player::issueOrder(string name, int numberArmyUnits, int sourceTerritoryIndex, int targetTerritoryIndex, string advanceType) {
-	if (name != "Deploy" && reinforcementPool > 0) {
-		//INVALID BC STILL HAS ARMY UNITS TO DEPLOY
-		return;
-	}
-
+void Player::issueOrder(string name) {
 	if(name == "Deploy"){
-		if (numberArmyUnits <= reinforcementPool) {
-			reinforcementPool -= numberArmyUnits;
-			Orders* orderToAdd = new Deploy(numberArmyUnits, toDefend().at(0));
-			territoriesToDefend.erase(territoriesToDefend.begin());
-			(*ordersList).addOrder(orderToAdd);
-		}
+		int numberArmyUnits = (rand() % reinforcementPoolLeftToDeploy) + 1;
+		reinforcementPoolLeftToDeploy -= numberArmyUnits;
+
+		int randomToDefendIndex = rand() % toDefend().size();
+		Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
+
+		Orders* orderToAdd = new Deploy(numberArmyUnits, destinationTerritory);
+		(*ordersList).addOrder(orderToAdd);
 	}else if(name == "Advance"){
 		Territory* destinationTerritory = nullptr;
+
+		int randomSourceIndex = rand() % territories.size();
+		Territory* sourceTerritory = territories.at(randomSourceIndex);
 		
+		string advanceTypes[] = {"Attack", "Defend"};
+		string advanceType = advanceTypes[rand()%2];
+
 		if (advanceType == "Attack") {
-			destinationTerritory = toAttack().at(0);
-			territoriesToAttack.erase(territoriesToAttack.begin());
+			int randomToAttackIndex = rand() % toAttack().size();
+			destinationTerritory = toAttack().at(randomToAttackIndex);
 		}
 		else
 		{
-			destinationTerritory = toDefend().at(0);
-			territoriesToDefend.erase(territoriesToDefend.begin());
+			int randomToDefendIndex = rand() % toDefend().size();
+			destinationTerritory = toDefend().at(randomToDefendIndex);
 		}
 
-		Orders* orderToAdd = new Advance(numberArmyUnits,territories[sourceTerritoryIndex], destinationTerritory);
+		int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
+
+		Orders* orderToAdd = new Advance(numberArmyUnits, sourceTerritory, destinationTerritory);
 		(*ordersList).addOrder(orderToAdd);
 	}
-	else 
-	{
-		vector<Card*> cardsInHand = getHand()->hand_content;
-		auto iterator = cardsInHand.begin();
-		while (iterator != cardsInHand.end()) {
+	else if (name == "Bomb"){
+		int randomToAttackIndex = rand() % toAttack().size();
+		Territory* destinationTerritory = toAttack().at(randomToAttackIndex);
 
-			Card* cardPtr = *iterator;
-			if (name == cardPtr->card_type) {
-				cardPtr->play(numberArmyUnits, sourceTerritoryIndex, targetTerritoryIndex);
-			}
-		}
+		Orders* orderToAdd = new Bomb(destinationTerritory);
+		(*ordersList).addOrder(orderToAdd);
+	}
+	else if (name == "Reinforcement"){
+		//WHAT DO WE DO WITH REINFORCEMENT CARDS?
+	}
+	else if (name == "Airlift"){
+		int randomSourceIndex = rand() % territories.size();
+		Territory* sourceTerritory = territories.at(randomSourceIndex);
+
+		int randomNbArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
+
+		int randomToDefendIndex = rand() % toDefend().size();
+		Territory*  destinationTerritory = toDefend().at(randomToDefendIndex);
+
+		Orders* orderToAdd = new Airlift(randomNbArmyUnits, sourceTerritory, destinationTerritory);
+		(*ordersList).addOrder(orderToAdd);
+	}
+	else if (name == "Negotiate"){
+		//TODO: how am I supposed to access all the players??
+		/*Orders* orderToAdd = new Negotiate(pick a randomPlayer);
+		(*ordersList).addOrder(orderToAdd);*/
+	}
+	else if (name == "Blockade"){
+		int randomTargetIndex = rand() % territories.size();
+		Territory* targetTerritory = territories.at(randomTargetIndex);
+
+		Orders* orderToAdd = new Blockade(targetTerritory);
+		(*ordersList).addOrder(orderToAdd);
 	}
 }
 
@@ -122,4 +149,12 @@ int Player::getReinforcementPool() {
 
 void Player::setReinforcementPool(int armyUnits) {
 	reinforcementPool = armyUnits;
+}
+
+int Player::getReinforcementPoolLeftToDeploy() {
+	return reinforcementPoolLeftToDeploy;
+}
+
+void Player::setReinforcementPoolLeftToDeploy(int armyUnits) {
+	reinforcementPoolLeftToDeploy = armyUnits;
 }

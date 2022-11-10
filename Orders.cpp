@@ -323,16 +323,16 @@ string Airlift::toString() const {
 Negotiate::Negotiate() {
 }
 
-Negotiate::Negotiate(Territory* tt) {
-	tarTerritory = tt;
+Negotiate::Negotiate(Player* pl) {
+	tarPlayer = pl;
 }
 
 Negotiate::Negotiate(Negotiate& negotiate) {
-	tarTerritory = &(*negotiate.tarTerritory);
+	tarPlayer = &(*negotiate.tarPlayer);
 }
 
 Negotiate::~Negotiate() {
-	tarTerritory = nullptr;
+	tarPlayer = nullptr;
 }
 
 bool Negotiate::validate() {
@@ -349,9 +349,9 @@ bool Negotiate::execute() {
 
 ostream& operator << (ostream& os, const Negotiate& n) {
 	if (n.executed == true) {
-		return (os << "\nDisplaying order: " << n.name << " Target Location: " << n.tarTerritory->getName() << " order has already been executed");
+		return (os << "\nDisplaying order: " << n.name << " Target Player: " << n.tarPlayer->getName() << " order has already been executed");
 	}
-	return (os << "\nDisplaying order: " << n.name << " Target Location: " << n.tarTerritory->getName());
+	return (os << "\nDisplaying order: " << n.name << " Target Player: " << n.tarPlayer->getName());
 }
 
 string Negotiate::toString() const {

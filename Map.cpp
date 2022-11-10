@@ -350,3 +350,6 @@ void Territory::setArmies(int newNumArmies) {
 void Territory::addArmies(int newNumArmies) {
     numArmies += newNumArmies;
 }
+int Territory::getArmies() {
+    return numArmies;
+}
