@@ -27,6 +27,10 @@ void Player::addTerritory(Territory* newTerritory){
 }
 //method for a player to issue an order, takes the order's name and related value (nb army troops)as parameter
 void Player::issueOrder(string name) {
+	if (reinforcementPoolLeftToDeploy > 0 && name != "Deploy") {
+		return;
+	}
+
 	if(name == "Deploy"){
 		int numberArmyUnits = (rand() % reinforcementPoolLeftToDeploy) + 1;
 		reinforcementPoolLeftToDeploy -= numberArmyUnits;

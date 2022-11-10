@@ -136,6 +136,13 @@ void Engine::setCurrentState(State* newState) {
 	currentState = newState;
 }
 
+void Engine::setMyMap(Map* map) {
+	myMap = map;
+}
+void Engine::setMyPlayers(vector <Player*> players) {
+	myPlayers = players;
+}
+
 void Engine::buildLevels() {
 	//declare all possible states
 	State* state0 = new State("start");
@@ -206,8 +213,6 @@ void Engine::buildLevels() {
 	currentState = state0;
 }
 
-Map gameMap;
-
 void Engine::mainGameLoop() {
 	int i = 0;
 	while (i < 1) {
@@ -257,7 +262,7 @@ void Engine::reinforcementPhase() {
 		{
 			string continentName = iter->first;
 			int nbTerritories = iter->second;
-			Continent* continentPtr = gameMap.getContinentByName(continentName);
+			Continent* continentPtr = myMap->getContinentByName(continentName);
 			if (continentPtr != nullptr) {
 				if (continentPtr->getTerritories().size() == nbTerritories) {
 					qtyArmyUnits += continentPtr->getBonusValue();
@@ -320,22 +325,16 @@ void Engine::issueOrdersPhase() {
 
 			int currentReinforcmentPool = myPlayers.at(*iterator)->getReinforcementPoolLeftToDeploy();
 
-			if (currentReinforcmentPool > 0) {
-				if (order == "Deploy") {
-					myPlayers.at(*iterator)->issueOrder(order);
-				}
+			if (order == "End" && currentReinforcmentPool < 1) {
+				//Can only stop issuing orders if all army units have been deployed
+				iterator = activePlayersIndexes.erase(iterator);
+				continue;
 			}
-			else 
-			{
-				if (order == "End") {
-					//Can only stop issuing orders if all army units have been deployed
-					iterator = activePlayersIndexes.erase(iterator);
-					continue;
-				}
-				else if (order == "Advance") {
-					myPlayers.at(*iterator)->issueOrder(order);
-				}
-				else if (order == "PickCard") {
+			else if (order == "Advance" || order == "Deploy") {
+				myPlayers.at(*iterator)->issueOrder(order);
+			}
+			else if (order == "PickCard") {
+				if (myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
 					vector<Card*> cardsInHand = myPlayers.at(*iterator)->getHand()->hand_content;
 					int randomCardIndex = rand() % cardsInHand.size();
 					Card* cardPtr = cardsInHand.at(randomCardIndex);

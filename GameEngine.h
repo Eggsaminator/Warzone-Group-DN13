@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
 #include <map>
+#include <vector>
 using std::ostream;
 using std::string;
 using std::map;
+using std::vector;
 
 class State {
 public:
@@ -36,9 +38,12 @@ public:
 	void issueOrdersPhase();
 	void executeOrdersPhase();
 	void buildLevels();
+	void setMyMap(Map* map);
+	void setMyPlayers(vector <Player*> players);
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
 private:
 	State* currentState;
+	Map* myMap;
 	vector <Player*> myPlayers;
 };
 

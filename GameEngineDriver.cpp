@@ -97,6 +97,9 @@ void testMainGameLoop() {
 	gameMap.addContinent(continent2);
 	gameMap.addContinent(continent3);
 
+	mainEngine.setMyMap(&gameMap);
+	mainEngine.setMyPlayers(players);
+
 	mainEngine.reinforcementPhase();
 
 	for (int i = 0; i < players.size(); i++) {
@@ -136,13 +139,13 @@ void testMainGameLoop() {
 	// (2) a player will only issue deploy orders and no other kind of orders if they still have army units in their reinforcement pool 
 	cout << "(2) a player will only issue deploy orders and no other kind of orders if they still have army units in their reinforcement pool:" << endl;
 	
-	cout << "Player " << player1->getName() << " has " << player1->getReinforcementPool() << " army units in his reinforcement pool." << endl;
+	cout << "Player " << player1->getName() << " has " << player1->getReinforcementPoolLeftToDeploy() << " army units in his reinforcement pool." << endl;
 	cout << "Issuing an Advance order... " << endl;
-	player1->issueOrder("Advance", 1, 0, 0, "Attack");
+	player1->issueOrder("Advance");
 	cout << "Qantity of orders in orderslist after issuing an Advance order: " << player1->getOrdersList()->orders.size() << endl;
-	player1->issueOrder("Deploy", player1->getReinforcementPool(), 0, 0, NULL);
+	player1->issueOrder("Deploy");
 	cout << "Qantity of orders in orderslist after issuing a Deploy order with all army units: " << player1->getOrdersList()->orders.size() << endl;
-	player1->issueOrder("Advance", 1, 0, 0, "Attack");
+	player1->issueOrder("Advance");
 	cout << "Qantity of orders in orderslist after issuing an Advance order: " << player1->getOrdersList()->orders.size() << endl;
 
 	cout << "\n\n\n\n";
@@ -161,7 +164,7 @@ void testMainGameLoop() {
 	cout << "Adding a Bomb card to " << player1->getName() << "..." << endl;
 	player1->getHand()->add_card(new Card("Bomb", nullptr, nullptr));
 	cout << player1->getName() << " plays the Bomb card... " << endl;
-	player1->getHand()->hand_content[0]->play(1, 0, 0);
+	player1->getHand()->hand_content[0]->play();
 
 	cout << "\n\n\n\n";
 
