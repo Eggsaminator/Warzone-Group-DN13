@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "GameEngine.h"
+#include "Player.h"
+#include "Map.h"
+#include "Orders.h"
 using std::cin;
 using std::cout;
 using std::endl;
@@ -45,7 +49,36 @@ void testGameStates() {
 	}
 }
 
+void testStartupPhase()
+{
+	cout<<"Demonstration of the start up phase"<<endl;
+	//CommandProcessor* mCommandProcessor=new CommandProccessor();
+	Engine mEngine;
+	mEngine.startupPhase();
+	vector<Player*> myListPlayer=mEngine.getPlayers();
+	Hand * myHand;
+	vector<Territory*> myTerr;
+	for(int i=0;i<size(myListPlayer);i++)
+	{
+		cout <<"Player "<<i<<" :"<<myListPlayer[i]->getName()<<endl;
+		myHand=myListPlayer[i]->getHand();
+		myHand->display();
+		myTerr=myListPlayer[i]->getTerritories();
+		cout<<"number of owned territories :"<<myTerr.size()<<endl;
+
+	}
+	
+	
+}
+
 int main()
 {
-	testGameStates();
+	//testGameStates();
+	testStartupPhase();
+	//string mCommand="addplayer<Jordan>";
+	//string begins=mCommand.substr(0,9);
+	//string mn=mCommand.substr(11,mCommand.size()-1);
+	//mn.pop_back();
+	//cout<<begins<<endl;
+	//cout<<mn<<endl;
 }

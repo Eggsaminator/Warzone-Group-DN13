@@ -2,11 +2,15 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "Map.h"
+#include "Cards.h"
+#include "Player.h"
+#include "Orders.h"
 using std::ostream;
 using std::string;
 using std::map;
 
-class CommandProcessor;
+//class CommandProcessor;
 class Deck;
 class Player;
 class Map;
@@ -39,13 +43,17 @@ public:
 	vector<Player*> getPlayers();
 	void setCurrentState(State* newState);
 	void buildLevels();
-	void startupPhase(CommandProcessor* mCommandProcess);
+	void startupPhase(
+		//CommandProcessor* mCommandProcess
+		);
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
 private:
-	Map* myMap;
+	Map* mMap;
 	State* currentState;
 	Deck* myDeck;
-	vector <Player*> myPlayers;
+	vector<Player*> myPlayers;
 };
 
 void testGameStates();
+
+void testStartupPhase();
