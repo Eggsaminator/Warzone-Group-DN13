@@ -27,7 +27,7 @@ class OrderList
 {
 private:
 public:
-	Player* player;
+	string player;
 	//orderlist should contain player so it can discern them
 	//order list for teh player
 	vector<Orders*> orders;
@@ -38,8 +38,8 @@ public:
 
 	//assigning datas
 	OrderList();
-	OrderList(Player* user);
-	OrderList(Player* user, vector<Orders*> order);
+	OrderList(string user);
+	OrderList(string user, vector<Orders*> order);
 	OrderList(OrderList& orderlist);
 	~OrderList();
 

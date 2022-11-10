@@ -19,14 +19,14 @@ Player::Player(string username) {
 	Continent* tempCont = new Continent("dummy", 0);
 	firstTerritories.push_back(new Territory("TestTerritory of " + username, tempCont));
 	territories = firstTerritories;
-	ordersList = new OrderList(nameP);
+	ordersList = new OrderList(name);
 }
 
 void Player::addTerritory(Territory* newTerritory){
 	territories.push_back(newTerritory);
 }
 //method for a player to issue an order, takes the order's name as parameter
-void Player::issueOrder(string name) {
+void Player::issueOrder(Player* nameP, string name) {
 	
 	if(name == "Deploy"){
 		Orders* orderToAdd = new Deploy(nameP, 5,territories[0]);

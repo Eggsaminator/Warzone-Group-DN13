@@ -14,7 +14,7 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	void issueOrder(string name);
+	void issueOrder(Player* nameP, string name);
 
 
 	void addTerritory(Territory*);
@@ -37,8 +37,7 @@ public:
 	void setPlayer(Player* p);
 	const Player* getPlayer();
 private:
-	string name;
-	Player* nameP;
+	string name = "not working";
 	Hand* hand;
 	vector<Territory*> territories;
 };

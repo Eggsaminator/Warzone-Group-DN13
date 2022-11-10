@@ -21,7 +21,7 @@ void testOrdersList() {
 	Orders* n = new Negotiate(sampleP, sampleTarget);
 
 	//creating list
-	OrderList* tODep = new OrderList(sampleP);
+	OrderList* tODep = new OrderList(sampleP->getName());
 	tODep->addOrder(d);
 	tODep->addOrder(ad);
 	tODep->addOrder(bo);

@@ -27,11 +27,11 @@ bool Orders::execute() {
 OrderList::OrderList() {
 }
 
-OrderList::OrderList(Player* user) {
+OrderList::OrderList(string user) {
 	player = user;
 }
 
-OrderList::OrderList(Player* user, vector<Orders*> o) {
+OrderList::OrderList(string user, vector<Orders*> o) {
 	player = user;
 	orders = o;
 }
@@ -42,7 +42,7 @@ OrderList::OrderList(OrderList& order) {
 }
 
 OrderList::~OrderList() {
-	player = nullptr;
+	player = "";
 	for (size_t i = 0; i < orders.size(); i++) {
 		delete orders.at(i);
 	}
@@ -83,7 +83,7 @@ ostream& operator << (ostream& os, const OrderList& o) {
 		for (size_t i = 0; i < o.orders.size(); i++) {
 			str = str + o.orders.at(i)->toString();
 		}
-		return (os << "\nDisplaying order list for player " << o.player->getName() << "\n----" << str << "\n----\n");
+		return (os << "\nDisplaying order list for player " << o.player << "\n----" << str << "\n----\n");
 }
 
 string OrderList::toString() const{
