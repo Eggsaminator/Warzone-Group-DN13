@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Map.h"
 #include "Orders.h"
+#include "CommandProcessing.h"
 using std::cin;
 using std::cout;
 using std::endl;
@@ -52,9 +53,12 @@ void testGameStates() {
 void testStartupPhase()
 {
 	cout<<"Demonstration of the start up phase"<<endl;
-	//CommandProcessor* mCommandProcessor=new CommandProccessor();
+
+	// really not sure on that part ^^' 
+	static CommandProcessor* mCommandProcessor;
+	mCommandProcessor=CommandProcessor.instance();
 	Engine mEngine;
-	mEngine.startupPhase();
+	mEngine.startupPhase(mCommandProcessor);
 	vector<Player*> myListPlayer=mEngine.getPlayers();
 	Hand * myHand;
 	vector<Territory*> myTerr;
@@ -65,6 +69,7 @@ void testStartupPhase()
 		myHand->display();
 		myTerr=myListPlayer[i]->getTerritories();
 		cout<<"number of owned territories :"<<myTerr.size()<<endl;
+		cout<<"The reinforcement pool of the player contains : "<<myListPlayer[i]->getReinforcementPool()<< " army."<<endl;
 
 	}
 	
@@ -75,10 +80,4 @@ int main()
 {
 	//testGameStates();
 	testStartupPhase();
-	//string mCommand="addplayer<Jordan>";
-	//string begins=mCommand.substr(0,9);
-	//string mn=mCommand.substr(11,mCommand.size()-1);
-	//mn.pop_back();
-	//cout<<begins<<endl;
-	//cout<<mn<<endl;
 }

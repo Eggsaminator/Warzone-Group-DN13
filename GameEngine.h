@@ -6,11 +6,12 @@
 #include "Cards.h"
 #include "Player.h"
 #include "Orders.h"
+#include "CommandProcessing.h"
 using std::ostream;
 using std::string;
 using std::map;
 
-//class CommandProcessor;
+class CommandProcessor;
 class Deck;
 class Player;
 class Map;
@@ -44,7 +45,7 @@ public:
 	void setCurrentState(State* newState);
 	void buildLevels();
 	void startupPhase(
-		//CommandProcessor* mCommandProcess
+		CommandProcessor* mCommandProcess
 		);
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
 private:

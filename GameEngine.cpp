@@ -5,6 +5,7 @@
 #include "Cards.h"
 #include "Player.h"
 #include "Map.h"
+#include "CommandProcessing.h"
 
 using std::ostream;
 using std::cin;
@@ -218,38 +219,34 @@ void Engine::buildLevels() {
 	currentState = state0;
 }
 
-void Engine::startupPhase(
-	//CommandProcessor* mCommandProcess
-	)
+void Engine::startupPhase(CommandProcessor* mCommandProcess)
 {
-//get Command
-// Command loadmap
 State* currentState = this->getCurrentState();
 while(this->getCurrentState()->getStateName()!="assign reinforcement")
 {
 	// we get a new command
-	//string mCommand=mCommandProcess->getCommand();
-	string mCommand;
-	cin>>mCommand;
-	bool valid=true;
-	if(valid
-		//mCommand.validate()
+	Command mCommand=mCommandProcess->getCommand();
+
+	
+	if(
+		mCommand.validate()
 		)
+		string mCommand_name=mCommand.getName();
 	// if the command is valid in the current state of the Game Engine then we can apply its effect
 	{
 
-	if(mCommand.substr(0,7)=="loadmap")
+	if(mCommand_name.substr(0,7)=="loadmap")
 	{
-		mCommand.pop_back();
+		mCommand_name.pop_back();
 		cout <<"loadmap ok\n";
-		cout<<mCommand;
+		
 		MapLoader* mMapLoader =new MapLoader();
-		mMap=new Map(mMapLoader->loadMap(mCommand.substr(8,mCommand.size()))); //need to get that from the command !
+		mMap=new Map(mMapLoader->loadMap(mCommand_name.substr(8,mCommand_name.size()))); //need to get that from the command !
 // transition to state map loaded
 		this->setCurrentState(this->launchTransitionCommand("loadmap"));
 
 	}
-	if(mCommand=="validatemap")
+	if(mCommand_name=="validatemap")
 	{
 		cout<<"validatemap\n";
 		if(mMap->validate()){
@@ -258,21 +255,21 @@ while(this->getCurrentState()->getStateName()!="assign reinforcement")
 		}
 	}
 
-	if(mCommand.substr(0,9)=="addplayer")
+	if(mCommand_name.substr(0,9)=="addplayer")
 	{
 		cout<<"new player !\n";
-		mCommand.pop_back();
+		mCommand_name.pop_back();
 		if(this->getCurrentState()->getStateName()!="players added")
 		{
 			this->setCurrentState(this->launchTransitionCommand("addplayer"));
 
 		}
 		
-		myPlayers.push_back(new Player(mCommand.substr(10,mCommand.size()))); // need to get the name from the command ?
+		myPlayers.push_back(new Player(mCommand_name.substr(10,mCommand_name.size()))); // need to get the name from the command ?
 
 	}
 
-	if(mCommand=="gamestart")
+	if(mCommand_name=="gamestart")
 	{
 		cout<<"let's start\n";
 		// have to make somehow the transition to that
@@ -315,6 +312,7 @@ while(this->getCurrentState()->getStateName()!="assign reinforcement")
 		Hand* h_p=new Hand();
 		h_p->setPlayer(myPlayers[i]);
 		myPlayers[i]->setHand(h_p);
+		myPlayers[i]->addArmy(50);
 		myDeck->draw(h_p);
 		myDeck->draw(h_p);
 
