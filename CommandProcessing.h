@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <queue>
 #include <string>
 #include <vector>
 #include "GameEngine.h"
@@ -16,20 +17,25 @@ class FileCommandProcessorAdapter;
 
 class CommandProcessor {
 public:
-    static CommandProcessor* instance();
-    Command* getCommand(State* state);
-    Command* getCommand(State* state, string promptMessage);
-private:
-    CommandProcessor();
+    static CommandProcessor* instance(Engine* engine);
+    void chooseInputMethod();
+    Command* getCommand();
+    Command* getCommand(string promptMessage);
+protected:
+    CommandProcessor(Engine* engine);
     ~CommandProcessor();
-    Command* readCommand();
+    virtual Command* readCommand();
+    //bool isCommandFromConsole();
     void saveCommand(Command* command);
     bool inputIsValid(string command, string argument);
-    void validate(State* state, Command* command);
+    bool validate(State* state, Command* command);
     bool isValid(State* state, Command* command);
-    static CommandProcessor* s_instance;
+    bool isValidInputMethod(string command, string argument);
+    Engine* m_engine;
     static map<string, vector<string>> s_commandValidStates;
     vector<Command*> m_commandList;
+private:
+    static CommandProcessor* s_instance;
 };
 
 class Command {
@@ -37,6 +43,7 @@ public:
     Command(string command);
     Command(string command, string argument);
     ~Command();
+    void execute(Engine* engine);
     string getName();
     string getArgument();
     string getEffect();
@@ -47,11 +54,19 @@ private:
     string m_effect;
 };
 
-class FileCommandProcessorAdapter {
+class FileCommandProcessorAdapter : public CommandProcessor {
 public:
-    FileCommandProcessorAdapter();
-    ~FileCommandProcessorAdapter();
-    // Should read from a text file, using the Adapter design pattern
+    static FileCommandProcessorAdapter* instance(Engine* engine);
+    void setFile(string path);
+    void processFile();
 private:
-
+    FileCommandProcessorAdapter(Engine* engine);
+    ~FileCommandProcessorAdapter();
+    Command* readCommand();
+    queue<string>* readFile(string path);
+    static FileCommandProcessorAdapter* s_instance;
+    string m_filePath;
+    queue<string>* m_fileContents;
 };
+
+void testCommandProcessor();

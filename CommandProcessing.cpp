@@ -1,19 +1,20 @@
 #include <iostream>
+#include <fstream>
 #include "CommandProcessing.h"
 
-
-//
-CommandProcessor::CommandProcessor() {
-
+// -----CommandProcessor-----
+CommandProcessor::CommandProcessor(Engine* engine) {
+    m_engine = engine;
 }
 
 CommandProcessor::~CommandProcessor() {
 
 }
 
-CommandProcessor* CommandProcessor::instance() {
+// Implemented as a singleton such that only one instance must be instantiated.
+CommandProcessor* CommandProcessor::instance(Engine* engine) {
     if (!s_instance)
-        s_instance = new CommandProcessor();
+        s_instance = new CommandProcessor(engine);
     return s_instance;
 }
 
@@ -28,18 +29,46 @@ map<string, vector<string>> CommandProcessor::s_commandValidStates = {
     {"quit", {"win"}}
 };
 
-Command* CommandProcessor::getCommand(State* state) {
-    Command* command = readCommand();
+Command* CommandProcessor::readCommand() {
+    string userInput;
+    string cmd;
+    string argument;
+
+    do {
+        cout << "Please enter a valid command:" << endl;
+        getline(cin, userInput);
+        int delimiterIndex = userInput.find(' ');
+
+        cmd = userInput.substr(0, delimiterIndex);
+        argument = (delimiterIndex != string::npos) ? userInput.substr(delimiterIndex + 1, userInput.length()) : "";
+
+        cout << "Command: " << cmd << endl;
+        cout << "Argument: " << ((argument.compare("") != 0) ? argument : "None") << endl;
+    } while (!inputIsValid(cmd, argument));
+
+    Command* command = new Command(cmd, argument);
     saveCommand(command);
-    validate(state, command);
     return command;
 }
 
-Command* CommandProcessor::getCommand(State* state, string promptMessage) {
-    cout << promptMessage << endl;
-    return getCommand(state);
+void CommandProcessor::saveCommand(Command* command) {
+    m_commandList.push_back(command);
 }
 
+Command* CommandProcessor::getCommand() {
+    Command* command = readCommand();
+    if (validate(m_engine->getCurrentState(), command)) {
+        command->execute(m_engine);
+    }
+    return command;
+}
+
+Command* CommandProcessor::getCommand(string promptMessage) {
+    cout << promptMessage << endl;
+    return getCommand();
+}
+
+// Checks if the entered strings correspond to a valid command
 bool CommandProcessor::inputIsValid(string command, string argument) {
     // Ensure command exists
     if (!s_commandValidStates.count(command)) {
@@ -54,14 +83,24 @@ bool CommandProcessor::inputIsValid(string command, string argument) {
     }
 }
 
-void CommandProcessor::validate(State* state, Command* command) {
+// Ensures the command is valid in the current state
+bool CommandProcessor::validate(State* state, Command* command) {
     if (!isValid(state, command))
     {
-        command->saveEffect("Error! This command " + command->getName() + " is invalid in the current GameState " + state->getStateName() + "!");
+        string invalidCommandError = "Error! This command " + command->getName() + " is invalid in the current GameState " + state->getStateName() + "!";
+        cout << invalidCommandError << endl;
+        command->saveEffect(invalidCommandError);
+        return false;
     }
+    return true;
 }
 
+// Checks the validity of a command in the passed state
 bool CommandProcessor::isValid(State* state, Command* command) {
+    if (state == nullptr || command == nullptr)
+    {
+        return false;
+    }
     // Ensure command name exists
     bool commandExists = false;
     map<string, vector<string>>::iterator commandIterator;
@@ -86,13 +125,12 @@ bool CommandProcessor::isValid(State* state, Command* command) {
     return false;
 }
 
-Command* CommandProcessor::readCommand() {
+void CommandProcessor::chooseInputMethod() {
     string userInput;
-    string cmd;
-    string argument;
-
-    do {
-        cout << "Please enter a valid command:" << endl;
+    string cmd = "";
+    string argument = "";
+    while (!isValidInputMethod(cmd, argument)) {
+        cout << "Please enter a valid input method (-console or -file <filename>):" << endl;
         getline(cin, userInput);
         int delimiterIndex = userInput.find(' ');
 
@@ -101,16 +139,27 @@ Command* CommandProcessor::readCommand() {
 
         cout << "Command: " << cmd << endl;
         cout << "Argument: " << ((argument.compare("") != 0) ? argument : "None") << endl;
-    } while (!inputIsValid(cmd, argument));
+    }
 
-    return new Command(cmd, argument);
+    if (cmd.compare("-console") == 0) {
+        getCommand();
+    }
+    if (cmd.compare("-file") == 0) {
+        FileCommandProcessorAdapter* fileProcessor = FileCommandProcessorAdapter::instance(m_engine);
+        fileProcessor->setFile(argument);
+        fileProcessor->processFile();
+    }
 }
 
-void CommandProcessor::saveCommand(Command* command) {
-    m_commandList.push_back(command);
+bool CommandProcessor::isValidInputMethod(string command, string argument) {
+    if ((command.compare("-console") == 0 && argument.compare("") == 0)
+        || (command.compare("-file") == 0 && argument.compare("") != 0)) {
+        return true;
+    }
+    return false;
 }
 
-//
+// -----Command-----
 Command::Command(string command) {
     m_command = command;
     m_argument = "";
@@ -125,6 +174,16 @@ Command::Command(string command, string argument) {
 
 Command::~Command() {
 
+}
+
+void Command::execute(Engine* engine) {
+    if (engine == nullptr) {
+        cout << "Error! Engine invalid" << endl;
+        return;
+    }
+
+    saveEffect(m_command);
+    engine->launchTransitionCommand(m_command);
 }
 
 string Command::getName() {
@@ -143,11 +202,76 @@ void Command::saveEffect(string effect) {
     m_effect = effect;
 }
 
-//
-FileCommandProcessorAdapter::FileCommandProcessorAdapter() {
-
+// -----FileCommandProcessorAdapter-----
+FileCommandProcessorAdapter::FileCommandProcessorAdapter(Engine* engine) : CommandProcessor(engine) {
+    m_fileContents = nullptr;
 }
 
 FileCommandProcessorAdapter::~FileCommandProcessorAdapter() {
 
+}
+
+// Implemented as a singleton such that only one instance must be instantiated.
+FileCommandProcessorAdapter* FileCommandProcessorAdapter::instance(Engine* engine) {
+    if (!s_instance)
+        s_instance = new FileCommandProcessorAdapter(engine);
+    return s_instance;
+}
+
+FileCommandProcessorAdapter* FileCommandProcessorAdapter::s_instance = 0;
+
+void FileCommandProcessorAdapter::setFile(string path) {
+    m_filePath = path;
+    m_fileContents = readFile(m_filePath);
+}
+
+void FileCommandProcessorAdapter::processFile() {
+    // readCommand() pops m_fileContents, thus this will never be infinite
+    while (m_fileContents->size() > 0) {
+        Command* command = readCommand();
+        if (validate(m_engine->getCurrentState(), command)) {
+            command->execute(m_engine);
+        }
+    }
+}
+
+queue<string>* FileCommandProcessorAdapter::readFile(string path) {
+    queue<string>* fileText = new queue<string>();
+    string nextLine;
+    ifstream file(path);
+
+    while (getline(file, nextLine)) {
+        fileText->push(nextLine);
+    }
+
+    file.close();
+    return fileText;
+}
+
+Command* FileCommandProcessorAdapter::readCommand() {
+    string userInput;
+    string cmd;
+    string argument;
+
+    do {
+        userInput = m_fileContents->front();
+        m_fileContents->pop();
+        int delimiterIndex = userInput.find(' ');
+
+        cmd = userInput.substr(0, delimiterIndex);
+        argument = (delimiterIndex != string::npos) ? userInput.substr(delimiterIndex + 1, userInput.length()) : "";
+
+        cout << "Command: " << cmd << endl;
+        cout << "Argument: " << ((argument.compare("") != 0) ? argument : "None") << endl;
+    } while (!inputIsValid(cmd, argument) && !m_fileContents->empty());
+
+    if (m_fileContents->empty() && !inputIsValid(cmd, argument))
+    {
+        cout << "File " << m_filePath << " is out of valid commands! Error!" << endl;
+        return nullptr;
+    }
+
+    Command* command = new Command(cmd, argument);
+    saveCommand(command);
+    return command;
 }
