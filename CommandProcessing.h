@@ -25,7 +25,6 @@ protected:
     CommandProcessor(Engine* engine);
     ~CommandProcessor();
     virtual Command* readCommand();
-    //bool isCommandFromConsole();
     void saveCommand(Command* command);
     bool inputIsValid(string command, string argument);
     bool validate(State* state, Command* command);
