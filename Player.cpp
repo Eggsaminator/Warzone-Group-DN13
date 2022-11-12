@@ -44,7 +44,7 @@ void Player::issueOrder(Player* nameP, string name) {
 		Orders* orderToAdd = new Blockade(nameP, territories[0]);
 		(*ordersList).addOrder(orderToAdd);
 	}else if(name == "Negotiate"){
-		Orders* orderToAdd = new Negotiate(nameP, territories[0]);
+		Orders* orderToAdd = new Negotiate(nameP, territories[0]->getOwner());
 		(*ordersList).addOrder(orderToAdd);
 	}
 }
@@ -91,5 +91,13 @@ void Player::setOrdersList(OrderList* newOrdersList){
 }
 OrderList* Player::getOrdersList(){
 	return ordersList;
+}
+
+void Player::setTruce(Player* tp) {
+	nameT = tp->getName();
+}
+
+string Player::getTruce() {
+	return nameT;
 }
 

@@ -18,7 +18,7 @@ void testOrdersList() {
 	Orders* bo = new Bomb(sampleP, sampleTarget);
 	Orders* bl = new Blockade(sampleP, sampleTarget);
 	Orders* ai = new Airlift(sampleP, 1000, sampleSource, sampleTarget);
-	Orders* n = new Negotiate(sampleP, sampleTarget);
+	Orders* n = new Negotiate(sampleP, sampleP2);
 
 	//creating list
 	OrderList* tODep = new OrderList(sampleP->getName());
@@ -81,6 +81,10 @@ void testOrderExecution() {
 	Territory* t7 = new Territory("TERRITORY #7", continent);
 	Territory* t8 = new Territory("TERRITORY #8", continent);
 	Territory* t9 = new Territory("TERRITORY #9", continent);
+
+	//CREATE DECK
+	Deck d(15, false);
+	Hand* hp1 = new Hand();
 	
 	//CREATE PLAYER
 	Player* p1 = new Player("PLAYER_1"); //will have teritory 1,2,3
@@ -91,6 +95,8 @@ void testOrderExecution() {
 	OrderList* p2o = new OrderList(p2->getName());
 	OrderList* p3o = new OrderList(p3->getName());
 
+	hp1->setPlayer(p1);
+
 	//ASSIGN TERRITORY
 	t1->setOwner(p1); //deploy - advance - aiflift
 	t2->setOwner(p1); //blockade
@@ -100,7 +106,7 @@ void testOrderExecution() {
 	t6->setOwner(p2); //advance
 	t7->setOwner(p3); //advance
 	t8->setOwner(p3); //bomb
-	t9->setOwner(p3); //
+	t9->setOwner(p3); //negotiate
 
 	t1->addAdjacency(t5);
 	t4->addAdjacency(t6);
@@ -115,10 +121,8 @@ void testOrderExecution() {
 	p1o->addOrder(dp1);
 
 	//p1 - deploy
-	dp1->validate();
 	dp1->execute();
 
-	dp1->validate();
 	dp1->execute();
 
 	cout << p1o->toString() << "Owner: " << t1->getOwner()->getName() << " | Army count on territory #1: " << t1->getArmies() << endl;
@@ -140,17 +144,14 @@ void testOrderExecution() {
 	p3o->addOrder(adp3);
 
 	cout << "\n[PLAYER_1 ADVANCE TO PLAYER_2 TERRITORY WITH NOT ENNEMY UNIT]\nOwner: " << t1->getOwner()->getName() << " | Army in t1: " << t1->getArmies() << "\nOwner: " << t5->getOwner()->getName() << " | Army in t5: " << t5->getArmies() << endl;
-	adp1->validate();
 	adp1->execute();
 	cout << p1o->toString() << "Owner: " << t1->getOwner()->getName() << " | Army in t1: " << t1->getArmies() << "\nOwner: " << t5->getOwner()->getName() << " | Army in t5: " << t5->getArmies() << endl;
 
 	cout << "\n[PLAYER_2 ADVANCE TO PLAYER_2 TERRITORY]\nOwner: " << t4->getOwner()->getName() << " | Army in t4: " << t4->getArmies() << "\nOwner: " << t6->getOwner()->getName() << " | Army in t6: " << t6->getArmies() << endl;
-	adp2->validate();
 	adp2->execute();
 	cout << p2o->toString() << "Owner: " << t4->getOwner()->getName() << " | Army in t4: " << t4->getArmies() << "\nOwner: " << t6->getOwner()->getName() << " | Army in t6: " << t6->getArmies() << endl;
 
 	cout << "\n[PLAYER_3 ADVANCE TO PLAYER_2 TERRITORY WITH ENNEMY UNITS\nOwner: " << t7->getOwner()->getName() << " | Army in t7: " << t7->getArmies() << "\nOwner: " << t4->getOwner()->getName() << " | Army in t4: " << t4->getArmies() << endl;
-	adp3->validate();
 	adp3->execute();
 	cout << p3o->toString() << "Owner: " << t7->getOwner()->getName() << " | Army in t7: " << t7->getArmies() << "\nOwner: " << t4->getOwner()->getName() << " | Army in t4: " << t4->getArmies() << endl;
 
@@ -165,13 +166,21 @@ void testOrderExecution() {
 	p1o->addOrder(bop1);
 
 	cout << "\n[PLAYER_1 BOMB PLAYER_3 TERRITORY #8]\nOwner: " << t8->getOwner()->getName() << " | Army in t8: " << t8->getArmies() << endl;
-	bop1->validate();
 	bop1->execute();
 	cout << p3o->toString() << "Owner: " << t8->getOwner()->getName() << " | Army in t8: " << t8->getArmies() << endl;
 
 	//BLOCKADE
 	cout << "___________________________________________\n\n\tCHECKING FOR BLOCKADE ORDER\n___________________________________________" << endl;
-	
+	t2->setArmies(12);
+
+	//p1 - to ennemy territory with no units
+	Orders* blp1 = new Blockade(p1, t2);
+	p1o->addOrder(blp1);
+
+	cout << "\n[PLAYER_1 BLOCK TERRITORY #2]\nOwner: " << t2->getOwner()->getName() << " | Army in t8: " << t2->getArmies() << endl;
+	blp1->execute();
+	cout << p1o->toString() << "Owner: " << t2->getOwner()->getName() << " | Army in t2: " << t2->getArmies() << endl;
+
 
 		//AIRLIFT
 	cout << "___________________________________________\n\n\tCHECKING FOR AIRLIFT ORDER\n___________________________________________" << endl;
@@ -181,11 +190,34 @@ void testOrderExecution() {
 	p1o->addOrder(aip1);
 
 	cout << "\n[PLAYER_1 AIRLIFT FROM TERRITORY #3 TO TERRITORY #1]\nOwner: " << t3->getOwner()->getName() << " | Army in t3: " << t3->getArmies() << "\nOwner: " << t1->getOwner()->getName() << " | Army in t1: " << t1->getArmies() << endl;
-	aip1->validate();
 	aip1->execute();
 	cout << p1o->toString() << "Owner: " << t3->getOwner()->getName() << " | Army in t3: " << t3->getArmies() << "\nOwner: " << t1->getOwner()->getName() << " | Army in t1: " << t1->getArmies() << endl;
 
 
 	//NEGOTIATE
 	cout << "___________________________________________\n\n\tCHECKING FOR NEGOTIATE ORDER\n___________________________________________" << endl;
+	t1->addAdjacency(t9);
+	Orders* np1 = new Negotiate(p1, p3);
+	p1o->addOrder(np1); 
+	
+	cout << "\n[PLAYER_1 NEGOTIATE PLAYER_3]\nPlayer: " << p1->getName() << "\nPlayer: " << p3->getName() << endl;
+	np1->execute();
+	cout << p1o->toString();
+
+	Orders* ad1Np1 = new Advance(p1, 2, t1, t9);
+	p1o->addOrder(ad1Np1);
+
+	ad1Np1->execute();
+
+
+	Orders* boNp1 = new Bomb(p1, t9);
+	p1o->addOrder(boNp1);
+
+	boNp1->execute();
+
+	Orders* ad2Np3 = new Advance(p3, 2, t8, t3);
+	p3o->addOrder(ad2Np3);
+
+	ad2Np3->execute();
+
 }

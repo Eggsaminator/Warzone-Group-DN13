@@ -33,11 +33,11 @@ public:
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
 
-	//for part 4
-	void setPlayer(Player* p);
-	const Player* getPlayer();
+	//part 4
+	void setTruce(Player* tp);
+	string getTruce();
 private:
-	string name = "not working";
+	string name, nameT;
 	Hand* hand;
 	vector<Territory*> territories;
 };

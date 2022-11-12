@@ -200,16 +200,16 @@ class Negotiate : public Orders// usable if user has Diplomacy card in hand
 private:
 public:
 	Player* player;
+	Player* tarPlayer;
 	//name of the order
 	const string name = "negotiate";
 	//data needed for the order
-	Territory* tarTerritory;
 	bool validated = false;
 	bool executed = false;
 
 	//assigning datas
 	Negotiate();
-	Negotiate(Player* p,Territory* tarTerritory);
+	Negotiate(Player* p, Player* tp);
 	Negotiate(Negotiate& negotiate);
 	~Negotiate();
 
