@@ -63,8 +63,8 @@ public:
 	//data needed for the order
 	int numArmyUnit = 0;
 	Territory* tarTerritory;
-	bool validated = false;
-	bool executed = false;
+	bool validated;
+	bool executed;
 
 	//assigning datas
 	Deploy();
@@ -223,3 +223,4 @@ public:
 };
 
 void testOrdersList();
+void testOrderExecution();

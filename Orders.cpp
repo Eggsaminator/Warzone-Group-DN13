@@ -110,42 +110,54 @@ Deploy::Deploy(Deploy& deploy) {
 }
 
 Deploy::~Deploy() {
+	player = nullptr;
 	numArmyUnit = 0;
 	tarTerritory = nullptr;
 }
 
 bool Deploy::validate() {
 	//done except for designating which player's territory to look
-	cout << "\nvalidate for deploy order\n";
-	cout << tarTerritory->getOwner() << "|" << player << endl;
+	cout << "Validate for deploy order" << endl;
 	//check if deploy has already been executed
-	if (executed != true) {
+	cout << executed << endl;
+	if (executed == false) {
 		//check if target territory belongs to the player
 		if (tarTerritory->getOwner() == player) {
 			validated = true;
-			cout << "target territory belongs to the player" << endl;
+			cout << "\tTarget territory belongs to the player\n\tOrder is valid" << endl;
 		}
+		else {
+			cout << "\tTarget territory does not belong to the playe\n\tOrder is not valid" << endl;
+		}
+	}
+	else {
+		cout << "\tDeploy Order has already been executed\n\tDeploy order cannot be validated" << endl;
+		validated = false;
 	}
 	return validated;
 }
 
 bool Deploy::execute() {
-	cout << "\nexecute for deploy order\n";
+	cout << "\nExecute for deploy order" << endl;
 	//check if validated it true
 	if (validated == true) {
 		//execution
 		tarTerritory->addArmies(numArmyUnit);
 		//end execution
+		cout << "\tDeploy order has been executed" << endl;
 		executed = true;
+	}
+	else {
+		cout << "\tDeploy order cannot be executed" << endl;
 	}
 	return executed;
 }
 
 ostream& operator << (ostream& os, const Deploy& d){
 	if (d.executed == true) {
-		return (os << "\nDisplaying order: " <<d.name << " Army count: " << d.numArmyUnit << " Target Location: " << d.tarTerritory->getName() << " order has already been executed");
+		return (os << "\nDisplaying order: " <<d.name << "| Army count: " << d.numArmyUnit << "| Target Location: " << d.tarTerritory->getName() << "| Order has already been executed");
 	}
-	return (os << "\nDisplaying order: " << d.name << " Army count: " << d.numArmyUnit << " Target Location: " << d.tarTerritory->getName());
+	return (os << "\nDisplaying order: " << d.name << "| Army count: " << d.numArmyUnit << "| Target Location: " << d.tarTerritory->getName());
 }
 
 string Deploy::toString() const{
@@ -173,6 +185,7 @@ Advance::Advance(Advance& advance) {
 }
 
 Advance::~Advance() {
+	player = nullptr;
 	numArmyUnit = 0;
 	souTerritory = nullptr;
 	tarTerritory = nullptr;
@@ -217,12 +230,29 @@ bool Advance::execute() {
 		//target territory belongs to an ennemy or is neutral
 		if (tarTerritory->getOwner() != player) {
 			//check if has enemy armies
-			if (tarTerritory->getArmies() != 0) {
+			souTerritory->addArmies(-numArmyUnit);
+			while (numArmyUnit > 0 && tarTerritory->getArmies() > 0) {
 				//fight
+				int s = numArmyUnit, t = tarTerritory->getArmies();
+				for (int i = 0; i < s; i++) {
+					//rand doesn't seem to generate random set every program execution
+					int r = (rand()%10);
+					cout << "random number is : " << r << endl;
+					if (r < 6 && tarTerritory->getArmies() > 0) {
+						tarTerritory->setArmies(tarTerritory->getArmies() - 1);
+					}
+				}
+				for (int i = 0; i < t; i++) {
+					int r = rand() % 10;
+					if (r < 7 && numArmyUnit > 0) {
+						numArmyUnit--;
+					}
+				}
+				cout << "_" << endl;
 			}
-			else {
-				//take over target territory
+			if (tarTerritory->getArmies() == 0) {
 				tarTerritory->setOwner(player);
+				tarTerritory->addArmies(numArmyUnit);
 			}
 		}
 		//end execution
@@ -233,9 +263,9 @@ bool Advance::execute() {
 
 ostream& operator << (ostream& os, const Advance& ad){
 	if (ad.executed == true) {
-		return (os << "\nDisplaying order: " << ad.name << " Army count: " << ad.numArmyUnit << " Source Location " << ad.souTerritory->getName() << " Target Location: " << ad.tarTerritory->getName() << " order has already been executed");
+		return (os << "\nDisplaying order: " << ad.name << "| Army count: " << ad.numArmyUnit << "| Source Location " << ad.souTerritory->getName() << "| Target Location: " << ad.tarTerritory->getName() << "| Order has already been executed");
 	}
-	return (os << "\nDisplaying order: " << ad.name << " Army count: " << ad.numArmyUnit << " Source Location " << ad.souTerritory->getName() << " Target Location: " << ad.tarTerritory->getName());
+	return (os << "\nDisplaying order: " << ad.name << "| Army count: " << ad.numArmyUnit << "| Source Location " << ad.souTerritory->getName() << "| Target Location: " << ad.tarTerritory->getName());
 }
 
 string Advance::toString() const {
@@ -259,6 +289,7 @@ Bomb::Bomb(Bomb& bomb) {
 }
 
 Bomb::~Bomb() {
+	player = nullptr;
 	tarTerritory = nullptr;
 }
 
@@ -303,9 +334,9 @@ bool Bomb::execute() {
 
 ostream& operator << (ostream& os, const Bomb& b){
 	if (b.executed == true) {
-		return (os << "\nDisplaying order: " << b.name << " Target Location: " << b.tarTerritory->getName() << " order has already been executed");
+		return (os << "\nDisplaying order: " << b.name << " | Target Location: " << b.tarTerritory->getName() << "| Order has already been executed");
 	}
-	return (os << "\nDisplaying order: " << b.name << " Target Location: " << b.tarTerritory->getName());
+	return (os << "\nDisplaying order: " << b.name << " | Target Location: " << b.tarTerritory->getName());
 }
 
 string Bomb::toString() const {
@@ -329,6 +360,7 @@ Blockade::Blockade(Blockade& blockade) {
 }
 
 Blockade::~Blockade() {
+	player = nullptr;
 	tarTerritory = nullptr;
 }
 
@@ -357,9 +389,9 @@ bool Blockade::execute() {
 
 ostream& operator << (ostream& os, const Blockade& bl){
 	if (bl.executed == true) {
-		return (os << "\nDisplaying order: " << bl.name << " Target Location: " << bl.tarTerritory->getName() << " order has already been executed");
+		return (os << "\nDisplaying order: " << bl.name << " | Target Location: " << bl.tarTerritory->getName() << "| Order has already been executed");
 	}
-	return (os << "\nDisplaying order: " << bl.name << " Target Location: " << bl.tarTerritory->getName());
+	return (os << "\nDisplaying order: " << bl.name << " | Target Location: " << bl.tarTerritory->getName());
 }
 
 string Blockade::toString() const {
@@ -387,6 +419,7 @@ Airlift::Airlift(Airlift& airlift) {
 }
 
 Airlift::~Airlift() {
+	player = nullptr;
 	numArmyUnit = 0;
 	souTerritory = nullptr;
 	tarTerritory = nullptr;
@@ -403,24 +436,33 @@ bool Airlift::validate() {
 		//check if the source territory belongs to the player
 		if (souTerritory->getOwner() == player) {
 			source = true;
-			cout << "source territory belongs to the player" << endl;
+			cout << "Source territory belongs to the player" << endl;
+		}
+		else {
+			cout << "Source territory does not belong to the player" << endl;
 		}
 		//check if the target territory belongs to the player
 		if (tarTerritory->getOwner() == player) {
 			target = true;
-			cout << "target territory belongs to the player" << endl;
+			cout << "Target territory belongs to the player" << endl;
+		}
+		else {
+			cout << "Target territory does not belong to the player" << endl;
 		}
 		//check if the airlift order is valid
 		if (source == true && target == true) {
 			validated = true;
-			cout << "airlift order is valid" << endl;
+			cout << "Airlift order is valid" << endl;
+		}
+		else {
+			cout << "Airlift order is invalid" << endl;
 		}
 	}
 	return validated;
 }
 
 bool Airlift::execute() {
-	cout << "\nexecute for airlift order\n";
+	cout << "\nExecute for airlift order\n";
 	if (validated == true) {
 		//execution
 		souTerritory->addArmies(-numArmyUnit);
@@ -433,9 +475,9 @@ bool Airlift::execute() {
 
 ostream& operator << (ostream& os, const Airlift& ai) {
 	if (ai.executed == true) {
-		return (os << "\nDisplaying order: " << ai.name << " Army count: " << ai.numArmyUnit << " Source Location " << ai.souTerritory->getName() << " Target Location: " << ai.tarTerritory->getName() << " order has already been executed");
+		return (os << "\nDisplaying order: " << ai.name << " | Army count: " << ai.numArmyUnit << "| Source Location " << ai.souTerritory->getName() << "| Target Location: " << ai.tarTerritory->getName() << "| order has already been executed");
 	}
-	return (os << "\nDisplaying order: " << ai.name << " Army count: " << ai.numArmyUnit << " Source Location " << ai.souTerritory->getName() << " Target Location: " << ai.tarTerritory->getName());
+	return (os << "\nDisplaying order: " << ai.name << " | Army count: " << ai.numArmyUnit << "| Source Location " << ai.souTerritory->getName() << "| Target Location: " << ai.tarTerritory->getName());
 }
 
 string Airlift::toString() const {
@@ -458,6 +500,7 @@ Negotiate::Negotiate(Negotiate& negotiate) {
 }
 
 Negotiate::~Negotiate() {
+	player = nullptr;
 	tarTerritory = nullptr;
 }
 
@@ -487,9 +530,9 @@ bool Negotiate::execute() {
 
 ostream& operator << (ostream& os, const Negotiate& n) {
 	if (n.executed == true) {
-		return (os << "\nDisplaying order: " << n.name << " Target Location: " << n.tarTerritory->getName() << " order has already been executed");
+		return (os << "\nDisplaying order: " << n.name << " | Target Location: " << n.tarTerritory->getName() << "| Order has already been executed");
 	}
-	return (os << "\nDisplaying order: " << n.name << " Target Location: " << n.tarTerritory->getName());
+	return (os << "\nDisplaying order: " << n.name << " | Target Location: " << n.tarTerritory->getName());
 }
 
 string Negotiate::toString() const {
