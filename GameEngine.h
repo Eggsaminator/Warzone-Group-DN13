@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "Player.h"
 using std::ostream;
 using std::string;
 using std::map;
