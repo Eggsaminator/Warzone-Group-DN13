@@ -344,12 +344,19 @@ void Territory::setOwner(Player* newOwner, int newNumArmies) {
     setOwner(newOwner);
     setArmies(newNumArmies);
 }
+
 void Territory::setArmies(int newNumArmies) {
     numArmies = newNumArmies;
 }
 void Territory::addArmies(int newNumArmies) {
     numArmies += newNumArmies;
 }
+
+//addition for part 4
+Player* Territory::getOwner() {
+    return owner;
+}
+
 int Territory::getArmies() {
     return numArmies;
 }

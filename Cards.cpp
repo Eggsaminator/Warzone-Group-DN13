@@ -74,7 +74,9 @@ void Card::play()
 
     if (card_type == "Bomb")
     {
-        belong_to_hand->my_player->issueOrder("Bomb");
+      
+    belong_to_hand->my_player->issueOrder(belong_to_hand->my_player,"Bomb");
+      
     }
     if (card_type == "Reinforcement")
     {
@@ -82,15 +84,21 @@ void Card::play()
     }
     if (card_type == "Airlift")
     {
-        belong_to_hand->my_player->issueOrder("Airlift");
+      
+        belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, "Airlift");
+      
     }
     if (card_type == "Diplomacy")
     {
-        belong_to_hand->my_player->issueOrder("Negociate");
-    }
-    if (card_type == "Blockade")
+      
+        belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, "Negotiate");
+      
+    }   
+    if(card_type=="Blockade")
     {
-        belong_to_hand->my_player->issueOrder("Blockade");
+        
+        belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, "Blockade");
+      
     }
 
     // remove from hand

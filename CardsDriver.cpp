@@ -168,7 +168,7 @@ void testCards()
     Deck d(15,false);
     Hand* h_p=new Hand();
     Player* player=new Player("test_player");
-    OrderList* order = new OrderList("test");
+    OrderList* order = new OrderList(player->getName());
     h_p->setPlayer(player);
 
     cout<<"initial deck is:\n";

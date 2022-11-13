@@ -14,7 +14,7 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	void issueOrder(string name);
+	void issueOrder(Player* nameP, string name);
 
 
 	void addTerritory(Territory*);
@@ -39,11 +39,16 @@ public:
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
 
+  
 	void setTerritoriesToAttack(vector<Territory*>);
 	void setTerritoriesToDefend(vector<Territory*>);
-
+  
+	//part 4
+	void setTruce(Player* tp);
+	string getTruce();
+  
 private:
-	string name;
+	string name, nameT;
 	Hand* hand;
 	int reinforcementPool = 50;
 	int reinforcementPoolLeftToDeploy = 0;
