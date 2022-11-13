@@ -286,6 +286,10 @@ string Continent::getName() {
     return name;
 }
 
+int Continent::getBonusValue() {
+    return value;
+}
+
 void Continent::addTerritory(Territory* territory) {
     territoryList.push_back(territory);
 }
@@ -333,13 +337,21 @@ string Territory::getName() {
 void Territory::setOwner(Player* newOwner) {
     owner = newOwner;
 }
+Player* Territory::getOwner() {
+    return owner;
+}
 void Territory::setOwner(Player* newOwner, int newNumArmies) {
     setOwner(newOwner);
     setArmies(newNumArmies);
 }
+
 void Territory::setArmies(int newNumArmies) {
     numArmies = newNumArmies;
 }
 void Territory::addArmies(int newNumArmies) {
     numArmies += newNumArmies;
+}
+
+int Territory::getArmies() {
+    return numArmies;
 }

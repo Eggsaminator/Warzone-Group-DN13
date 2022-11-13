@@ -127,7 +127,6 @@ State* Engine::getCurrentState() {
 	return currentState;
 }
 
-
 Deck* Engine::getDeck(){
 	return myDeck;
 }
@@ -139,7 +138,6 @@ vector<Player*> Engine::getPlayers(){
 Map* Engine::getMap(){
 	return mMap;
 }
-
 
 void Engine::setCurrentState(State* newState) {
 	currentState = newState;
@@ -214,7 +212,6 @@ void Engine::buildLevels() {
 
 	currentState = state0;
 }
-
 
 void Engine::startupPhase(CommandProcessor* mCommandProcess)
 {
@@ -327,4 +324,3 @@ this->setCurrentState(this->launchTransitionCommand("gamestart"));
 }
 
 
-}

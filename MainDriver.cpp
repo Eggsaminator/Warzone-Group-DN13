@@ -9,12 +9,12 @@ int main()
     //Part 2: Startup phase
     testStartupPhase();
 
-    //Part 3: Orders good
+    //Part 3:
 
 
-    //Part 4: Cards good
+    //Part 4:
 
 
-    //Part 5: Game Engine
+    //Part 5:
 
 }

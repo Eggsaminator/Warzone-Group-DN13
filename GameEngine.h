@@ -10,6 +10,10 @@
 using std::ostream;
 using std::string;
 using std::map;
+using std::vector;
+
+class Player;
+class Map;
 
 class CommandProcessor;
 class Deck;
@@ -43,7 +47,14 @@ public:
 	Map* getMap();
 	vector<Player*> getPlayers();
 	void setCurrentState(State* newState);
+	void mainGameLoop();
+	void gameLoopWinnerLoserCheckup();
+	void reinforcementPhase();
+	void issueOrdersPhase();
+	void executeOrdersPhase();
 	void buildLevels();
+	void setMyMap(Map* map);
+	void setMyPlayers(vector <Player*> players);
 	void startupPhase(
 		CommandProcessor* mCommandProcess
 		);
@@ -51,10 +62,10 @@ public:
 private:
 	Map* mMap;
 	State* currentState;
-	Deck* myDeck;
-	vector<Player*> myPlayers;
+	Map* myMap;
+  Deck* myDeck;
+	vector <Player*> myPlayers;
 };
 
-void testGameStates();
-
 void testStartupPhase();
+void testMainGameLoop();
