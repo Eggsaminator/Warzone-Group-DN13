@@ -12,6 +12,8 @@ using namespace std;
 class CommandProcessor;
 class Command;
 class FileCommandProcessorAdapter;
+class Engine;
+class State;
 
 //
 

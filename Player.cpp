@@ -199,15 +199,15 @@ string Player::getTruce() {
 
 void Player::addArmy(int army)
 {
-	reinforcementpool+=army;
+	reinforcementPool+=army;
 }
 
 void Player::removeArmy(int army)
 {
-	if(army>reinforcementpool)
+	if(army>reinforcementPool)
 	{
 		cout<<"invalid operation: not enough army in pool";
 	}
 	else{
-	reinforcementpool-=army;}
+	reinforcementPool-=army;}
 }

@@ -42,11 +42,10 @@ public:
 	void setTerritoriesToAttack(vector<Territory*>);
 	void setTerritoriesToDefend(vector<Territory*>);
 
-  void setTruce(Player* tp);
+	void setTruce(Player* tp);
 	string getTruce();
 	void addArmy(int army);
 	void removeArmy(int army);
-	int getReinforcementPool();
 private:
 	string name, nameT;
 	Hand* hand;

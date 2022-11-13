@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Map.h"
 #include "CommandProcessing.h"
+#include "set"
 
 using std::ostream;
 using std::cin;
