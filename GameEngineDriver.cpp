@@ -80,7 +80,8 @@ void testMainGameLoop() {
 	mainEngine.setMyMap(&gameMap);
 	mainEngine.setMyPlayers(players);
 
-	mainEngine.reinforcementPhase();
+	mainEngine.mainGameLoop();
+	return;
 
 	
 
