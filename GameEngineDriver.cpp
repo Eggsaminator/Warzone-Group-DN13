@@ -141,11 +141,11 @@ void testMainGameLoop() {
 	
 	cout << "Player " << player1->getName() << " has " << player1->getReinforcementPoolLeftToDeploy() << " army units in his reinforcement pool." << endl;
 	cout << "Issuing an Advance order... " << endl;
-	player1->issueOrder("Advance");
+	player1->issueOrder(player1, "Advance");
 	cout << "Qantity of orders in orderslist after issuing an Advance order: " << player1->getOrdersList()->orders.size() << endl;
-	player1->issueOrder("Deploy");
+	player1->issueOrder(player1, "Deploy");
 	cout << "Qantity of orders in orderslist after issuing a Deploy order with all army units: " << player1->getOrdersList()->orders.size() << endl;
-	player1->issueOrder("Advance");
+	player1->issueOrder(player1, "Advance");
 	cout << "Qantity of orders in orderslist after issuing an Advance order: " << player1->getOrdersList()->orders.size() << endl;
 
 	cout << "\n\n\n\n";

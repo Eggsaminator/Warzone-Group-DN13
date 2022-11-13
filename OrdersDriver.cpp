@@ -2,6 +2,7 @@
 #include "Orders.h"
 #include "Player.h"
 #include "Map.h"
+#include "GameEngine.h"
 
 void testOrdersList() {
 	vector<string> mapList;
@@ -87,9 +88,13 @@ void testOrderExecution() {
 	Hand* hp1 = new Hand();
 	
 	//CREATE PLAYER
+	vector<Player*> players;
 	Player* p1 = new Player("PLAYER_1"); //will have teritory 1,2,3
 	Player* p2 = new Player("PLAYER_2"); //will have teritory 4,5,6
 	Player* p3 = new Player("PLAYER_3"); //will have teritory 7,8,9
+	players.push_back(p1);
+	players.push_back(p2);
+	players.push_back(p3);
 
 	OrderList* p1o = new OrderList(p1->getName());
 	OrderList* p2o = new OrderList(p2->getName());
@@ -112,6 +117,58 @@ void testOrderExecution() {
 	t4->addAdjacency(t6);
 	t7->addAdjacency(t4);
 
+
+
+
+
+
+	vector<string> mapList;
+	mapList.push_back("Order.map");
+	MapLoader mapLoader;
+	try {
+		Map map = mapLoader.loadMap(mapList[0]);
+		if (map.validate()) {
+			cout << "Map is valid." << endl;
+		}
+		else {
+			cout << "Map is invalid." << endl;
+		}
+	}
+	catch (invalid_argument) {
+		cout << "Error. Exception caught. Map invalid." << endl;
+	}
+
+	Engine orderEngine = Engine();
+
+
+
+	//set player hand - initial hand for testing
+	p1->getHand()->add_card(new Card("Bomb", nullptr, nullptr));
+	p1->getHand()->add_card(new Card("Blockade", nullptr, nullptr));
+	p1->getHand()->add_card(new Card("Airlift", nullptr, nullptr));
+	p1->getHand()->add_card(new Card("Diplomacy", nullptr, nullptr));
+
+	p2->getHand()->add_card(new Card("Bomb", nullptr, nullptr));
+	p2->getHand()->add_card(new Card("Blockade", nullptr, nullptr));
+	p2->getHand()->add_card(new Card("Airlift", nullptr, nullptr));
+	p2->getHand()->add_card(new Card("Diplomacy", nullptr, nullptr));
+
+	p3->getHand()->add_card(new Card("Bomb", nullptr, nullptr));
+	p3->getHand()->add_card(new Card("Blockade", nullptr, nullptr));
+	p3->getHand()->add_card(new Card("Airlift", nullptr, nullptr));
+	p3->getHand()->add_card(new Card("Diplomacy", nullptr, nullptr));
+
+
+
+
+	//mainEngine.setMyMap(&gameMap);
+	//mainEngine.setMyPlayers(players);
+	//
+	//orderEngine.issueOrdersPhase();
+	//orderEngine.executeOrdersPhase();
+	
+	//hardcoded-version
+	/*
 	//DEPLOY
 	cout << "___________________________________________\n\n\tCHECKING FOR DEPLOY ORDER\n___________________________________________" << endl;
 	//p1
@@ -204,20 +261,20 @@ void testOrderExecution() {
 	np1->execute();
 	cout << p1o->toString();
 
+	//actions demonstrating temporary ceasefire between players
+	//PLAYER_1 advancing to PLAYER_3's territory
 	Orders* ad1Np1 = new Advance(p1, 2, t1, t9);
 	p1o->addOrder(ad1Np1);
-
 	ad1Np1->execute();
 
-
+	//PLAYER_1 bombing PLAYER_3's territory
 	Orders* boNp1 = new Bomb(p1, t9);
 	p1o->addOrder(boNp1);
-
 	boNp1->execute();
 
+	//PLAYER_3 advancing to PLAYER_1's territory
 	Orders* ad2Np3 = new Advance(p3, 2, t8, t3);
 	p3o->addOrder(ad2Np3);
-
-	ad2Np3->execute();
+	ad2Np3->execute();*/
 
 }
