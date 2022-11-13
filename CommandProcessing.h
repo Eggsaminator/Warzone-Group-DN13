@@ -12,19 +12,20 @@ using namespace std;
 class CommandProcessor;
 class Command;
 class FileCommandProcessorAdapter;
+class Engine;
+class State;
 
 //
 
 class CommandProcessor {
 public:
-    static CommandProcessor* instance(Engine* engine);
+    CommandProcessor(Engine* engine);
+    ~CommandProcessor();
     void chooseInputMethod();
     Command* getCommand();
     Command* getCommand(string promptMessage);
     bool validate(State* state, Command* command);
 protected:
-    CommandProcessor(Engine* engine);
-    ~CommandProcessor();
     virtual Command* readCommand();
     void saveCommand(Command* command);
     bool inputIsValid(string command, string argument);
@@ -55,12 +56,11 @@ private:
 
 class FileCommandProcessorAdapter : public CommandProcessor {
 public:
-    static FileCommandProcessorAdapter* instance(Engine* engine);
+    FileCommandProcessorAdapter(Engine* engine);
+    ~FileCommandProcessorAdapter();
     void setFile(string path);
     void processFile();
 private:
-    FileCommandProcessorAdapter(Engine* engine);
-    ~FileCommandProcessorAdapter();
     Command* readCommand();
     queue<string>* readFile(string path);
     static FileCommandProcessorAdapter* s_instance;

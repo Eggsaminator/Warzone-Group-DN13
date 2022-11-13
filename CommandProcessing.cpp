@@ -11,15 +11,6 @@ CommandProcessor::~CommandProcessor() {
 
 }
 
-// Implemented as a singleton such that only one instance must be instantiated.
-CommandProcessor* CommandProcessor::instance(Engine* engine) {
-    if (!s_instance)
-        s_instance = new CommandProcessor(engine);
-    return s_instance;
-}
-
-CommandProcessor* CommandProcessor::s_instance = 0;
-
 map<string, vector<string>> CommandProcessor::s_commandValidStates = {
     {"loadmap", {"start", "maploaded"}},
     {"validatemap", {"maploaded"}},
@@ -145,7 +136,7 @@ void CommandProcessor::chooseInputMethod() {
         getCommand();
     }
     if (cmd.compare("-file") == 0) {
-        FileCommandProcessorAdapter* fileProcessor = FileCommandProcessorAdapter::instance(m_engine);
+        FileCommandProcessorAdapter* fileProcessor = new FileCommandProcessorAdapter(m_engine);
         fileProcessor->setFile(argument);
         fileProcessor->processFile();
     }
@@ -210,15 +201,6 @@ FileCommandProcessorAdapter::FileCommandProcessorAdapter(Engine* engine) : Comma
 FileCommandProcessorAdapter::~FileCommandProcessorAdapter() {
 
 }
-
-// Implemented as a singleton such that only one instance must be instantiated.
-FileCommandProcessorAdapter* FileCommandProcessorAdapter::instance(Engine* engine) {
-    if (!s_instance)
-        s_instance = new FileCommandProcessorAdapter(engine);
-    return s_instance;
-}
-
-FileCommandProcessorAdapter* FileCommandProcessorAdapter::s_instance = 0;
 
 void FileCommandProcessorAdapter::setFile(string path) {
     m_filePath = path;

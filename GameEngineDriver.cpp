@@ -54,10 +54,10 @@ void testStartupPhase()
 {
 	cout<<"Demonstration of the start up phase"<<endl;
 
-	Engine mEngine;
-	CommandProcessor* mCommandProcessor = CommandProcessor::instance(&mEngine);
-	mEngine.startupPhase(mCommandProcessor);
-	vector<Player*> myListPlayer=mEngine.getPlayers();
+	Engine* mEngine = new Engine();
+	CommandProcessor* mCommandProcessor = new CommandProcessor(mEngine);
+	mEngine->startupPhase(mCommandProcessor);
+	vector<Player*> myListPlayer=mEngine->getPlayers();
 	Hand * myHand;
 	vector<Territory*> myTerr;
 	for(int i=0;i<size(myListPlayer);i++)
@@ -72,10 +72,4 @@ void testStartupPhase()
 	}
 	
 	
-}
-
-int main()
-{
-	//testGameStates();
-	testStartupPhase();
 }
