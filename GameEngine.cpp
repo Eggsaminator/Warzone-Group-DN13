@@ -5,10 +5,7 @@
 #include "Cards.h"
 #include "Player.h"
 #include "Map.h"
-
 #include "CommandProcessing.h"
-
-#include "set";
 
 using std::ostream;
 using std::cin;
@@ -16,8 +13,6 @@ using std::cout;
 using std::floor;
 using std::map;
 using std::set;
-
-//#include "CommandProcessing.h"
 
 class Deck;
 class Player;
@@ -138,7 +133,6 @@ State* Engine::getCurrentState() {
 	return currentState;
 }
 
-
 Deck* Engine::getDeck(){
 	return myDeck;
 }
@@ -150,7 +144,6 @@ vector<Player*> Engine::getPlayers(){
 Map* Engine::getMap(){
 	return mMap;
 }
-
 
 void Engine::setCurrentState(State* newState) {
 	currentState = newState;
@@ -232,7 +225,6 @@ void Engine::buildLevels() {
 
 	currentState = state0;
 }
-
 
 void Engine::startupPhase(CommandProcessor* mCommandProcess)
 {
@@ -347,7 +339,6 @@ this->setCurrentState(this->launchTransitionCommand("gamestart"));
 
 }
 
-
 void Engine::mainGameLoop() {
 	int i = 0;
 	while (i < 1) {
@@ -364,13 +355,26 @@ void Engine::gameLoopWinnerLoserCheckup() {
 	//check if a player has no territories owned, then eliminate him
 	auto iterator = myPlayers.begin();
 	while (iterator != myPlayers.end()) {
-		if ((*iterator)->getTerritories().empty()) {
+		if ((*iterator)->getTerritories().size() < 1) {
 			iterator = myPlayers.erase(iterator);
+			continue;
 		}
+		++iterator;
 	}
 
 	//check if a player owns all the territories
 	if (myPlayers.size() == 1) {
+		int numberTerritoriesOwned = myPlayers.at(0)->getTerritories().size();
+		auto allContinents = myMap->getContinents();
+		
+		int totalNbTerritories = 0;
+		for (int i = 0; i < allContinents.size(); i++) {
+			totalNbTerritories += allContinents[i]->getTerritories().size();
+		}
+
+		if (totalNbTerritories == numberTerritoriesOwned) {
+			cout << "THE WINNER IS " << myPlayers.at(0)->getName() << "!!" << endl;
+		}
 	}
 }
 
@@ -466,14 +470,14 @@ void Engine::issueOrdersPhase() {
 				continue;
 			}
 			else if (order == "Advance" || order == "Deploy") {
-				myPlayers.at(*iterator)->issueOrder(myPlayers.at(*iterator), order);
+				myPlayers.at(*iterator)->issueOrder(myPlayers.at(*iterator), myPlayers, order);
 			}
 			else if (order == "PickCard") {
-				if (myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
+				if (myPlayers.at(*iterator)->getHand() != nullptr && myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
 					vector<Card*> cardsInHand = myPlayers.at(*iterator)->getHand()->hand_content;
 					int randomCardIndex = rand() % cardsInHand.size();
 					Card* cardPtr = cardsInHand.at(randomCardIndex);
-					cardPtr->play();
+					cardPtr->play(myPlayers);
 				}
 			}
 
