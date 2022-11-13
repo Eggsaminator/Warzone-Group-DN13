@@ -32,10 +32,15 @@ public:
 	
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
+
+	void addArmy(int army);
+	void removeArmy(int army);
+	int getReinforcementPool();
 private:
 	string name;
 	Hand* hand;
 	vector<Territory*> territories;
+	int reinforcement_pool;
 };
 
 void testPlayers();
