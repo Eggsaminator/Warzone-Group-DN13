@@ -2,6 +2,7 @@
 #include "Orders.h"
 #include "Map.h"
 #include "Player.h"
+#include "GameEngine.h"
 
 /*----------------------------------------------------------------------order class---------------------------------------------------------------------*/
 ostream& operator << (ostream& os, const Orders& order) {
@@ -22,6 +23,10 @@ bool Orders::validate() {
 bool Orders::execute() {
 	cout << "\nOrder class of Execute()\n";
 	return false;
+}
+
+string Orders::getName() {
+	return "";
 }
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
@@ -165,6 +170,11 @@ string Deploy::toString() const{
 	return ss.str();
 }
 
+
+string Deploy::getName() {
+	return name;
+}
+
 /*----------------------------------------------------------------------advance class---------------------------------------------------------------------*/
 Advance::Advance() {
 
@@ -284,6 +294,9 @@ string Advance::toString() const {
 	return ss.str();
 }
 
+string Advance::getName() {
+	return name;
+}
 /*----------------------------------------------------------------------bomb class---------------------------------------------------------------------*/
 Bomb::Bomb() {
 
@@ -362,6 +375,9 @@ string Bomb::toString() const {
 	return ss.str();
 }
 
+string Bomb::getName() {
+	return name;
+}
 /*----------------------------------------------------------------------blockade class---------------------------------------------------------------------*/
 Blockade::Blockade() {
 
@@ -423,6 +439,9 @@ string Blockade::toString() const {
 	return ss.str();
 }
 
+string Blockade::getName() {
+	return name;
+}
 /*----------------------------------------------------------------------airlift class---------------------------------------------------------------------*/
 Airlift::Airlift() {
 
@@ -509,6 +528,9 @@ string Airlift::toString() const {
 	return ss.str();
 }
 
+string Airlift::getName() {
+	return name;
+}
 /*----------------------------------------------------------------------negotiate class---------------------------------------------------------------------*/
 Negotiate::Negotiate() {
 }
@@ -562,4 +584,8 @@ string Negotiate::toString() const {
 	stringstream ss;
 	ss << (*this);
 	return ss.str();
+}
+
+string Negotiate::getName() {
+	return name;
 }
