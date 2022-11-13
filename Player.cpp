@@ -197,3 +197,17 @@ string Player::getTruce() {
 	return nameT;
 }
 
+void Player::addArmy(int army)
+{
+	reinforcementpool+=army;
+}
+
+void Player::removeArmy(int army)
+{
+	if(army>reinforcementpool)
+	{
+		cout<<"invalid operation: not enough army in pool";
+	}
+	else{
+	reinforcementpool-=army;}
+}

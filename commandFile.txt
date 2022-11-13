@@ -1,0 +1,5 @@
+validatemap
+gamestart asdf
+replay
+loadmap asdf
+quit

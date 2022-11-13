@@ -38,15 +38,15 @@ public:
 	
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
-
   
 	void setTerritoriesToAttack(vector<Territory*>);
 	void setTerritoriesToDefend(vector<Territory*>);
-  
-	//part 4
-	void setTruce(Player* tp);
+
+  void setTruce(Player* tp);
 	string getTruce();
-  
+	void addArmy(int army);
+	void removeArmy(int army);
+	int getReinforcementPool();
 private:
 	string name, nameT;
 	Hand* hand;
