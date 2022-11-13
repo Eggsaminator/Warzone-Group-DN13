@@ -92,3 +92,23 @@ void Player::setOrdersList(OrderList* newOrdersList){
 OrderList* Player::getOrdersList(){
 	return ordersList;
 }
+
+void Player::addArmy(int army)
+{
+	reinforcement_pool+=army;
+}
+
+void Player::removeArmy(int army)
+{
+	if(army>reinforcement_pool)
+	{
+		cout<<"invalid operation: not enough army in pool";
+	}
+	else{
+	reinforcement_pool-=army;}
+}
+
+int Player::getReinforcementPool()
+{
+	return reinforcement_pool;
+}
