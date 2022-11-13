@@ -1,10 +1,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <set>
 #include "GameEngine.h"
 #include "Player.h"
 #include "Map.h"
+#include "Orders.h"
+#include "CommandProcessing.h"
+#include <set>
 using std::cin;
 using std::cout;
 using std::endl;
@@ -203,7 +205,7 @@ void testMainGameLoop() {
 	for (int i = 1; i < player1->toAttack().size(); i++) {
 		cout << ", " << player1->toAttack()[i]->getName();
 	}
-	cout << "]" << endl;
+  cout << "]" << endl;
 
 	cout << "Player " << player1->getName() << " issues an Advance order. According to the toAttack() method, he will attack: " << player1->toAttack()[0]->getName() << " territory." << endl;
 	cout << "Player " << player1->getName() << " issues an Advance order. According to the toDefend() method, he will defend: " << player1->toDefend()[2]->getName() << " territory." << endl;
@@ -264,4 +266,26 @@ void testMainGameLoop() {
 	player1->addTerritory(terr5);
 	player1->addTerritory(terr6);
 	mainEngine.gameLoopWinnerLoserCheckup();
+}
+
+void testStartupPhase()
+{
+	cout<<"Demonstration of the start up phase"<<endl;
+
+	Engine mEngine;
+	CommandProcessor* mCommandProcessor = CommandProcessor::instance(&mEngine);
+	mEngine.startupPhase(mCommandProcessor);
+	vector<Player*> myListPlayer=mEngine.getPlayers();
+	Hand * myHand;
+	vector<Territory*> myTerr;
+	for(int i=0;i<size(myListPlayer);i++)
+	{
+		cout <<"Player "<<i<<" :"<<myListPlayer[i]->getName()<<endl;
+		myHand=myListPlayer[i]->getHand();
+		myHand->display();
+		myTerr=myListPlayer[i]->getTerritories();
+		cout<<"number of owned territories :"<<myTerr.size()<<endl;
+		cout<<"The reinforcement pool of the player contains : "<<myListPlayer[i]->getReinforcementPool()<< " army."<<endl;
+
+	}	
 }

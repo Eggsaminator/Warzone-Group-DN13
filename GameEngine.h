@@ -2,11 +2,21 @@
 #include <string>
 #include <map>
 #include <vector>
+#include "Map.h"
+#include "Cards.h"
+#include "Player.h"
+#include "Orders.h"
+#include "CommandProcessing.h"
 using std::ostream;
 using std::string;
 using std::map;
 using std::vector;
 
+class Player;
+class Map;
+
+class CommandProcessor;
+class Deck;
 class Player;
 class Map;
 
@@ -33,6 +43,8 @@ public:
 	Engine& operator=(const Engine& copyState); //assignment operator
 	State* launchTransitionCommand(string command);
 	State* getCurrentState();
+	Deck* getDeck();
+	Map* getMap();
 	vector<Player*> getPlayers();
 	void setCurrentState(State* newState);
 	void mainGameLoop();
@@ -43,12 +55,17 @@ public:
 	void buildLevels();
 	void setMyMap(Map* map);
 	void setMyPlayers(vector <Player*> players);
+	void startupPhase(
+		CommandProcessor* mCommandProcess
+		);
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
 private:
+	Map* mMap;
 	State* currentState;
 	Map* myMap;
+  Deck* myDeck;
 	vector <Player*> myPlayers;
 };
 
-void testGameStates();
+void testStartupPhase();
 void testMainGameLoop();
