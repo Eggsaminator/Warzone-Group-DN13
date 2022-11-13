@@ -229,13 +229,26 @@ void Engine::gameLoopWinnerLoserCheckup() {
 	//check if a player has no territories owned, then eliminate him
 	auto iterator = myPlayers.begin();
 	while (iterator != myPlayers.end()) {
-		if ((*iterator)->getTerritories().empty()) {
+		if ((*iterator)->getTerritories().size() < 1) {
 			iterator = myPlayers.erase(iterator);
+			continue;
 		}
+		++iterator;
 	}
 
 	//check if a player owns all the territories
 	if (myPlayers.size() == 1) {
+		int numberTerritoriesOwned = myPlayers.at(0)->getTerritories().size();
+		auto allContinents = myMap->getContinents();
+		
+		int totalNbTerritories = 0;
+		for (int i = 0; i < allContinents.size(); i++) {
+			totalNbTerritories += allContinents[i]->getTerritories().size();
+		}
+
+		if (totalNbTerritories == numberTerritoriesOwned) {
+			cout << "THE WINNER IS " << myPlayers.at(0)->getName() << "!!" << endl;
+		}
 	}
 }
 

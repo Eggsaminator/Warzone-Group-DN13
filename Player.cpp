@@ -15,6 +15,7 @@ Player::Player() {
 Player::Player(string username) {
 	name = username;
 	ordersList = new OrderList(name);
+	hand = new Hand();
 }
 
 void Player::addTerritory(Territory* newTerritory){

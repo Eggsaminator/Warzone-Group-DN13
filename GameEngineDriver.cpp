@@ -80,8 +80,7 @@ void testMainGameLoop() {
 	mainEngine.setMyMap(&gameMap);
 	mainEngine.setMyPlayers(players);
 
-	mainEngine.mainGameLoop();
-	return;
+	mainEngine.reinforcementPhase();
 
 	
 
@@ -214,34 +213,55 @@ void testMainGameLoop() {
 	// (4) a player can play cards to issue orders 
 	cout << "(4) a player can play cards to issue orders:" << endl;
 	
-	cout << "Adding a Bomb card to " << player1->getName() << "..." << endl;
+	cout << "Adding a Bomb card to " << player1->getName() << "'s hand..." << endl;
 	Card* newCard = new Card("Bomb", nullptr, nullptr);
+	Deck* newDeck = new Deck();
+	Hand* newHand = new Hand();
+	newHand->setPlayer(player1);
+	player1->setHand(newHand);
+	newCard->setDeck(newDeck);
+	newCard->setHand(newHand);
 	player1->getHand()->add_card(newCard);
 	cout << player1->getName() << " plays the Bomb card... " << endl;
 	player1->getHand()->hand_content[0]->play(players);
 
-	cout << "\n\n\n\n";
+	cout << "\n\n\n";
 
 	// (5) a player that does not control any territory is removed from the game
 	cout << "(5) a player that does not control any territory is removed from the game:" << endl;
 
-	cout << "Player player3 has " << player3->getTerritories().size() << " territory and the game has XXX players." << endl;
+	cout << "Player player3 has " << player3->getTerritories().size() << " territory and the game has " << players.size() << " players." << endl;
 	mainEngine.gameLoopWinnerLoserCheckup();
-	cout << "After running the game loop checkup, the game has XXX players." << endl;
+	cout << "After running the game loop checkup, the game has " << players.size() << " players." << endl;
 	player3->setTerritories(vector<Territory*>{});
-	cout << "player3 gets his territory removed...";
-	cout << "Player player3 has " << player3->getTerritories().size() << " territory and the game has XXX players." << endl;
+	cout << "player3 has lost all his territories..." << endl;
+	cout << "Player player3 has " << player3->getTerritories().size() << " territory and the game has " << players.size() << " players." << endl;
 	mainEngine.gameLoopWinnerLoserCheckup();
-	cout << "After running the game loop checkup, the game has XXX players." << endl;
+	cout << "After running the game loop checkup, the game has " << mainEngine.getPlayers().size() << " players." << endl;
 
-	cout << "\n\n\n\n";
+	cout << "\n\n\n";
 
 	// (6) the game ends when a single player controls all the territories
 	cout << "(6) the game ends when a single player controls all the territories:" << endl;
 
-	cout << "Player player2 gets his territory removed...";
-	cout << "Player player2 has " << player2->getTerritories().size() << " territory and the game has XXX players." << endl;
+	cout << "The game has " << mainEngine.getPlayers().size() << " players." << endl;
+	cout << "Player player2 has lost all his territories..." << endl;
+	player2->setTerritories(vector<Territory*>{});
+	cout << "Player player2 has " << player2->getTerritories().size() << " territories and the game has " << mainEngine.getPlayers().size() << " players." << endl;
+	
+	player1->addTerritory(terr4);
+	player1->addTerritory(terr4_1);
+	player1->addTerritory(terr4_2);
+	player1->addTerritory(terr4_3);
+	player1->addTerritory(terr4_4);
+	player1->addTerritory(terr4_5);
+	player1->addTerritory(terr4_6);
+	player1->addTerritory(terr4_7);
+	player1->addTerritory(terr4_8);
+	player1->addTerritory(terr4_9);
+	player1->addTerritory(terr4_10);
+	player1->addTerritory(terr4_11);
+	player1->addTerritory(terr5);
+	player1->addTerritory(terr6);
 	mainEngine.gameLoopWinnerLoserCheckup();
-	cout << "After running the game loop checkup, the game has XXX players." << endl;
-	cout << "The winner is player " << players[0]->getName() << "!" << endl;
 }
