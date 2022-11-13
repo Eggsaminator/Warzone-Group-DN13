@@ -9,16 +9,11 @@ using namespace std;
 //dont know if we will need/keep this
 Player::Player() {
 	name = "nameless player";
-	territories.push_back(new Territory("TestTerritory of " + name, NULL));
 }
 
 //player constructor
 Player::Player(string username) {
 	name = username;
-	vector<Territory*> firstTerritories;
-	Continent* tempCont = new Continent("dummy", 0);
-	firstTerritories.push_back(new Territory("TestTerritory of " + username, tempCont));
-	territories = firstTerritories;
 	ordersList = new OrderList(name);
 }
 
@@ -33,20 +28,21 @@ void Player::issueOrder(Player* nameP, vector<Player*> allPlayers, string name) 
 	}
 
 	if (name == "Deploy") {
-		int numberArmyUnits = (rand() % reinforcementPoolLeftToDeploy) + 1;
-		reinforcementPoolLeftToDeploy -= numberArmyUnits;
+		if (reinforcementPoolLeftToDeploy > 0) {
+			int numberArmyUnits = (rand() % reinforcementPoolLeftToDeploy) + 1;
+			reinforcementPoolLeftToDeploy -= numberArmyUnits;
 
-		if (toDefend().size() > 0) {
-			int randomToDefendIndex = rand() % toDefend().size();
-			Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
+			if (toDefend().size() > 0) {
+				int randomToDefendIndex = rand() % toDefend().size();
+				Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
 
-			Orders* orderToAdd = new Deploy(nameP, numberArmyUnits, destinationTerritory);
-			(*ordersList).addOrder(orderToAdd);
+				Orders* orderToAdd = new Deploy(nameP, numberArmyUnits, destinationTerritory);
+				(*ordersList).addOrder(orderToAdd);
+			}
 		}
 	}
 	else if (name == "Advance") {
 		Territory* destinationTerritory = nullptr;
-
 		int randomSourceIndex = rand() % territories.size();
 		Territory* sourceTerritory = territories.at(randomSourceIndex);
 
@@ -54,6 +50,7 @@ void Player::issueOrder(Player* nameP, vector<Player*> allPlayers, string name) 
 		string advanceType = advanceTypes[rand() % 2];
 
 		if (advanceType == "Attack") {
+			cout << "WOOO2!\n" << endl;
 			if (toAttack().size() > 0) {
 				int randomToAttackIndex = rand() % toAttack().size();
 				destinationTerritory = toAttack().at(randomToAttackIndex);

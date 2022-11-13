@@ -334,11 +334,11 @@ void Engine::issueOrdersPhase() {
 				myPlayers.at(*iterator)->issueOrder(myPlayers.at(*iterator), myPlayers, order);
 			}
 			else if (order == "PickCard") {
-				if (myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
+				if (myPlayers.at(*iterator)->getHand() != nullptr && myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
 					vector<Card*> cardsInHand = myPlayers.at(*iterator)->getHand()->hand_content;
 					int randomCardIndex = rand() % cardsInHand.size();
 					Card* cardPtr = cardsInHand.at(randomCardIndex);
-					cardPtr->play();
+					cardPtr->play(myPlayers);
 				}
 			}
 

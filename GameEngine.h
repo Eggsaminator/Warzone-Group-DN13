@@ -7,6 +7,9 @@ using std::string;
 using std::map;
 using std::vector;
 
+class Player;
+class Map;
+
 class State {
 public:
 	State();

@@ -352,11 +352,6 @@ void Territory::addArmies(int newNumArmies) {
     numArmies += newNumArmies;
 }
 
-//addition for part 4
-Player* Territory::getOwner() {
-    return owner;
-}
-
 int Territory::getArmies() {
     return numArmies;
 }
