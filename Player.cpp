@@ -26,8 +26,8 @@ void Player::addTerritory(Territory* newTerritory){
 	territories.push_back(newTerritory);
 }
 
-//method for a player to issue an order, takes the order's name and related value (nb army troops)as parameter
-void Player::issueOrder(Player* nameP, string name) {
+//method for a player to issue an order, takes the order's name
+void Player::issueOrder(Player* nameP, vector<Player*> allPlayers, string name) {
 	if (reinforcementPoolLeftToDeploy > 0 && name != "Deploy") {
 		return;
 	}
@@ -36,11 +36,13 @@ void Player::issueOrder(Player* nameP, string name) {
 		int numberArmyUnits = (rand() % reinforcementPoolLeftToDeploy) + 1;
 		reinforcementPoolLeftToDeploy -= numberArmyUnits;
 
-		int randomToDefendIndex = rand() % toDefend().size();
-		Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
+		if (toDefend().size() > 0) {
+			int randomToDefendIndex = rand() % toDefend().size();
+			Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
 
-		Orders* orderToAdd = new Deploy(nameP, numberArmyUnits, destinationTerritory);
-		(*ordersList).addOrder(orderToAdd);
+			Orders* orderToAdd = new Deploy(nameP, numberArmyUnits, destinationTerritory);
+			(*ordersList).addOrder(orderToAdd);
+		}
 	}
 	else if (name == "Advance") {
 		Territory* destinationTerritory = nullptr;
@@ -52,26 +54,37 @@ void Player::issueOrder(Player* nameP, string name) {
 		string advanceType = advanceTypes[rand() % 2];
 
 		if (advanceType == "Attack") {
-			int randomToAttackIndex = rand() % toAttack().size();
-			destinationTerritory = toAttack().at(randomToAttackIndex);
+			if (toAttack().size() > 0) {
+				int randomToAttackIndex = rand() % toAttack().size();
+				destinationTerritory = toAttack().at(randomToAttackIndex);
+
+				int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
+
+				Orders* orderToAdd = new Advance(nameP, numberArmyUnits, sourceTerritory, destinationTerritory);
+				(*ordersList).addOrder(orderToAdd);
+			}
 		}
 		else
 		{
-			int randomToDefendIndex = rand() % toDefend().size();
-			destinationTerritory = toDefend().at(randomToDefendIndex);
+			if (toDefend().size() > 0) {
+				int randomToDefendIndex = rand() % toDefend().size();
+				destinationTerritory = toDefend().at(randomToDefendIndex);
+
+				int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
+
+				Orders* orderToAdd = new Advance(nameP, numberArmyUnits, sourceTerritory, destinationTerritory);
+				(*ordersList).addOrder(orderToAdd);
+			}
 		}
-
-		int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
-
-		Orders* orderToAdd = new Advance(nameP, numberArmyUnits, sourceTerritory, destinationTerritory);
-		(*ordersList).addOrder(orderToAdd);
 	}
 	else if (name == "Bomb") {
-		int randomToAttackIndex = rand() % toAttack().size();
-		Territory* destinationTerritory = toAttack().at(randomToAttackIndex);
+		if (toAttack().size() > 0) {
+			int randomToAttackIndex = rand() % toAttack().size();
+			Territory* destinationTerritory = toAttack().at(randomToAttackIndex);
 
-		Orders* orderToAdd = new Bomb(nameP, destinationTerritory);
-		(*ordersList).addOrder(orderToAdd);
+			Orders* orderToAdd = new Bomb(nameP, destinationTerritory);
+			(*ordersList).addOrder(orderToAdd);
+		}
 	}
 	else if (name == "Reinforcement") {
 		//WHAT DO WE DO WITH REINFORCEMENT CARDS?
@@ -82,22 +95,36 @@ void Player::issueOrder(Player* nameP, string name) {
 
 		int randomNbArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
 
-		int randomToDefendIndex = rand() % toDefend().size();
-		Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
+		if (toDefend().size() > 0) {
+			int randomToDefendIndex = rand() % toDefend().size();
+			Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
 
-		Orders* orderToAdd = new Airlift(nameP, randomNbArmyUnits, sourceTerritory, destinationTerritory);
-		(*ordersList).addOrder(orderToAdd);
+			Orders* orderToAdd = new Airlift(nameP, randomNbArmyUnits, sourceTerritory, destinationTerritory);
+			(*ordersList).addOrder(orderToAdd);
+		}
 	}
 	else if (name == "Negotiate") {
-		//TODO: how am I supposed to access all the players??
-		/*Orders* orderToAdd = new Negotiate(pick a randomPlayer);
-		(*ordersList).addOrder(orderToAdd);*/
+		bool randomPlayerPicked = false;
+		Player* randomPlayer = nullptr;
+
+		while (!randomPlayerPicked) {
+			int randomPlayerIndex = rand() % allPlayers.size();
+			if (allPlayers[randomPlayerIndex] != nameP) {
+				randomPlayerPicked = true;
+				randomPlayer = allPlayers[randomPlayerIndex];
+			}
+		}
+
+		Orders* orderToAdd = new Negotiate(nameP, randomPlayer);
+		(*ordersList).addOrder(orderToAdd);
 	}
 	else if (name == "Blockade") {
-		int randomTargetIndex = rand() % territories.size();
-		Territory* targetTerritory = territories.at(randomTargetIndex);
+		if (territories.size() > 0) {
+			int randomTargetIndex = rand() % territories.size();
+			Territory* targetTerritory = territories.at(randomTargetIndex);
 
-		Orders* orderToAdd = new Blockade(nameP, targetTerritory);
+			Orders* orderToAdd = new Blockade(nameP, targetTerritory);
+		}
 	}
 }
 

@@ -331,7 +331,7 @@ void Engine::issueOrdersPhase() {
 				continue;
 			}
 			else if (order == "Advance" || order == "Deploy") {
-				myPlayers.at(*iterator)->issueOrder(order);
+				myPlayers.at(*iterator)->issueOrder(myPlayers.at(*iterator), myPlayers, order);
 			}
 			else if (order == "PickCard") {
 				if (myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
