@@ -57,6 +57,7 @@ public:
     void addTerritory(Territory* territory);
     vector<Territory*> getTerritories();
     string getName();
+    int getBonusValue();
 private:
     string name;
     int value;
@@ -75,6 +76,8 @@ public:
     Continent* getContinent();
     string getName();
     void setOwner(Player* newOwner);
+    Player* getOwner();
+    int getArmies();
     void setOwner(Player* newOwner, int newNumArmies);
     void setArmies(int newNumArmies);
     void addArmies(int newNumArmies);

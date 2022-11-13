@@ -72,54 +72,41 @@ void Card::play()
     assert(belong_to_hand!=NULL);
     assert(belong_to_hand->my_player!=NULL);
 
-
-
-
-    
-    if(card_type=="Bomb")
+    if (card_type == "Bomb")
     {
-        
+      
     belong_to_hand->my_player->issueOrder(belong_to_hand->my_player,"Bomb");
-
+      
     }
-    if(card_type=="Reinforcement")
+    if (card_type == "Reinforcement")
     {
         //belong_to_hand->my_player->issueOrder("Reinforcement");
-
     }
-    if(card_type=="Airlift")
+    if (card_type == "Airlift")
     {
-       
+      
         belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, "Airlift");
-
+      
     }
-    if(card_type=="Diplomacy")
+    if (card_type == "Diplomacy")
     {
-       
+      
         belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, "Negotiate");
-        
-
+      
     }   
     if(card_type=="Blockade")
     {
         
         belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, "Blockade");
-        
-
+      
     }
-
-
-    //insert code to deal with the order
-    
 
     // remove from hand
     (*belong_to_hand).remove_card(this);
 
     // place back in deck
 
-    (*belong_to_deck).add_card(this); 
-
-
+    (*belong_to_deck).add_card(this);
 }
 
 

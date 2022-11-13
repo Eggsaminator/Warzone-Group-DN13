@@ -29,17 +29,32 @@ public:
 	
 	Hand* getHand();
 	void setHand(Hand*);
+
+	int getReinforcementPool();
+	void setReinforcementPool(int armyUnits);
+
+	int getReinforcementPoolLeftToDeploy();
+	void setReinforcementPoolLeftToDeploy(int armyUnits);
 	
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
 
+  
+	void setTerritoriesToAttack(vector<Territory*>);
+	void setTerritoriesToDefend(vector<Territory*>);
+  
 	//part 4
 	void setTruce(Player* tp);
 	string getTruce();
+  
 private:
 	string name, nameT;
 	Hand* hand;
+	int reinforcementPool = 50;
+	int reinforcementPoolLeftToDeploy = 0;
 	vector<Territory*> territories;
+	vector<Territory*> territoriesToAttack;
+	vector<Territory*> territoriesToDefend;
 };
 
 void testPlayers();
