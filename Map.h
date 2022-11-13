@@ -90,5 +90,4 @@ private:
     vector<Territory*> adjacencyList;
 };
 
-
 void testLoadMaps();

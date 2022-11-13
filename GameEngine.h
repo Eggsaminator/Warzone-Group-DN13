@@ -42,6 +42,8 @@ public:
 	void setMyMap(Map* map);
 	void setMyPlayers(vector <Player*> players);
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
+
+
 private:
 	State* currentState;
 	Map* myMap;

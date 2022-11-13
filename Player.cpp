@@ -178,3 +178,10 @@ void Player::addOrder(Orders* order) {
 	
 }
 
+void Player::setConquered(bool tf) {
+	territoryConquered = tf;
+}
+
+bool Player::getConquered() {
+	return territoryConquered;
+}
