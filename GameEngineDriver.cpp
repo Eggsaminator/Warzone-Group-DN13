@@ -136,6 +136,10 @@ void testMainGameLoop() {
 	}
 	cout << "\n\n\n\n";
 
+
+	//issue with driver line 149(?) toDefend().size() is 0 overloading randomToDefendIndex
+
+
 	// (2) a player will only issue deploy orders and no other kind of orders if they still have army units in their reinforcement pool 
 	cout << "(2) a player will only issue deploy orders and no other kind of orders if they still have army units in their reinforcement pool:" << endl;
 	

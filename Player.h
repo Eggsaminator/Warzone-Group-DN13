@@ -46,6 +46,7 @@ public:
 	//part 4
 	void setTruce(Player* tp);
 	string getTruce();
+	void addOrder(Orders* o);
   
 private:
 	string name, nameT;

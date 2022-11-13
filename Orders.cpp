@@ -119,7 +119,6 @@ bool Deploy::validate() {
 	//done except for designating which player's territory to look
 	cout << "Validate for deploy order" << endl;
 	//check if deploy has already been executed
-	cout << executed << endl;
 	if (executed == false) {
 		//check if target territory belongs to the player
 		if (tarTerritory->getOwner() == player) {

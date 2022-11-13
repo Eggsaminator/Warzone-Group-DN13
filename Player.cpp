@@ -57,7 +57,8 @@ void Player::issueOrder(Player* nameP, string name) {
 		}
 		else
 		{
-			int randomToDefendIndex = rand() % toDefend().size();
+			cout << toDefend().size();
+			int randomToDefendIndex = (rand() % toDefend().size());
 			destinationTerritory = toDefend().at(randomToDefendIndex);
 		}
 
@@ -164,11 +165,16 @@ void Player::setReinforcementPoolLeftToDeploy(int armyUnits) {
 	reinforcementPoolLeftToDeploy = armyUnits;
 }
 
+//part 4
 void Player::setTruce(Player* tp) {
 	nameT = tp->getName();
 }
 
 string Player::getTruce() {
 	return nameT;
+}
+
+void Player::addOrder(Orders* order) {
+	
 }
 

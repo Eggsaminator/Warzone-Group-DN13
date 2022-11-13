@@ -71,6 +71,9 @@ void testOrdersList() {
 }
 
 void testOrderExecution() {
+
+	Engine orderEngine = Engine();
+
 	//CREATE SIMPLE MAP
 	Continent* continent = new Continent("CONTINENT", 0);
 	Territory* t1 = new Territory("TERRITORY #1", continent);
@@ -96,10 +99,6 @@ void testOrderExecution() {
 	players.push_back(p2);
 	players.push_back(p3);
 
-	OrderList* p1o = new OrderList(p1->getName());
-	OrderList* p2o = new OrderList(p2->getName());
-	OrderList* p3o = new OrderList(p3->getName());
-
 	hp1->setPlayer(p1);
 
 	//ASSIGN TERRITORY
@@ -117,56 +116,33 @@ void testOrderExecution() {
 	t4->addAdjacency(t6);
 	t7->addAdjacency(t4);
 
-
-
-
-
-
-	vector<string> mapList;
-	mapList.push_back("Order.map");
-	MapLoader mapLoader;
-	try {
-		Map map = mapLoader.loadMap(mapList[0]);
-		if (map.validate()) {
-			cout << "Map is valid." << endl;
-		}
-		else {
-			cout << "Map is invalid." << endl;
-		}
-	}
-	catch (invalid_argument) {
-		cout << "Error. Exception caught. Map invalid." << endl;
-	}
-
-	Engine orderEngine = Engine();
-
-
-
-	//set player hand - initial hand for testing
-	p1->getHand()->add_card(new Card("Bomb", nullptr, nullptr));
-	p1->getHand()->add_card(new Card("Blockade", nullptr, nullptr));
-	p1->getHand()->add_card(new Card("Airlift", nullptr, nullptr));
-	p1->getHand()->add_card(new Card("Diplomacy", nullptr, nullptr));
-
-	p2->getHand()->add_card(new Card("Bomb", nullptr, nullptr));
-	p2->getHand()->add_card(new Card("Blockade", nullptr, nullptr));
-	p2->getHand()->add_card(new Card("Airlift", nullptr, nullptr));
-	p2->getHand()->add_card(new Card("Diplomacy", nullptr, nullptr));
-
-	p3->getHand()->add_card(new Card("Bomb", nullptr, nullptr));
-	p3->getHand()->add_card(new Card("Blockade", nullptr, nullptr));
-	p3->getHand()->add_card(new Card("Airlift", nullptr, nullptr));
-	p3->getHand()->add_card(new Card("Diplomacy", nullptr, nullptr));
-
-
-
-
-	//mainEngine.setMyMap(&gameMap);
-	//mainEngine.setMyPlayers(players);
-	//
-	//orderEngine.issueOrdersPhase();
-	//orderEngine.executeOrdersPhase();
+	Map gameMap;
+	gameMap.addContinent(continent);
+		
+	orderEngine.setMyMap(&gameMap);
+	orderEngine.setMyPlayers(players);
 	
+	vector<Orders*> orders;
+	Orders* dp1 = new Deploy(p1, 10, t1);
+
+	p1->getOrdersList()->addOrder(dp1);
+
+	cout << players.at(0)->getOrdersList()->toString();
+
+	orderEngine.executeOrdersPhase();
+	
+	cout << "test otder execution" << endl;
+
+
+
+
+
+
+	//to show execute works fine along with validate
+	//1. hardcode basic setup
+	//2. add them to game engine
+	//3. hardcode orders and put them into appropriate orderlist
+
 	//hardcoded-version
 	/*
 	//DEPLOY
@@ -275,6 +251,6 @@ void testOrderExecution() {
 	//PLAYER_3 advancing to PLAYER_1's territory
 	Orders* ad2Np3 = new Advance(p3, 2, t8, t3);
 	p3o->addOrder(ad2Np3);
-	ad2Np3->execute();*/
-
+	ad2Np3->execute();
+	*/
 }
