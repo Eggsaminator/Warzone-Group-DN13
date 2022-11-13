@@ -21,13 +21,13 @@ public:
     void chooseInputMethod();
     Command* getCommand();
     Command* getCommand(string promptMessage);
+    bool validate(State* state, Command* command);
 protected:
     CommandProcessor(Engine* engine);
     ~CommandProcessor();
     virtual Command* readCommand();
     void saveCommand(Command* command);
     bool inputIsValid(string command, string argument);
-    bool validate(State* state, Command* command);
     bool isValid(State* state, Command* command);
     bool isValidInputMethod(string command, string argument);
     Engine* m_engine;
