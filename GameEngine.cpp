@@ -240,13 +240,13 @@ State* currentState = this->getCurrentState();
 while(this->getCurrentState()->getStateName()!="assign reinforcement")
 {
 	// we get a new command
-	Command mCommand=mCommandProcess->getCommand();
+	Command* mCommand= mCommandProcess->getCommand();
 
-	
+	string mCommand_name;
 	if(
-		mCommand.validate()
+		mCommandProcess->validate(getCurrentState(), mCommand)
 		)
-		string mCommand_name=mCommand.getName();
+		mCommand_name=mCommand->getName();
 	// if the command is valid in the current state of the Game Engine then we can apply its effect
 	{
 

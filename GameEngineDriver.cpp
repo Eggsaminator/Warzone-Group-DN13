@@ -54,10 +54,8 @@ void testStartupPhase()
 {
 	cout<<"Demonstration of the start up phase"<<endl;
 
-	// really not sure on that part ^^' 
-	static CommandProcessor* mCommandProcessor;
-	mCommandProcessor=CommandProcessor.instance();
 	Engine mEngine;
+	CommandProcessor* mCommandProcessor = CommandProcessor::instance(&mEngine);
 	mEngine.startupPhase(mCommandProcessor);
 	vector<Player*> myListPlayer=mEngine.getPlayers();
 	Hand * myHand;
