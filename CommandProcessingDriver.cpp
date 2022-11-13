@@ -6,7 +6,7 @@ using namespace std;
 
 void testCommandProcessor() {
     Engine* engine = &Engine();
-    CommandProcessor* processor = CommandProcessor::instance(engine);
+    CommandProcessor* processor = new CommandProcessor(engine);
 
     cout << "---------------------------------------------" << endl;
     cout << "Part 1: Commands can be read from the console" << endl;
@@ -33,7 +33,7 @@ void testCommandProcessor() {
     // processor->chooseInputMethod();
     // Input into the console: "-file commandFile.txt"
 
-    FileCommandProcessorAdapter* adapter = FileCommandProcessorAdapter::instance(engine);
+    FileCommandProcessorAdapter* adapter = new FileCommandProcessorAdapter(engine);
     adapter->setFile("commandFile.txt");
     adapter->processFile();
 
