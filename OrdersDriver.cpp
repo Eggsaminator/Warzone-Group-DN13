@@ -2,6 +2,7 @@
 #include "Orders.h"
 #include "Player.h"
 #include "Map.h"
+#include "GameEngine.h"
 
 void testOrdersList() {
 	vector<string> mapList;
@@ -70,154 +71,151 @@ void testOrdersList() {
 }
 
 void testOrderExecution() {
+
+	Engine orderEngine = Engine();
+
 	//CREATE SIMPLE MAP
 	Continent* continent = new Continent("CONTINENT", 0);
-	Territory* t1 = new Territory("TERRITORY #1", continent);
-	Territory* t2 = new Territory("TERRITORY #2", continent);
-	Territory* t3 = new Territory("TERRITORY #3", continent);
-	Territory* t4 = new Territory("TERRITORY #4", continent);
+	Territory* t1 = new Territory("TERRITORY #1", continent); //deploy called
+	Territory* t2 = new Territory("TERRITORY #2", continent); //no unit
+	Territory* t3 = new Territory("TERRITORY #3", continent); //no unit
+	Territory* t4 = new Territory("TERRITORY #4", continent); //unit
 	Territory* t5 = new Territory("TERRITORY #5", continent);
 	Territory* t6 = new Territory("TERRITORY #6", continent);
-	Territory* t7 = new Territory("TERRITORY #7", continent);
-	Territory* t8 = new Territory("TERRITORY #8", continent);
-	Territory* t9 = new Territory("TERRITORY #9", continent);
+	t4->addArmies(10);
 
 	//CREATE DECK
 	Deck d(15, false);
 	Hand* hp1 = new Hand();
 	
 	//CREATE PLAYER
+	vector<Player*> players;
 	Player* p1 = new Player("PLAYER_1"); //will have teritory 1,2,3
 	Player* p2 = new Player("PLAYER_2"); //will have teritory 4,5,6
 	Player* p3 = new Player("PLAYER_3"); //will have teritory 7,8,9
-
-	OrderList* p1o = new OrderList(p1->getName());
-	OrderList* p2o = new OrderList(p2->getName());
-	OrderList* p3o = new OrderList(p3->getName());
+	players.push_back(p1);
+	players.push_back(p2);
+	players.push_back(p3);
 
 	hp1->setPlayer(p1);
 
 	//ASSIGN TERRITORY
-	t1->setOwner(p1); //deploy - advance - aiflift
-	t2->setOwner(p1); //blockade
-	t3->setOwner(p1); //airlift
-	t4->setOwner(p2); //advance
-	t5->setOwner(p2); //advance
-	t6->setOwner(p2); //advance
-	t7->setOwner(p3); //advance
-	t8->setOwner(p3); //bomb
-	t9->setOwner(p3); //negotiate
+	t1->setOwner(p1); 
+	t2->setOwner(p1); 
+	t3->setOwner(p2); 
+	t4->setOwner(p2); 
+	t5->setOwner(p3); 
+	t6->setOwner(p3); 
 
+	//ADD ADJACENCY
+	//1 -> 2 & 3 & 4 & 5
+	t1->addAdjacency(t2);
+	t1->addAdjacency(t3);
 	t1->addAdjacency(t5);
+	//2 -> 1 & 4 & 5
+	t2->addAdjacency(t5);
+	//3 -> 1 & 4
+	//4 -> 1 & 2 & 3 & 5 & 6
+	t4->addAdjacency(t1);
+	t4->addAdjacency(t2);
+	t4->addAdjacency(t3);
+	t4->addAdjacency(t5);
 	t4->addAdjacency(t6);
-	t7->addAdjacency(t4);
+	//5 -> 1 & 2 & 4
+	//6 -> 4
 
+	Map gameMap;
+	gameMap.addContinent(continent);
+		
+	orderEngine.setMyMap(&gameMap);
+	orderEngine.setMyPlayers(players);
+	
 	//DEPLOY
-	cout << "___________________________________________\n\n\tCHECKING FOR DEPLOY ORDER\n___________________________________________" << endl;
-	//p1
-	cout << p1o->toString() << "Owner: " << t1->getOwner()->getName() << " | Army count on territory #1: " << t1->getArmies() << endl;
-	Orders* dp1 = new Deploy(p1, 10, t1);
-
-	p1o->addOrder(dp1);
-
-	//p1 - deploy
-	dp1->execute();
-
-	dp1->execute();
-
-	cout << p1o->toString() << "Owner: " << t1->getOwner()->getName() << " | Army count on territory #1: " << t1->getArmies() << endl;
+	//PLAYER_1 - DEPLOY ON OWN TERRITORY
+	Orders* d1 = new Deploy(p1, 50, t1);
+	//PLAYER_1 - DEPLOY ON WRONG TERRITORY
+	Orders* d2 = new Deploy(p1, 20, t3);
 
 	//ADVANCE
-	cout << "___________________________________________\n\n\tCHECKING FOR ADVANCE ORDER\n___________________________________________" << endl;
-	t4->setArmies(5);
-	t7->setArmies(15);
-
-	//p1 - to ennemy territory with no units
-	Orders* adp1 = new Advance(p1, 1, t1, t5);
-	//p2 - to another ally territory
-	Orders* adp2 = new Advance(p2, 2, t4, t6);
-	//p3 - to ennemy territory with units
-	Orders* adp3 = new Advance(p3, 1, t7, t4);
-
-	p1o->addOrder(adp1);
-	p2o->addOrder(adp2);
-	p3o->addOrder(adp3);
-
-	cout << "\n[PLAYER_1 ADVANCE TO PLAYER_2 TERRITORY WITH NOT ENNEMY UNIT]\nOwner: " << t1->getOwner()->getName() << " | Army in t1: " << t1->getArmies() << "\nOwner: " << t5->getOwner()->getName() << " | Army in t5: " << t5->getArmies() << endl;
-	adp1->execute();
-	cout << p1o->toString() << "Owner: " << t1->getOwner()->getName() << " | Army in t1: " << t1->getArmies() << "\nOwner: " << t5->getOwner()->getName() << " | Army in t5: " << t5->getArmies() << endl;
-
-	cout << "\n[PLAYER_2 ADVANCE TO PLAYER_2 TERRITORY]\nOwner: " << t4->getOwner()->getName() << " | Army in t4: " << t4->getArmies() << "\nOwner: " << t6->getOwner()->getName() << " | Army in t6: " << t6->getArmies() << endl;
-	adp2->execute();
-	cout << p2o->toString() << "Owner: " << t4->getOwner()->getName() << " | Army in t4: " << t4->getArmies() << "\nOwner: " << t6->getOwner()->getName() << " | Army in t6: " << t6->getArmies() << endl;
-
-	cout << "\n[PLAYER_3 ADVANCE TO PLAYER_2 TERRITORY WITH ENNEMY UNITS\nOwner: " << t7->getOwner()->getName() << " | Army in t7: " << t7->getArmies() << "\nOwner: " << t4->getOwner()->getName() << " | Army in t4: " << t4->getArmies() << endl;
-	adp3->execute();
-	cout << p3o->toString() << "Owner: " << t7->getOwner()->getName() << " | Army in t7: " << t7->getArmies() << "\nOwner: " << t4->getOwner()->getName() << " | Army in t4: " << t4->getArmies() << endl;
-
-
-	//BOMB
-	cout << "___________________________________________\n\n\tCHECKING FOR BOMB ORDER\n___________________________________________" << endl;
-	t8->setArmies(8);
-	t8->addAdjacency(t1);
-
-	//p1 - to ennemy territory with no units
-	Orders* bop1 = new Bomb(p1, t8);
-	p1o->addOrder(bop1);
-
-	cout << "\n[PLAYER_1 BOMB PLAYER_3 TERRITORY #8]\nOwner: " << t8->getOwner()->getName() << " | Army in t8: " << t8->getArmies() << endl;
-	bop1->execute();
-	cout << p3o->toString() << "Owner: " << t8->getOwner()->getName() << " | Army in t8: " << t8->getArmies() << endl;
-
-	//BLOCKADE
-	cout << "___________________________________________\n\n\tCHECKING FOR BLOCKADE ORDER\n___________________________________________" << endl;
-	t2->setArmies(12);
-
-	//p1 - to ennemy territory with no units
-	Orders* blp1 = new Blockade(p1, t2);
-	p1o->addOrder(blp1);
-
-	cout << "\n[PLAYER_1 BLOCK TERRITORY #2]\nOwner: " << t2->getOwner()->getName() << " | Army in t8: " << t2->getArmies() << endl;
-	blp1->execute();
-	cout << p1o->toString() << "Owner: " << t2->getOwner()->getName() << " | Army in t2: " << t2->getArmies() << endl;
-
-
-		//AIRLIFT
-	cout << "___________________________________________\n\n\tCHECKING FOR AIRLIFT ORDER\n___________________________________________" << endl;
-	t3->setArmies(16);
-	//p1 - to ennemy territory with no units
-	Orders* aip1 = new Airlift(p1, 10, t3, t1);
-	p1o->addOrder(aip1);
-
-	cout << "\n[PLAYER_1 AIRLIFT FROM TERRITORY #3 TO TERRITORY #1]\nOwner: " << t3->getOwner()->getName() << " | Army in t3: " << t3->getArmies() << "\nOwner: " << t1->getOwner()->getName() << " | Army in t1: " << t1->getArmies() << endl;
-	aip1->execute();
-	cout << p1o->toString() << "Owner: " << t3->getOwner()->getName() << " | Army in t3: " << t3->getArmies() << "\nOwner: " << t1->getOwner()->getName() << " | Army in t1: " << t1->getArmies() << endl;
-
-
-	//NEGOTIATE
-	cout << "___________________________________________\n\n\tCHECKING FOR NEGOTIATE ORDER\n___________________________________________" << endl;
-	t1->addAdjacency(t9);
-	Orders* np1 = new Negotiate(p1, p3);
-	p1o->addOrder(np1); 
+	//PLAYER_1 - ADVANCE TO ALLY TERRITORY
+	Orders* ad1 = new Advance(p1, 5, t1, t2);
+	//PLAYER_1 - ADVANCE TO ENNEMY TERRITORY WITH NO UNITS
+	Orders* ad2 = new Advance(p1, 1, t1, t3);
+	//PLAYER_1 - ADVANCE TO ENNEMY TERRITORY WITH UNITS
+	Orders* ad3 = new Advance(p1, 3, t1, t4);
+	//PLAYER_1- WRONG ADVANCE (ENNEMY TO X)
+	Orders* ad4 = new Advance(p1, 1, t3, t1);
 	
-	cout << "\n[PLAYER_1 NEGOTIATE PLAYER_3]\nPlayer: " << p1->getName() << "\nPlayer: " << p3->getName() << endl;
-	np1->execute();
-	cout << p1o->toString();
+	//BOMB
+	//PLAYER_1 - BOMB ENNEMY TERRITORY
+	Orders* bo1 = new Bomb(p1, t4);
+	//PLAYER_1 - BOMB NON-ADJACENT ENNEMY TERRITORY
+	Orders* bo2 = new Bomb(p1, t6);
+	//PLAYER_1 - BOMB OWN TERRITORY
+	Orders* bo3 = new Bomb(p1, t1);
 
-	Orders* ad1Np1 = new Advance(p1, 2, t1, t9);
-	p1o->addOrder(ad1Np1);
+	//BLOACKADE
+	//PLAYER_1 - BLOCKADE OWN TERRITORY
+	Orders* bl1 = new Blockade(p1, t2);
+	//PLAYER_1 - BLOCKADE ENNEMY TERRITORY
+	Orders* bl2 = new Blockade(p1, t6);
 
-	ad1Np1->execute();
+	//AIRLIFT
+	//- AIRLIFT ON OWN TERRITORIES
+	Orders* ai1 = new Airlift(p1, 10, t1, t2);
+	//- AIRLIFT ON ENNEMY TERRITORY
+	Orders* ai2 = new Airlift(p1, 10, t1, t3);
+
+	//NEGOTIATE 
+	//p1 - NEGOTIATE TO ENNEMY
+	Orders* n1 = new Negotiate(p1, p3);
+	//p1 - NEGOTIATE TO SELF
+	Orders* n2 = new Negotiate(p1, p1);
+
+	//actions demonstrating temporary ceasefire between players
+	//PLAYER_1 advancing to PLAYER_3's territory
+	Orders* nad = new Advance(p1, 5, t1, t5);
+	//PLAYER_1 bombing PLAYER_3's territory
+	Orders* nbo1 = new Bomb(p1, t5);
+	//PLAYER_3 advancing to PLAYER_1's territory
+	Orders* nad1 = new Advance(p3, 2, t5, t1);
+
+	players.at(0)->getOrdersList()->addOrder(d1);
+	players.at(0)->getOrdersList()->addOrder(d2);
+
+	players.at(0)->getOrdersList()->addOrder(ad1);
+	players.at(0)->getOrdersList()->addOrder(ad2);
+	players.at(0)->getOrdersList()->addOrder(ad3);
+	players.at(0)->getOrdersList()->addOrder(ad4);
+
+	players.at(0)->getOrdersList()->addOrder(bo1);
+	players.at(0)->getOrdersList()->addOrder(bo2);
+	players.at(0)->getOrdersList()->addOrder(bo3);
+
+	players.at(0)->getOrdersList()->addOrder(bl1);
+	players.at(0)->getOrdersList()->addOrder(bl2);
+
+	players.at(0)->getOrdersList()->addOrder(ai1);
+	players.at(0)->getOrdersList()->addOrder(ai2);
+
+	players.at(0)->getOrdersList()->addOrder(n1);
+	players.at(0)->getOrdersList()->addOrder(n2);
+
+	players.at(0)->getOrdersList()->addOrder(nad);
+	players.at(0)->getOrdersList()->addOrder(nbo1);
+	players.at(0)->getOrdersList()->addOrder(nad1);
+
+	orderEngine.executeOrdersPhase();
+	
 
 
-	Orders* boNp1 = new Bomb(p1, t9);
-	p1o->addOrder(boNp1);
 
-	boNp1->execute();
 
-	Orders* ad2Np3 = new Advance(p3, 2, t8, t3);
-	p3o->addOrder(ad2Np3);
 
-	ad2Np3->execute();
+
+	//to show execute works fine along with validate
+	//1. hardcode basic setup
+	//2. add them to game engine
+	//3. hardcode orders and put them into appropriate orderlist
 
 }

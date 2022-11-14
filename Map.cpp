@@ -315,6 +315,7 @@ void Territory::addAdjacency(Territory* territory) {
 
 void Territory::addAdjacency(Territory* firstTerritory, Territory* secondTerritory) {
     firstTerritory->addAdjacency(secondTerritory);
+    secondTerritory->addAdjacency(firstTerritory);
 }
 
 vector<Territory*> Territory::getAdjacencyList() {

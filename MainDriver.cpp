@@ -9,12 +9,11 @@ int main()
     //Part 2: Startup phase
     testStartupPhase();
 
-    //Part 3:
+    //Part 3: Main Game Loop
+    testGameStates();
 
-
-    //Part 4:
-
+    //Part 4: Order Execution
+    testOrderExecution();
 
     //Part 5:
-
 }

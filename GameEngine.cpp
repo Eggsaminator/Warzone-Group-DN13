@@ -312,15 +312,201 @@ while(this->getCurrentState()->getStateName()!="assignreinforcement")
 
 	}
 
-	
 this->setCurrentState(this->launchTransitionCommand("gamestart"));
+	}
+}
+}
 
+void Engine::mainGameLoop() {
+	int i = 0;
+	while (i < 1) {
+		//run game loop
+		reinforcementPhase();
+		issueOrdersPhase();
+		executeOrdersPhase();
+
+		gameLoopWinnerLoserCheckup();
 	}
 }
 
+void Engine::gameLoopWinnerLoserCheckup() {
+	//check if a player has no territories owned, then eliminate him
+	auto iterator = myPlayers.begin();
+	while (iterator != myPlayers.end()) {
+		if ((*iterator)->getTerritories().empty()) {
+			iterator = myPlayers.erase(iterator);
+		}
+	}
 
+	//check if a player owns all the territories
+	if (myPlayers.size() == 1) {
+	}
+}
 
+void Engine::reinforcementPhase() {
+	for (int index = 0; index < myPlayers.size(); index++) {
+		vector<Territory*> ownedTerritories = myPlayers.at(index)->getTerritories();
+		int qtyArmyUnits = floor(ownedTerritories.size() / 3);
+
+		//create a map of qty of territories owned by continent 
+		map<string, int> qtyTerritoriesOwnedByContinents;
+		for (Territory* territoryPtr : ownedTerritories) {
+			string continentName = territoryPtr->getContinent()->getName();
+			if (qtyTerritoriesOwnedByContinents.find(continentName) == qtyTerritoriesOwnedByContinents.end()) {
+				qtyTerritoriesOwnedByContinents[continentName] = 1;
+			}
+			else {
+				int nbTerritoriesInContinent = qtyTerritoriesOwnedByContinents[continentName];
+				qtyTerritoriesOwnedByContinents[continentName] = nbTerritoriesInContinent + 1;
+			}
+		}
+
+		//check if nb of territories owned by continent = max nb territories in continent
+		for (map<string, int>::iterator iter = qtyTerritoriesOwnedByContinents.begin(); iter != qtyTerritoriesOwnedByContinents.end(); ++iter)
+		{
+			string continentName = iter->first;
+			int nbTerritories = iter->second;
+			Continent* continentPtr = myMap->getContinentByName(continentName);
+			if (continentPtr != nullptr) {
+				if (continentPtr->getTerritories().size() == nbTerritories) {
+					qtyArmyUnits += continentPtr->getBonusValue();
+				}
+			}
+		}
+
+		//minimum nb reinforcement army per turn is 3
+		if (qtyArmyUnits < 3) {
+			qtyArmyUnits = 3;
+		}
+
+		myPlayers.at(index)->setReinforcementPool(myPlayers.at(index)->getReinforcementPool() + qtyArmyUnits);
+	}
+}
+
+void Engine::issueOrdersPhase() {
+	//create list of players index who still want to issue orders
+	vector<int> activePlayersIndexes;
+	for (int i = 0; i < myPlayers.size(); i++) {
+		activePlayersIndexes.push_back(i);
+	}
+
+	//set the toDefend, toAttack lists, and reinforcementLeftToDeploy of every player
+	auto iterator = activePlayersIndexes.begin();
+	while (iterator != activePlayersIndexes.end()) {
+		myPlayers.at(*iterator)->setReinforcementPoolLeftToDeploy(myPlayers.at(*iterator)->getReinforcementPool());
+
+		vector<Territory*> ownedTerritories = myPlayers.at(*iterator)->getTerritories();
+		myPlayers.at(*iterator)->setTerritoriesToDefend(ownedTerritories);
+
+		set<Territory*> territoriesToAttackSet;
+		auto territoryIterator = ownedTerritories.begin();
+		while (territoryIterator != ownedTerritories.end()) {
+			vector<Territory*> adjacentTerr = (*territoryIterator)->getAdjacencyList();
+			for (int i = 0; i < adjacentTerr.size(); i++) {
+				territoriesToAttackSet.insert(adjacentTerr[i]);
+			}
+			++territoryIterator;
+		}
+		vector<Territory*> territoriesToAttack;
+		auto territoryIteratorSet = territoriesToAttackSet.begin();
+		while (territoryIteratorSet != territoriesToAttackSet.end()) {
+			if ((*territoryIteratorSet)->getOwner() != myPlayers.at(*iterator)) {
+				territoriesToAttack.push_back(*territoryIteratorSet);
+			}
+			++territoryIteratorSet;
+		}
+		myPlayers.at(*iterator)->setTerritoriesToAttack(territoriesToAttack);
+
+		++iterator;
+	}
+
+	while (!activePlayersIndexes.empty()) {
+		iterator = activePlayersIndexes.begin();
+		while (iterator != activePlayersIndexes.end()) {
+			//TODO: get parameters from console
+			string randomOrderList[] = { "End", "Deploy", "Advance", "PickCard" };
+			string order = randomOrderList[rand() % 4];
+
+			int currentReinforcmentPool = myPlayers.at(*iterator)->getReinforcementPoolLeftToDeploy();
+
+			if (order == "End" && currentReinforcmentPool < 1) {
+				//Can only stop issuing orders if all army units have been deployed
+				iterator = activePlayersIndexes.erase(iterator);
+				continue;
+			}
+			else if (order == "Advance" || order == "Deploy") {
+				myPlayers.at(*iterator)->issueOrder(myPlayers.at(*iterator), order);
+			}
+			else if (order == "PickCard") {
+				if (myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
+					vector<Card*> cardsInHand = myPlayers.at(*iterator)->getHand()->hand_content;
+					int randomCardIndex = rand() % cardsInHand.size();
+					Card* cardPtr = cardsInHand.at(randomCardIndex);
+					cardPtr->play();
+				}
+			}
+
+			++iterator;
+		}
+	}
+}
+
+void Engine::executeOrdersPhase() {
+	//create list of players index who still want to execute order
+	vector<int> activePlayersIndexes;
+	for (int i = 0; i < myPlayers.size(); i++) {
+		activePlayersIndexes.push_back(i);
+	}
+
+	//re-run loop until no more active players
+	while (!activePlayersIndexes.empty()) {
+		auto iterator = activePlayersIndexes.begin();
+		//iterate through all active players
+		while (iterator != activePlayersIndexes.end()) {
+			if (!myPlayers.at(*iterator)->getOrdersList()->orders.empty()) {
+				int indexOfDeployOrder = -1;
+				int currentIndex = 0;
+				for (Orders* orderPtr : myPlayers.at(*iterator)->getOrdersList()->orders) {
+					//check if order is a Deploy order
+					if (dynamic_cast<Deploy*>(orderPtr) != nullptr) {
+						indexOfDeployOrder = currentIndex;
+						break;
+					}
+					else
+					{
+						currentIndex++;
+					}
+				}
+
+				//if Deploy order exists in orderList, run it first. Else, run orders in order.
+				if (indexOfDeployOrder != -1) {
+					myPlayers.at(*iterator)->getOrdersList()->orders.at(indexOfDeployOrder)->execute();
+					myPlayers.at(*iterator)->getOrdersList()->remove(indexOfDeployOrder);
+				}
+				else
+				{
+					myPlayers.at(*iterator)->getOrdersList()->orders.at(0)->execute();
+					myPlayers.at(*iterator)->getOrdersList()->remove(0);
+				}
+				
+				++iterator;
+			}
+			else 
+			{
+				iterator = activePlayersIndexes.erase(iterator);
+			}
+		}
+	}
+	for (int i = 0; i < myPlayers.size(); i++) {
+		if (myPlayers.at(i)->getConquered() == true) {
+			//draw card for player
+			getDeck().draw(myPlayers.at(i));
+			cout << "Card drawn for player " << myPlayers.at(i)->getName() << endl;
+			myPlayers.at(i)->setConquered(false);
+		}
+	}
 
 }
+
 
 

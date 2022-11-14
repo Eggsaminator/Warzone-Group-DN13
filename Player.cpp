@@ -189,12 +189,25 @@ void Player::setReinforcementPoolLeftToDeploy(int armyUnits) {
 	reinforcementPoolLeftToDeploy = armyUnits;
 }
 
+//part 4
 void Player::setTruce(Player* tp) {
 	nameT = tp->getName();
 }
 
 string Player::getTruce() {
 	return nameT;
+}
+
+void Player::addOrder(Orders* order) {
+	
+}
+
+void Player::setConquered(bool tf) {
+	territoryConquered = tf;
+}
+
+bool Player::getConquered() {
+	return territoryConquered;
 }
 
 void Player::addArmy(int army)
