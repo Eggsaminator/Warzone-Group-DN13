@@ -49,7 +49,7 @@ public:
 	Map* getMap();
 	vector<Player*> getPlayers();
 	void setCurrentState(State* newState);
-	void mainGameLoop();
+	void mainGameLoop(CommandProcessor* cmdProcessor);
 	bool gameLoopWinnerLoserCheckup();
 	void reinforcementPhase();
 	void issueOrdersPhase();

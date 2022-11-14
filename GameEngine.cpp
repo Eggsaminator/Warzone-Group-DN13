@@ -335,7 +335,7 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 }
 
 
-void Engine::mainGameLoop() {
+void Engine::mainGameLoop(CommandProcessor* cmdProcessor) {
 	bool isGameOver = false;
 	while (!isGameOver) {
 		//run game loop
@@ -346,6 +346,24 @@ void Engine::mainGameLoop() {
 		isGameOver = gameLoopWinnerLoserCheckup();
 	}
 	cout << "THE WINNER IS " << myPlayers.at(0)->getName() << "!!" << endl;
+	launchTransitionCommand("win");
+	cout << "Do you want to [quit] or [replay]?" << endl;
+	Command* mCommand = cmdProcessor->getCommand();
+
+	bool isCommandValid = false;
+	while (!isCommandValid) {
+		string mCommand_name;
+		if (cmdProcessor->validate(getCurrentState(), mCommand)) {
+			mCommand_name = mCommand->getName();
+		}
+
+		if (mCommand_name == "replay") {
+			return startupPhase(cmdProcessor);
+		}
+		else if (mCommand_name == "quit") {
+			return;
+		}
+	}
 }
 
 bool Engine::gameLoopWinnerLoserCheckup() {
