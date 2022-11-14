@@ -2,6 +2,7 @@
 #include<string>
 #include<cstdlib>
 #include<cassert>
+#include<vector>
 
 
 using namespace std;
@@ -85,7 +86,8 @@ for(int i=0;i<3;i++)
 cout<<"my hand is \n";
 (*h_p).display();
 
-(*((*h_p).hand_content[1])).play();
+vector<Player*> allPlayers;
+(*((*h_p).hand_content[1])).play(allPlayers);
 
 cout<<"my new hand is\n";
 
@@ -168,7 +170,7 @@ void testCards()
     Deck d(15,false);
     Hand* h_p=new Hand();
     Player* player=new Player("test_player");
-    OrderList* order = new OrderList("test");
+    OrderList* order = new OrderList(player->getName());
     h_p->setPlayer(player);
 
     cout<<"initial deck is:\n";
@@ -189,11 +191,13 @@ void testCards()
 
     cout<<"We will now play the cards of the hand"<<endl;
 
-    (*((*h_p).hand_content[0])).play();
-    (*((*h_p).hand_content[0])).play();
-    (*((*h_p).hand_content[0])).play();
-    (*((*h_p).hand_content[0])).play();
-    (*((*h_p).hand_content[0])).play();
+    vector<Player*> allPlayers;
+
+    (*((*h_p).hand_content[0])).play(allPlayers);
+    (*((*h_p).hand_content[0])).play(allPlayers);
+    (*((*h_p).hand_content[0])).play(allPlayers);
+    (*((*h_p).hand_content[0])).play(allPlayers);
+    (*((*h_p).hand_content[0])).play(allPlayers);
 
     cout<<"After playing my new hand is:"<<endl;
 

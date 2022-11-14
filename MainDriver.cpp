@@ -1,23 +1,19 @@
-#include "Cards.h"
+#include "CommandProcessing.h"
 #include "GameEngine.h"
-#include "Map.h"
-#include "Orders.h"
-#include "Player.h"
 
 int main()
 {
-    //Part 1: Map good
-    testLoadMaps();
+    //Part 1: Command processor
+    //testCommandProcessor();
     
-    //Part 2: Player
-    testPlayers();
+    //Part 2: Startup phase
+    //testStartupPhase();
 
-    //Part 3: Orders good
-    testOrdersList();
+    //Part 3: Main Game Loop
+    //testMainGameLoop();
 
-    //Part 4: Cards good
-    testCards();
+    //Part 4: Order Execution
+    //testOrderExecution();
 
-    //Part 5: Game Engine
-	testGameStates();
+    //Part 5:
 }

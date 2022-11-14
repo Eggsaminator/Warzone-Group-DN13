@@ -66,60 +66,47 @@ void Card::display()
 }
 
 
-void Card::play()
+void Card::play(vector<Player*> allPlayers)
 {   //Assert that thecard belong to a deck and a hand and that the hand is indeed asigned to a player
     assert(belong_to_deck!=NULL);
     assert(belong_to_hand!=NULL);
     assert(belong_to_hand->my_player!=NULL);
 
-
-
-
-    
-    if(card_type=="Bomb")
+    if (card_type == "Bomb")
     {
-        
-    belong_to_hand->my_player->issueOrder("Bomb");
-
+      
+    belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, allPlayers, "Bomb");
+      
     }
-    if(card_type=="Reinforcement")
+    if (card_type == "Reinforcement")
     {
         //belong_to_hand->my_player->issueOrder("Reinforcement");
-
     }
-    if(card_type=="Airlift")
+    if (card_type == "Airlift")
     {
-       
-        belong_to_hand->my_player->issueOrder("Airlift");
-
+      
+        belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, allPlayers, "Airlift");
+      
     }
-    if(card_type=="Diplomacy")
+    if (card_type == "Diplomacy")
     {
-       
-        belong_to_hand->my_player->issueOrder("Negociate");
-        
-
+      
+        belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, allPlayers, "Negotiate");
+      
     }   
     if(card_type=="Blockade")
     {
         
-        belong_to_hand->my_player->issueOrder("Blockade");
-        
-
+        belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, allPlayers, "Blockade");
+      
     }
-
-
-    //insert code to deal with the order
-    
 
     // remove from hand
     (*belong_to_hand).remove_card(this);
 
     // place back in deck
 
-    (*belong_to_deck).add_card(this); 
-
-
+    (*belong_to_deck).add_card(this);
 }
 
 
@@ -185,7 +172,6 @@ void Deck::display()
 void Deck::add_card(Card* card_to_add)
 {
     deck_content.push_back(card_to_add);
-
 }
 
 void Deck::draw(Hand* hand_of_player)

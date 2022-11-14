@@ -4,36 +4,38 @@
 #include <algorithm>
 #include <cstdlib>
 #include <utility>
+#include "LoggingObesrver.h"
 #pragma once
 using namespace std;
 
 class Player;
 class Territory;
 
-class Orders
+class Orders : public ILoggable, public Subject
 {
 private:
 public:
-	//assigning datas
-
+	string stringToLog();	
 	//critical methods
 	friend ostream& operator << (ostream& os, const Orders& order); //stream insertion operator
 	virtual string toString() const;
 
 	virtual bool validate();
 	virtual bool execute();
+	virtual string getName();
+
 };
 
-class OrderList 
+class OrderList : public ILoggable, public Subject
 {
 private:
 public:
+	string stringToLog();	
+	string player;
 	//orderlist should contain player so it can discern them
-	Player* curUser;
 	//order list for teh player
 	vector<Orders*> orders;
 	//overall data present in the order list
-	string player = "user";
 	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;
@@ -59,22 +61,25 @@ class Deploy : public Orders
 {
 private:
 public:
+	Player* player;
 	//name of the order
 	const string name = "deploy";
 	//data needed for the order
 	int numArmyUnit = 0;
 	Territory* tarTerritory;
-	bool executed = false;
+	bool validated;
+	bool executed;
 
 	//assigning datas
 	Deploy();
-	Deploy(int armyNum, Territory* tarT);
+	Deploy(Player* p, int armyNum, Territory* tarT);
 	Deploy(Deploy& deploy);
 	~Deploy();
 
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Deploy& order);
@@ -87,23 +92,26 @@ class Advance : public Orders
 {
 private:
 public:
+	Player* player;
 	//name of the order
 	const string name = "advance";
 	//data needed for the order
 	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;
+	bool validated = false;
 	bool executed = false;
 
 	//assigning datas
 	Advance();
-	Advance(int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
+	Advance(Player* p, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
 	Advance(Advance& advance);
 	~Advance();
 
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Advance& order);
@@ -114,21 +122,24 @@ class Bomb : public Orders// usable only if user has Bomb card on hand
 {
 private:	
 public:
+	Player* player;
 	//name of the order
 	const string name = "bomb";
 	//data needed for the order
 	Territory* tarTerritory;
+	bool validated = false;
 	bool executed = false;
 
 	//assigning datas
 	Bomb();
-	Bomb(Territory* tarTerritory);
+	Bomb(Player* p, Territory* tarTerritory);
 	Bomb(Bomb& bomb);
 	~Bomb();
 
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Bomb& order);
@@ -139,21 +150,24 @@ class Blockade : public Orders// usable if user has blockade card on hand - vali
 {
 private:
 public:
+	Player* player;
 	//name of the order
 	const string name = "blockade";
 	//data needed for the order
 	Territory * tarTerritory;
+	bool validated = false;
 	bool executed = false;
 
 	//assigning datas
 	Blockade();
-	Blockade(Territory* tarTerritory);
+	Blockade(Player* p, Territory* tarTerritory);
 	Blockade(Blockade& blockade);
 	~Blockade();
 
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Blockade& order);
@@ -164,23 +178,26 @@ class Airlift : public Orders // usable only if user has Airlift card on hand
 {
 private:
 public:
+	Player* player;
 	//name of the order
 	const string name = "airlift";
 	//data needed for the order
 	int numArmyUnit = 0;
 	Territory* souTerritory;
 	Territory* tarTerritory;
+	bool validated = false;
 	bool executed = false;
 
 	//assigning datas
 	Airlift();
-	Airlift(int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
+	Airlift(Player* p, int numArmyUnit, Territory* souTerritory, Territory* tarTerritory);
 	Airlift(Airlift& airlift);
 	~Airlift();
 
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Airlift& order);
@@ -191,21 +208,24 @@ class Negotiate : public Orders// usable if user has Diplomacy card in hand
 {
 private:
 public:
+	Player* player;
+	Player* tarPlayer;
 	//name of the order
 	const string name = "negotiate";
 	//data needed for the order
-	Territory* tarTerritory;
+	bool validated = false;
 	bool executed = false;
 
 	//assigning datas
 	Negotiate();
-	Negotiate(Territory* tarTerritory);
+	Negotiate(Player* p, Player* tp);
 	Negotiate(Negotiate& negotiate);
 	~Negotiate();
 
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Negotiate& order);
@@ -213,3 +233,4 @@ public:
 };
 
 void testOrdersList();
+void testOrderExecution();

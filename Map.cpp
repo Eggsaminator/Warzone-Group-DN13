@@ -286,6 +286,10 @@ string Continent::getName() {
     return name;
 }
 
+int Continent::getBonusValue() {
+    return value;
+}
+
 void Continent::addTerritory(Territory* territory) {
     territoryList.push_back(territory);
 }
@@ -311,6 +315,7 @@ void Territory::addAdjacency(Territory* territory) {
 
 void Territory::addAdjacency(Territory* firstTerritory, Territory* secondTerritory) {
     firstTerritory->addAdjacency(secondTerritory);
+    secondTerritory->addAdjacency(firstTerritory);
 }
 
 vector<Territory*> Territory::getAdjacencyList() {
@@ -333,13 +338,21 @@ string Territory::getName() {
 void Territory::setOwner(Player* newOwner) {
     owner = newOwner;
 }
+Player* Territory::getOwner() {
+    return owner;
+}
 void Territory::setOwner(Player* newOwner, int newNumArmies) {
     setOwner(newOwner);
     setArmies(newNumArmies);
 }
+
 void Territory::setArmies(int newNumArmies) {
     numArmies = newNumArmies;
 }
 void Territory::addArmies(int newNumArmies) {
     numArmies += newNumArmies;
+}
+
+int Territory::getArmies() {
+    return numArmies;
 }

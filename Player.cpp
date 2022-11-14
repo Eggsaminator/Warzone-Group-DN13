@@ -8,61 +8,132 @@ using namespace std;
 
 //dont know if we will need/keep this
 Player::Player() {
-name = "nameless player";
-territories.push_back(new Territory("TestTerritory of " + name, NULL));
+	name = "nameless player";
 }
 
 //player constructor
 Player::Player(string username) {
 	name = username;
-	vector<Territory*> firstTerritories;
-	Continent* tempCont = new Continent("dummy", 0);
-	firstTerritories.push_back(new Territory("TestTerritory of " + username, tempCont));
-	territories = firstTerritories;
-	ordersList = new OrderList(username);
+	ordersList = new OrderList(name);
+	hand = new Hand();
 }
 
 void Player::addTerritory(Territory* newTerritory){
 	territories.push_back(newTerritory);
 }
-//method for a player to issue an order, takes the order's name as parameter
-void Player::issueOrder(string name) {
-	
-	if(name == "Deploy"){
-		Orders* orderToAdd = new Deploy(5,territories[0]);
+
+//method for a player to issue an order, takes the order's name
+void Player::issueOrder(Player* nameP, vector<Player*> allPlayers, string name) {
+	if (reinforcementPoolLeftToDeploy > 0 && name != "Deploy") {
+		return;
+	}
+
+	if (name == "Deploy") {
+		if (reinforcementPoolLeftToDeploy > 0) {
+			int numberArmyUnits = (rand() % reinforcementPoolLeftToDeploy) + 1;
+			reinforcementPoolLeftToDeploy -= numberArmyUnits;
+
+			if (toDefend().size() > 0) {
+				int randomToDefendIndex = rand() % toDefend().size();
+				Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
+
+				Orders* orderToAdd = new Deploy(nameP, numberArmyUnits, destinationTerritory);
+				(*ordersList).addOrder(orderToAdd);
+			}
+		}
+	}
+	else if (name == "Advance") {
+		Territory* destinationTerritory = nullptr;
+		int randomSourceIndex = rand() % territories.size();
+		Territory* sourceTerritory = territories.at(randomSourceIndex);
+
+		string advanceTypes[] = { "Attack", "Defend" };
+		string advanceType = advanceTypes[rand() % 2];
+
+		if (advanceType == "Attack") {
+			cout << "WOOO2!\n" << endl;
+			if (toAttack().size() > 0) {
+				int randomToAttackIndex = rand() % toAttack().size();
+				destinationTerritory = toAttack().at(randomToAttackIndex);
+
+				int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
+
+				Orders* orderToAdd = new Advance(nameP, numberArmyUnits, sourceTerritory, destinationTerritory);
+				(*ordersList).addOrder(orderToAdd);
+			}
+		}
+		else
+		{
+			if (toDefend().size() > 0) {
+				int randomToDefendIndex = rand() % toDefend().size();
+				destinationTerritory = toDefend().at(randomToDefendIndex);
+
+				int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
+
+				Orders* orderToAdd = new Advance(nameP, numberArmyUnits, sourceTerritory, destinationTerritory);
+				(*ordersList).addOrder(orderToAdd);
+			}
+		}
+	}
+	else if (name == "Bomb") {
+		if (toAttack().size() > 0) {
+			int randomToAttackIndex = rand() % toAttack().size();
+			Territory* destinationTerritory = toAttack().at(randomToAttackIndex);
+
+			Orders* orderToAdd = new Bomb(nameP, destinationTerritory);
+			(*ordersList).addOrder(orderToAdd);
+		}
+	}
+	else if (name == "Reinforcement") {
+		//WHAT DO WE DO WITH REINFORCEMENT CARDS?
+	}
+	else if (name == "Airlift") {
+		int randomSourceIndex = rand() % territories.size();
+		Territory* sourceTerritory = territories.at(randomSourceIndex);
+
+		int randomNbArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
+
+		if (toDefend().size() > 0) {
+			int randomToDefendIndex = rand() % toDefend().size();
+			Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
+
+			Orders* orderToAdd = new Airlift(nameP, randomNbArmyUnits, sourceTerritory, destinationTerritory);
+			(*ordersList).addOrder(orderToAdd);
+		}
+	}
+	else if (name == "Negotiate") {
+		bool randomPlayerPicked = false;
+		Player* randomPlayer = nullptr;
+
+		while (!randomPlayerPicked) {
+			int randomPlayerIndex = rand() % allPlayers.size();
+			if (allPlayers[randomPlayerIndex] != nameP) {
+				randomPlayerPicked = true;
+				randomPlayer = allPlayers[randomPlayerIndex];
+			}
+		}
+
+		Orders* orderToAdd = new Negotiate(nameP, randomPlayer);
 		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Advance"){
-		Orders* orderToAdd = new Advance(5,territories[0],territories[1]);
-		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Bomb"){
-		Orders* orderToAdd = new Bomb(territories[0]);
-		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Blockade"){
-		Orders* orderToAdd = new Blockade(territories[0]);
-		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Airlift"){
-		Orders* orderToAdd = new Blockade(territories[0]);
-		(*ordersList).addOrder(orderToAdd);
-	}else if(name == "Negociate"){
-		Orders* orderToAdd = new Negotiate(territories[0]);
-		(*ordersList).addOrder(orderToAdd);
+	}
+	else if (name == "Blockade") {
+		if (territories.size() > 0) {
+			int randomTargetIndex = rand() % territories.size();
+			Territory* targetTerritory = territories.at(randomTargetIndex);
+
+			Orders* orderToAdd = new Blockade(nameP, targetTerritory);
+		}
 	}
 }
 
 //method that prints out teritories to defend, would return them in future
 vector<Territory*> Player::toDefend() {
-
-	return territories;
+	return territoriesToDefend;
 }
 
 //method that prints out teritories to attack, would return them in future
 vector<Territory*> Player::toAttack() {
-	vector<Territory*> otherTerritories;
-	Continent* tempCont = new Continent("dummy", 0);
-	for (int i = 0; i < 10; i++) {
-		otherTerritories.push_back(new Territory("Base #" + to_string(i + 1), tempCont));
-	}
-	return otherTerritories;
+	return territoriesToAttack;
 }
 
 void Player::setHand(Hand* newHand){
@@ -89,6 +160,67 @@ vector<Territory*> Player::getTerritories(){
 void Player::setOrdersList(OrderList* newOrdersList){
 	ordersList = newOrdersList;
 }
+
+void Player::setTerritoriesToAttack(vector<Territory*> territoriesList) {
+	territoriesToAttack = territoriesList;
+}
+
+void Player::setTerritoriesToDefend(vector<Territory*> territoriesList) {
+	territoriesToDefend = territoriesList;
+}
+
 OrderList* Player::getOrdersList(){
 	return ordersList;
+}
+
+int Player::getReinforcementPool() {
+	return reinforcementPool;
+}
+
+void Player::setReinforcementPool(int armyUnits) {
+	reinforcementPool = armyUnits;
+}
+
+int Player::getReinforcementPoolLeftToDeploy() {
+	return reinforcementPoolLeftToDeploy;
+}
+
+void Player::setReinforcementPoolLeftToDeploy(int armyUnits) {
+	reinforcementPoolLeftToDeploy = armyUnits;
+}
+
+//part 4
+void Player::setTruce(Player* tp) {
+	nameT = tp->getName();
+}
+
+string Player::getTruce() {
+	return nameT;
+}
+
+void Player::addOrder(Orders* order) {
+	
+}
+
+void Player::setConquered(bool tf) {
+	territoryConquered = tf;
+}
+
+bool Player::getConquered() {
+	return territoryConquered;
+}
+
+void Player::addArmy(int army)
+{
+	reinforcementPool+=army;
+}
+
+void Player::removeArmy(int army)
+{
+	if(army>reinforcementPool)
+	{
+		cout<<"invalid operation: not enough army in pool";
+	}
+	else{
+	reinforcementPool-=army;}
 }

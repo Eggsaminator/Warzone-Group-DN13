@@ -1,0 +1,21 @@
+[Map]
+author=Bluebird
+image=Canada.bmp
+wrap=yes
+scroll=none
+warn=yes
+
+[Continents]
+Northern Islands=10
+
+[Territories]
+1,548,116,Northern Islands,2
+2,510,124,Northern Islands,1,3
+3,487,139,Northern Islands,2,4
+4,463,136,Northern Islands,3,5
+5,433,132,Northern Islands,4,6
+6,424,145,Northern Islands,5,7
+7,389,145,Northern Islands,6,8
+8,422,181,Northern Islands,7,9
+9,449,160,Northern Islands,8
+

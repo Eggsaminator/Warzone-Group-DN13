@@ -57,6 +57,7 @@ public:
     void addTerritory(Territory* territory);
     vector<Territory*> getTerritories();
     string getName();
+    int getBonusValue();
 private:
     string name;
     int value;
@@ -76,7 +77,9 @@ public:
     string getName();
     void setOwner(Player* newOwner);
     void setOwner(Player* newOwner, int newNumArmies);
+    Player* getOwner();
     void setArmies(int newNumArmies);
+    int getArmies();
     void addArmies(int newNumArmies);
 private:
     string name;
@@ -85,6 +88,5 @@ private:
     Continent* continent;
     vector<Territory*> adjacencyList;
 };
-
 
 void testLoadMaps();
