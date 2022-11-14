@@ -50,7 +50,7 @@ public:
 	vector<Player*> getPlayers();
 	void setCurrentState(State* newState);
 	void mainGameLoop();
-	void gameLoopWinnerLoserCheckup();
+	bool gameLoopWinnerLoserCheckup();
 	void reinforcementPhase();
 	void issueOrdersPhase();
 	void executeOrdersPhase();

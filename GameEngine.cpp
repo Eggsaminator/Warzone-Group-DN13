@@ -336,29 +336,45 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 
 
 void Engine::mainGameLoop() {
-	int i = 0;
-	while (i < 1) {
+	bool isGameOver = false;
+	while (!isGameOver) {
 		//run game loop
 		reinforcementPhase();
 		issueOrdersPhase();
 		executeOrdersPhase();
 
-		gameLoopWinnerLoserCheckup();
+		isGameOver = gameLoopWinnerLoserCheckup();
 	}
+	cout << "THE WINNER IS " << myPlayers.at(0)->getName() << "!!" << endl;
 }
 
-void Engine::gameLoopWinnerLoserCheckup() {
+bool Engine::gameLoopWinnerLoserCheckup() {
 	//check if a player has no territories owned, then eliminate him
 	auto iterator = myPlayers.begin();
 	while (iterator != myPlayers.end()) {
-		if ((*iterator)->getTerritories().empty()) {
+		if ((*iterator)->getTerritories().size() < 1) {
 			iterator = myPlayers.erase(iterator);
+			continue;
 		}
+		++iterator;
 	}
 
 	//check if a player owns all the territories
 	if (myPlayers.size() == 1) {
+		int numberTerritoriesOwned = myPlayers.at(0)->getTerritories().size();
+		auto allContinents = myMap->getContinents();
+
+		int totalNbTerritories = 0;
+		for (int i = 0; i < allContinents.size(); i++) {
+			totalNbTerritories += allContinents[i]->getTerritories().size();
+		}
+
+		if (totalNbTerritories == numberTerritoriesOwned) {
+			return true;
+		}
 	}
+
+	return false;
 }
 
 void Engine::reinforcementPhase() {
@@ -456,7 +472,7 @@ void Engine::issueOrdersPhase() {
 				myPlayers.at(*iterator)->issueOrder(myPlayers.at(*iterator), myPlayers, order);
 			}
 			else if (order == "PickCard") {
-				if (myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
+				if (myPlayers.at(*iterator)->getHand() != nullptr && myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
 					vector<Card*> cardsInHand = myPlayers.at(*iterator)->getHand()->hand_content;
 					int randomCardIndex = rand() % cardsInHand.size();
 					Card* cardPtr = cardsInHand.at(randomCardIndex);
@@ -506,24 +522,15 @@ void Engine::executeOrdersPhase() {
 					myPlayers.at(*iterator)->getOrdersList()->orders.at(0)->execute();
 					myPlayers.at(*iterator)->getOrdersList()->remove(0);
 				}
-				
+
 				++iterator;
 			}
-			else 
+			else
 			{
 				iterator = activePlayersIndexes.erase(iterator);
 			}
 		}
 	}
-	for (int i = 0; i < myPlayers.size(); i++) {
-		if (myPlayers.at(i)->getConquered() == true) {
-			//draw card for player
-			//getDeck().draw(myPlayers.at(i));
-			cout << "Card drawn for player " << myPlayers.at(i)->getName() << endl;
-			myPlayers.at(i)->setConquered(false);
-		}
-	}
-
 }
 
 
