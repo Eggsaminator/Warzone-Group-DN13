@@ -149,7 +149,7 @@ vector<Player*> Engine::getPlayers(){
 }
 
 Map* Engine::getMap(){
-	return mMap;
+	return myMap;
 }
 
 void Engine::setCurrentState(State* newState) {
@@ -252,7 +252,7 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 			cout <<"loadmap ok\n";
 			
 			MapLoader* mMapLoader =new MapLoader();
-			mMap=new Map(mMapLoader->loadMap(mCommand->getArgument()));
+			myMap=new Map(mMapLoader->loadMap(mCommand->getArgument()));
 		// transition to state map loaded
 			this->setCurrentState(this->launchTransitionCommand("loadmap"));
 
@@ -260,7 +260,7 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 		if(mCommand_name=="validatemap")
 		{
 			cout<<"validatemap\n";
-			if(mMap->validate()){
+			if(myMap->validate()){
 			//TODO this.launchTransitionCommand("validatemap")
 			this->setCurrentState(this->launchTransitionCommand("validatemap"));
 			}
@@ -295,7 +295,7 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 
 			// we get the list of territories
 
-			vector <Territory*> list_of_territories = mMap->getTerritories();
+			vector <Territory*> list_of_territories = myMap->getTerritories();
 
 			std::random_shuffle(list_of_territories.begin(), list_of_territories.end());
 
