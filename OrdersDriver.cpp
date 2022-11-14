@@ -108,10 +108,21 @@ void testOrderExecution() {
 	t6->setOwner(p3); 
 
 	//ADD ADJACENCY
+	//1 -> 2 & 3 & 4 & 5
+	t1->addAdjacency(t2);
 	t1->addAdjacency(t3);
-	t2->addAdjacency(t4);
-	t5->addAdjacency(t1);
-	t5->addAdjacency(t2);
+	t1->addAdjacency(t5);
+	//2 -> 1 & 4 & 5
+	t2->addAdjacency(t5);
+	//3 -> 1 & 4
+	//4 -> 1 & 2 & 3 & 5 & 6
+	t4->addAdjacency(t1);
+	t4->addAdjacency(t2);
+	t4->addAdjacency(t3);
+	t4->addAdjacency(t5);
+	t4->addAdjacency(t6);
+	//5 -> 1 & 2 & 4
+	//6 -> 4
 
 	Map gameMap;
 	gameMap.addContinent(continent);
@@ -137,7 +148,7 @@ void testOrderExecution() {
 	
 	//BOMB
 	//PLAYER_1 - BOMB ENNEMY TERRITORY
-	Orders* bo1 = new Bomb(p1, t3);
+	Orders* bo1 = new Bomb(p1, t4);
 	//PLAYER_1 - BOMB NON-ADJACENT ENNEMY TERRITORY
 	Orders* bo2 = new Bomb(p1, t6);
 	//PLAYER_1 - BOMB OWN TERRITORY
@@ -147,7 +158,7 @@ void testOrderExecution() {
 	//PLAYER_1 - BLOCKADE OWN TERRITORY
 	Orders* bl1 = new Blockade(p1, t2);
 	//PLAYER_1 - BLOCKADE ENNEMY TERRITORY
-	Orders* bl2 = new Blockade(p1, t3);
+	Orders* bl2 = new Blockade(p1, t6);
 
 	//AIRLIFT
 	//- AIRLIFT ON OWN TERRITORIES
@@ -179,7 +190,7 @@ void testOrderExecution() {
 
 	players.at(0)->getOrdersList()->addOrder(bo1);
 	players.at(0)->getOrdersList()->addOrder(bo2);
-	players.at(0)->getOrdersList()->addOrder(bo1);
+	players.at(0)->getOrdersList()->addOrder(bo3);
 
 	players.at(0)->getOrdersList()->addOrder(bl1);
 	players.at(0)->getOrdersList()->addOrder(bl2);
@@ -196,7 +207,6 @@ void testOrderExecution() {
 
 	orderEngine.executeOrdersPhase();
 	
-	cout << "test otder execution" << endl;
 
 
 

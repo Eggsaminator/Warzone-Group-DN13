@@ -396,7 +396,7 @@ void Engine::executeOrdersPhase() {
 	for (int i = 0; i < myPlayers.size(); i++) {
 		if (myPlayers.at(i)->getConquered() == true) {
 			//draw card for player
-			//getDeck().draw(myPlayers.at(i));
+			getDeck().draw(myPlayers.at(i));
 			cout << "Card drawn for player " << myPlayers.at(i)->getName() << endl;
 			myPlayers.at(i)->setConquered(false);
 		}
