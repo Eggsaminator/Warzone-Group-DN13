@@ -62,7 +62,6 @@ public:
 
 
 private:
-	Map* mMap;
 	State* currentState;
 	Map* myMap;
 	Deck* myDeck;

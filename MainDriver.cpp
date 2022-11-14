@@ -4,16 +4,16 @@
 int main()
 {
     //Part 1: Command processor
-    //testCommandProcessor();
+    testCommandProcessor();
     
     //Part 2: Startup phase
-    //testStartupPhase();
+    testStartupPhase();
 
     //Part 3: Main Game Loop
     testMainGameLoop();
 
     //Part 4: Order Execution
-    //testOrderExecution();
+    testOrderExecution();
 
     //Part 5:
 }
