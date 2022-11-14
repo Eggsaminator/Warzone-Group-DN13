@@ -44,11 +44,16 @@ public:
 
 	void setTruce(Player* tp);
 	string getTruce();
+	void addOrder(Orders* o);
+	void setConquered(bool tf);
+	bool getConquered();
+
 	void addArmy(int army);
 	void removeArmy(int army);
 private:
 	string name, nameT;
 	Hand* hand;
+	bool territoryConquered = false;
 	int reinforcementPool = 50;
 	int reinforcementPoolLeftToDeploy = 0;
 	vector<Territory*> territories;

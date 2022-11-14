@@ -22,6 +22,7 @@ public:
 
 	virtual bool validate();
 	virtual bool execute();
+	virtual string getName();
 
 };
 
@@ -78,6 +79,7 @@ public:
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Deploy& order);
@@ -109,6 +111,7 @@ public:
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Advance& order);
@@ -136,6 +139,7 @@ public:
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Bomb& order);
@@ -163,6 +167,7 @@ public:
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Blockade& order);
@@ -192,6 +197,7 @@ public:
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Airlift& order);
@@ -219,6 +225,7 @@ public:
 	//critical methods
 	bool validate();
 	bool execute();
+	string getName();
 
 	//extra methods
 	friend ostream& operator << (ostream& os, const Negotiate& order);

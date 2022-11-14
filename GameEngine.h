@@ -61,6 +61,8 @@ public:
 		CommandProcessor* mCommandProcess
 		);
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
+
+
 private:
 	Map* mMap;
 	State* currentState;
