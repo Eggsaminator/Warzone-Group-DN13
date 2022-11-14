@@ -72,6 +72,7 @@ void testOrdersList() {
 
 void testOrderExecution() {
 
+	cout << "__________________________________________\n\n\tTesting Order Execution\n__________________________________________" << endl;
 	Engine orderEngine = Engine();
 
 	//CREATE SIMPLE MAP
