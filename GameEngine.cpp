@@ -115,12 +115,18 @@ State* Engine::launchTransitionCommand(string command) {
 	State* newState = getCurrentState()->getTransition(command);
 	if (newState) {
 		currentState = newState;
+		notify(this);
 		return newState;
 	}
 	else
 	{
 		return nullptr;
 	}
+}
+
+string Engine::stringToLog(){
+	string temp = ("Game Engine new state: " + this->getCurrentState()->getStateName() + "\n");
+	return temp;
 }
 
 State* Engine::getCurrentState() {

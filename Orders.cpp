@@ -23,6 +23,10 @@ bool Orders::execute() {
 	cout << "\nOrder class of Execute()\n";
 	return false;
 }
+
+string OrderList::stringToLog(){
+	return "Order Executed: " + this->toString() + "\n"; 
+}
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
 }
@@ -75,6 +79,7 @@ void OrderList::remove(int i) {
 
 void OrderList::addOrder(Orders* order) {
 	this->orders.push_back(order);
+	notify(this);
 }
 
 ostream& operator << (ostream& os, const OrderList& o) {
@@ -91,6 +96,10 @@ string OrderList::toString() const{
 	stringstream ss;
 	ss << (*this);
 	return ss.str();
+}
+
+string OrderList::stringToLog(){
+	return "Order Issued : " + orders.back()->getName() + "order, to the player " + player + "'s orders list" + "\n"; 
 }
 
 /*----------------------------------------------------------------------deploy class---------------------------------------------------------------------*/
@@ -145,6 +154,7 @@ bool Deploy::execute() {
 		tarTerritory->addArmies(numArmyUnit);
 		//end execution
 		cout << "\tDeploy order has been executed" << endl;
+		notify(this);
 		executed = true;
 	}
 	else {
@@ -267,6 +277,7 @@ bool Advance::execute() {
 			}
 		}
 		//end execution
+		notify(this);
 		executed = true;
 	}
 	return executed;
@@ -345,6 +356,7 @@ bool Bomb::execute() {
 		//execution
 		tarTerritory->setArmies(tarTerritory->getArmies()/2);
 		//end execution
+		notify(this);
 		executed = true;
 	}
 	return executed;
@@ -406,6 +418,7 @@ bool Blockade::execute() {
 		//set owner to neutral
 		tarTerritory->setOwner(n);
 		//end execution
+		notify(this);
 		executed = true;
 	}
 	return executed;
@@ -492,6 +505,7 @@ bool Airlift::execute() {
 		souTerritory->addArmies(-numArmyUnit);
 		tarTerritory->addArmies(numArmyUnit);
 		//end execution
+		notify(this);
 		executed = true;
 	}
 	return executed;
@@ -547,6 +561,7 @@ bool Negotiate::execute() {
 		//execution
 		player->setTruce(tarPlayer);
 		//end execution
+		notify(this);
 		executed = true;
 	}
 	return executed;

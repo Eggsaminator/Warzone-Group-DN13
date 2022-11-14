@@ -44,8 +44,12 @@ Command* CommandProcessor::readCommand() {
 
 void CommandProcessor::saveCommand(Command* command) {
     m_commandList.push_back(command);
+    notify(this);
 }
 
+string CommandProcessor::stringToLog(){
+	return "Command :" + m_commandList.back()->getName() + "\n";
+}
 Command* CommandProcessor::getCommand() {
     Command* command = readCommand();
     if (validate(m_engine->getCurrentState(), command)) {
@@ -191,8 +195,12 @@ string Command::getEffect() {
 
 void Command::saveEffect(string effect) {
     m_effect = effect;
+    notify(this);
 }
 
+string Command::stringToLog(){
+	return "Command's effect:" + this->getEffect() + "\n";
+}
 // -----FileCommandProcessorAdapter-----
 FileCommandProcessorAdapter::FileCommandProcessorAdapter(Engine* engine) : CommandProcessor(engine) {
     m_fileContents = nullptr;
