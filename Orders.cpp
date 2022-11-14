@@ -25,8 +25,13 @@ bool Orders::execute() {
 	return false;
 }
 
+
+string OrderList::stringToLog(){
+	return "Order Executed: " + this->toString() + "\n"; 
+
 string Orders::getName() {
 	return "";
+
 }
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
@@ -80,6 +85,7 @@ void OrderList::remove(int i) {
 
 void OrderList::addOrder(Orders* order) {
 	this->orders.push_back(order);
+	notify(this);
 }
 
 ostream& operator << (ostream& os, const OrderList& o) {
@@ -96,6 +102,10 @@ string OrderList::toString() const{
 	stringstream ss;
 	ss << (*this);
 	return ss.str();
+}
+
+string OrderList::stringToLog(){
+	return "Order Issued : " + orders.back()->getName() + "order, to the player " + player + "'s orders list" + "\n"; 
 }
 
 /*----------------------------------------------------------------------deploy class---------------------------------------------------------------------*/
@@ -149,10 +159,13 @@ bool Deploy::execute() {
 		//execution
 		tarTerritory->addArmies(numArmyUnit);
 		//end execution
+		
+
 		cout << "Deploy order has been executed" << endl;
 		//show
 		cout << "\n" << player->getName() << " deployed " << numArmyUnit << " units to " << tarTerritory->getName() << "\n"
 			<< tarTerritory->getName() << "| Owner: " << player->getName() << " | Army count: " << i << " -> " << tarTerritory->getArmies() << endl;
+    notify(this);
 		executed = true;
 	}
 	else {
@@ -306,6 +319,7 @@ bool Advance::execute() {
 			}
 		}
 		//end execution
+		notify(this);
 		executed = true;
 	}
 	else {
@@ -406,6 +420,8 @@ bool Bomb::execute() {
 		//end execution
 		cout << "\n" << player->getName() << " bombed " << tarTerritory->getName() << "\n"
 			<< tarTerritory->getName() << "| Owner: " << tarTerritory->getOwner()->getName() << " | Army count: " << i << " -> " << tarTerritory->getArmies() << endl;
+
+    notify(this);
 		executed = true;
 	}
 	else {
@@ -485,6 +501,7 @@ bool Blockade::execute() {
 		//set owner to neutral
 		tarTerritory->setOwner(n);
 		//end execution
+		notify(this);
 		executed = true;
 
 
@@ -587,6 +604,7 @@ bool Airlift::execute() {
 		souTerritory->addArmies(-numArmyUnit);
 		tarTerritory->addArmies(numArmyUnit);
 		//end execution
+		notify(this);
 		executed = true;
 		cout << "\n" << player->getName() << " airlifted " << numArmyUnit << " from " << souTerritory->getName() << " to " << tarTerritory->getName() << "\n"
 			<< souTerritory->getName() << "| Owner: " << souTerritory->getOwner()->getName() << " | Army count: " << is << " -> " << souTerritory->getArmies() << "\n"
@@ -663,6 +681,7 @@ bool Negotiate::execute() {
 		//execution
 		player->setTruce(tarPlayer);
 		//end execution
+		notify(this);
 		executed = true;
 		cout << "\n" << player->getName() << " negotiated with " << tarPlayer->getName() << "\n"
 			<< "Player " << player->getName() << " and player " << tarPlayer->getName() << " can no longer attack each other" << endl;

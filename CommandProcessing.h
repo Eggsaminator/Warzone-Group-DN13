@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "GameEngine.h"
+#include "LoggingObesrver.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ class State;
 
 //
 
-class CommandProcessor {
+class CommandProcessor : public ILoggable, public Subject {
 public:
     CommandProcessor(Engine* engine);
     ~CommandProcessor();
@@ -28,6 +29,7 @@ public:
 protected:
     virtual Command* readCommand();
     void saveCommand(Command* command);
+    string stringToLog();
     bool inputIsValid(string command, string argument);
     bool isValid(State* state, Command* command);
     bool isValidInputMethod(string command, string argument);
@@ -38,7 +40,7 @@ private:
     static CommandProcessor* s_instance;
 };
 
-class Command {
+class Command : public ILoggable, public Subject  {
 public:
     Command(string command);
     Command(string command, string argument);
@@ -48,6 +50,7 @@ public:
     string getArgument();
     string getEffect();
     void saveEffect(string effect);
+    string stringToLog();
 private:
     string m_command;
     string m_argument;

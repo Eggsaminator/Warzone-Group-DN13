@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Orders.h"
 #include "CommandProcessing.h"
+#include "LoggingObesrver.h"
 using std::ostream;
 using std::string;
 using std::map;
@@ -36,12 +37,13 @@ private:
 	map<string, State*>* transitions;
 };
 
-class Engine {
+class Engine: public ILoggable, public Subject  {
 public:
 	Engine();
 	Engine(const Engine& copyEngine); //copy constructor
 	Engine& operator=(const Engine& copyState); //assignment operator
 	State* launchTransitionCommand(string command);
+	string stringToLog();
 	State* getCurrentState();
 	Deck* getDeck();
 	Map* getMap();

@@ -4,16 +4,18 @@
 #include <algorithm>
 #include <cstdlib>
 #include <utility>
+#include "LoggingObesrver.h"
 #pragma once
 using namespace std;
 
 class Player;
 class Territory;
 
-class Orders
+class Orders : public ILoggable, public Subject
 {
 private:
 public:
+	string stringToLog();	
 	//critical methods
 	friend ostream& operator << (ostream& os, const Orders& order); //stream insertion operator
 	virtual string toString() const;
@@ -24,10 +26,11 @@ public:
 
 };
 
-class OrderList 
+class OrderList : public ILoggable, public Subject
 {
 private:
 public:
+	string stringToLog();	
 	string player;
 	//orderlist should contain player so it can discern them
 	//order list for teh player
