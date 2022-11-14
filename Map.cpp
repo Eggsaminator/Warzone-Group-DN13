@@ -353,8 +353,6 @@ void Territory::addArmies(int newNumArmies) {
     numArmies += newNumArmies;
 }
 
-//addition for part 4
-
 int Territory::getArmies() {
     return numArmies;
 }
