@@ -14,7 +14,8 @@ LogObserver::LogObserver(){
 LogObserver::LogObserver(Subject *s){
 _subject = s;
 s->attach(this);
-logFile->open("gamelog.txt", std::ios_base::app);
+logFile = new ofstream("gamelog.txt", std::ios_base::app);
+//logFile->open("gamelog.txt", std::ios_base::app);
 }
 LogObserver::~LogObserver(){
 _subject->detach(this);
@@ -46,6 +47,9 @@ void Subject::notify(ILoggable *toLog){
 
 
 void testLoggingObesrver(){
+	ofstream *file = new ofstream("gamelog.txt", std::ios_base::app);
+	*file << "\n\n\n\n\n------------------------------------------------------------------LOGGING TEST STARTS HERE------------------------------------------------------------------\n";
+
   vector<string> mapList;
 	// initializing useful variables
 	mapList.push_back("Canada.map");
@@ -59,25 +63,25 @@ void testLoggingObesrver(){
 
 	Orders* n1 = new Negotiate(sampleP, sampleP2);
   //create order logger
-  LogObserver *n1Log = new LogObserver(n1);
+	//LogObserver *n1Log = new LogObserver(n1);
   //create orderlist logger
-  LogObserver *POlsLog = new LogObserver(sampleP->getOrdersList());
+	//LogObserver *POlsLog = new LogObserver(sampleP->getOrdersList());
   //test addOrder logging
   sampleP->getOrdersList()->addOrder(n1);
-	//test execute logging
+	//test execute logging   1st LOGGING
 	n1->execute();
 
   Engine *eng = new Engine();
   //create engine logger
-  LogObserver *engLog = new LogObserver(eng);
+	//LogObserver *engLog = new LogObserver(eng);
   //test transition logging
   eng->launchTransitionCommand("loadmap");
 
   CommandProcessor *cmdP = new CommandProcessor(eng);
-  LogObserver *cmdPLog = new LogObserver(cmdP);
+	//LogObserver *cmdPLog = new LogObserver(cmdP);
   
   Command *cmd = new Command("logTesting Command");
-  LogObserver *cmdLog = new LogObserver(cmd);
+	//LogObserver *cmdLog = new LogObserver(cmd);
 
   cmd->saveEffect("test the logging");
 

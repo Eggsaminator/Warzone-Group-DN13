@@ -5,6 +5,7 @@
 // -----CommandProcessor-----
 CommandProcessor::CommandProcessor(Engine* engine) {
     m_engine = engine;
+    new LogObserver(this);
 }
 
 CommandProcessor::~CommandProcessor() {
@@ -159,12 +160,14 @@ Command::Command(string command) {
     m_command = command;
     m_argument = "";
     m_effect = "";
+    new LogObserver(this);
 }
 
 Command::Command(string command, string argument) {
     m_command = command;
     m_argument = argument;
     m_effect = "";
+    new LogObserver(this);
 }
 
 Command::~Command() {

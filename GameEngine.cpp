@@ -98,16 +98,19 @@ void State::setTransitions(map<string, State*>* transitionsMap) {
 
 Engine::Engine() {
 	buildLevels();
+	new LogObserver(this);
 };
 
 //copy constructor
 Engine::Engine(const Engine& copyEngine) {
 	currentState = copyEngine.currentState;
+	new LogObserver(this);
 }
 
 //assignment operator
 Engine& Engine::operator=(const Engine& copyEngine) {
 	currentState = copyEngine.currentState;
+	new LogObserver(this);//I think this is necessary here, since you can't copy the _observers
 	return *this;
 }
 

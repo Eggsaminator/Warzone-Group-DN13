@@ -36,15 +36,18 @@ string Orders::getName() {
 }
 /*----------------------------------------------------------------------orderlist class---------------------------------------------------------------------*/
 OrderList::OrderList() {
+	new LogObserver(this);
 }
 
 OrderList::OrderList(string user) {
 	player = user;
+	new LogObserver(this);
 }
 
 OrderList::OrderList(string user, vector<Orders*> o) {
 	player = user;
 	orders = o;
+	new LogObserver(this);
 }
 
 OrderList::OrderList(OrderList& order) {
@@ -111,18 +114,20 @@ string OrderList::stringToLog(){
 
 /*----------------------------------------------------------------------deploy class---------------------------------------------------------------------*/
 Deploy::Deploy() {
-
+	new LogObserver(this);
 }
 
 Deploy::Deploy(Player* p, int naw, Territory* tt) {
 	player = p;
 	numArmyUnit = naw;
 	tarTerritory = tt;
+	new LogObserver(this);
 }
 
 Deploy::Deploy(Deploy& deploy) {
 	numArmyUnit = deploy.numArmyUnit;
 	tarTerritory = &(*deploy.tarTerritory);
+	new LogObserver(this);
 }
 
 Deploy::~Deploy() {
@@ -195,7 +200,7 @@ string Deploy::getName() {
 
 /*----------------------------------------------------------------------advance class---------------------------------------------------------------------*/
 Advance::Advance() {
-
+	new LogObserver(this);
 }
 
 Advance::Advance(Player* p, int naw, Territory* st, Territory* tt) {
@@ -203,12 +208,14 @@ Advance::Advance(Player* p, int naw, Territory* st, Territory* tt) {
 	numArmyUnit = naw;
 	souTerritory = st;
 	tarTerritory = tt;
+	new LogObserver(this);
 }
 
 Advance::Advance(Advance& advance) {
 	numArmyUnit = advance.numArmyUnit;
 	souTerritory = &(*advance.souTerritory);
 	tarTerritory = &(*advance.tarTerritory);
+	new LogObserver(this);
 }
 
 Advance::~Advance() {
@@ -347,16 +354,18 @@ string Advance::getName() {
 }
 /*----------------------------------------------------------------------bomb class---------------------------------------------------------------------*/
 Bomb::Bomb() {
-
+	new LogObserver(this);
 }
 
 Bomb::Bomb(Player* p, Territory* tt) {
 	player = p;
 	tarTerritory = tt;
+	new LogObserver(this);
 }
 
 Bomb::Bomb(Bomb& bomb) {
 	tarTerritory = &(*bomb.tarTerritory);
+	new LogObserver(this);
 }
 
 Bomb::~Bomb() {
@@ -449,16 +458,18 @@ string Bomb::getName() {
 }
 /*----------------------------------------------------------------------blockade class---------------------------------------------------------------------*/
 Blockade::Blockade() {
-
+	new LogObserver(this);
 }
 
 Blockade::Blockade(Player* p, Territory* tt) {
 	player = p;
 	tarTerritory = tt;
+	new LogObserver(this);
 }
 
 Blockade::Blockade(Blockade& blockade) {
 	tarTerritory = &(*blockade.tarTerritory);
+	new LogObserver(this);
 }
 
 Blockade::~Blockade() {
@@ -533,7 +544,7 @@ string Blockade::getName() {
 }
 /*----------------------------------------------------------------------airlift class---------------------------------------------------------------------*/
 Airlift::Airlift() {
-
+	new LogObserver(this);
 }
 
 Airlift::Airlift(Player* p, int naw, Territory* st, Territory* tt) {
@@ -541,12 +552,14 @@ Airlift::Airlift(Player* p, int naw, Territory* st, Territory* tt) {
 	numArmyUnit = naw;
 	souTerritory = st;
 	tarTerritory = tt;
+	new LogObserver(this);
 }
 
 Airlift::Airlift(Airlift& airlift) {
 	numArmyUnit = airlift.numArmyUnit;
 	souTerritory = &(*airlift.souTerritory);
 	tarTerritory = &(*airlift.tarTerritory);
+	new LogObserver(this);
 }
 
 Airlift::~Airlift() {
@@ -635,15 +648,19 @@ string Airlift::getName() {
 }
 /*----------------------------------------------------------------------negotiate class---------------------------------------------------------------------*/
 Negotiate::Negotiate() {
+	new LogObserver(this);
 }
 
 Negotiate::Negotiate(Player* p, Player* tp) {
 	player = p;
 	tarPlayer = tp;
+	new LogObserver(this);
+	
 }
 
 Negotiate::Negotiate(Negotiate& negotiate) {
 	tarPlayer = &(*negotiate.tarPlayer);
+	new LogObserver(this);
 }
 
 Negotiate::~Negotiate() {
