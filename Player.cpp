@@ -23,8 +23,8 @@ void Player::addTerritory(Territory* newTerritory){
 }
 
 //method for a player to issue an order, takes the order's name
-void Player::issueOrder(Player* nameP, vector<Player*> allPlayers, string name) {
-	return strategy->issueOrder(nameP, allPlayers, name);
+bool Player::issueOrder(vector<Player*> allPlayers) {
+	return strategy->issueOrder(allPlayers);
 	//if (reinforcementPoolLeftToDeploy > 0 && name != "Deploy") {
 	//	return;
 	//}

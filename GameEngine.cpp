@@ -450,7 +450,7 @@ void Engine::issueOrdersPhase() {
 	while (iterator != activePlayersIndexes.end()) {
 		myPlayers.at(*iterator)->setReinforcementPoolLeftToDeploy(myPlayers.at(*iterator)->getReinforcementPool());
 
-		vector<Territory*> ownedTerritories = myPlayers.at(*iterator)->getTerritories();
+		/*vector<Territory*> ownedTerritories = myPlayers.at(*iterator)->getTerritories();
 		myPlayers.at(*iterator)->setTerritoriesToDefend(ownedTerritories);
 
 		set<Territory*> territoriesToAttackSet;
@@ -470,36 +470,45 @@ void Engine::issueOrdersPhase() {
 			}
 			++territoryIteratorSet;
 		}
-		myPlayers.at(*iterator)->setTerritoriesToAttack(territoriesToAttack);
+		myPlayers.at(*iterator)->setTerritoriesToAttack(territoriesToAttack);*/
 
 		++iterator;
 	}
 
+
 	while (!activePlayersIndexes.empty()) {
 		iterator = activePlayersIndexes.begin();
 		while (iterator != activePlayersIndexes.end()) {
-			//TODO: get parameters from console
-			string randomOrderList[] = { "End", "Deploy", "Advance", "PickCard" };
-			string order = randomOrderList[rand() % 4];
 
-			int currentReinforcmentPool = myPlayers.at(*iterator)->getReinforcementPoolLeftToDeploy();
+			//string randomOrderList[] = { "End", "Deploy", "Advance", "PickCard" };
+			//string order = randomOrderList[rand() % 4];
 
-			if (order == "End" && currentReinforcmentPool < 1) {
-				//Can only stop issuing orders if all army units have been deployed
+			int currentReinforcementPool = myPlayers.at(*iterator)->getReinforcementPoolLeftToDeploy();
+			bool hasIssuedAnOrder = myPlayers.at(*iterator)->issueOrder(myPlayers);
+
+			if (!hasIssuedAnOrder) {
+				//if player returns false, means don't want to issue any more orders
 				iterator = activePlayersIndexes.erase(iterator);
 				continue;
 			}
-			else if (order == "Advance" || order == "Deploy") {
-				myPlayers.at(*iterator)->issueOrder(myPlayers.at(*iterator), myPlayers, order);
-			}
-			else if (order == "PickCard") {
-				if (myPlayers.at(*iterator)->getHand() != nullptr && myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
-					vector<Card*> cardsInHand = myPlayers.at(*iterator)->getHand()->hand_content;
-					int randomCardIndex = rand() % cardsInHand.size();
-					Card* cardPtr = cardsInHand.at(randomCardIndex);
-					cardPtr->play(myPlayers);
-				}
-			}
+			
+
+			//if (order == "End" && currentReinforcmentPool < 1) {
+			//	//Can only stop issuing orders if all army units have been deployed
+			//	iterator = activePlayersIndexes.erase(iterator);
+			//	continue;
+			//}
+			//else if (order == "Advance" || order == "Deploy") {
+			//	myPlayers.at(*iterator)->issueOrder(myPlayers.at(*iterator), myPlayers, order);
+			//}
+			//else if (order == "PickCard") {
+			//	if (myPlayers.at(*iterator)->getHand() != nullptr && myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
+			//		vector<Card*> cardsInHand = myPlayers.at(*iterator)->getHand()->hand_content;
+			//		int randomCardIndex = rand() % cardsInHand.size();
+			//		Card* cardPtr = cardsInHand.at(randomCardIndex);
+			//		cardPtr->play(myPlayers);
+			//	}
+			//}
 
 			++iterator;
 		}
