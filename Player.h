@@ -4,6 +4,7 @@
 #include "Cards.h"
 #include "Map.h"
 #include "Orders.h"
+#include "PlayerStrategies.h"
 
 using namespace std;
 
@@ -51,7 +52,9 @@ public:
 	void addArmy(int army);
 	void removeArmy(int army);
 private:
-	string name, nameT;
+	string name;
+	string nameT;
+	PlayerStrategy* strategy;
 	Hand* hand;
 	bool territoryConquered = false;
 	int reinforcementPool = 50;
