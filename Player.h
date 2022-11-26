@@ -15,7 +15,7 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	void issueOrder(Player* nameP, vector<Player*> allPlayers, string name);
+	bool issueOrder(vector<Player*> allPlayers);
 
 
 	void addTerritory(Territory*);
