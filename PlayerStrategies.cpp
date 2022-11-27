@@ -7,6 +7,9 @@ PlayerStrategy::PlayerStrategy(Player* p) {
 	player = p;
 }
 
+Player* PlayerStrategy::getPlayer() {
+    return player;
+}
 
 HumanPlayerStrategy::HumanPlayerStrategy(Player* p) : PlayerStrategy(p){}
 
