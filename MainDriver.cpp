@@ -10,7 +10,7 @@ int main()
     testStartupPhase();
 
     //Part 3: Main Game Loop
-    testMainGameLoop();
+    /*testMainGameLoop();*/
 
     //Part 4: Order Execution
     testOrderExecution();

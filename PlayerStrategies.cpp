@@ -105,12 +105,16 @@ bool HumanPlayerStrategy::issueOrder(vector<Player*> allPlayers) {
             }
         }
     }
+
+    return true;
 }
 vector<Territory*> HumanPlayerStrategy::toDefend() {
+    //NEED TO COUT "Which territory want to defend?", and return a list of length 1
     vector<Territory*> ownedTerritories = getPlayer()->getTerritories();
     return ownedTerritories;
 }
 vector<Territory*> HumanPlayerStrategy::toAttack() {
+    //NEED TO COUT "Which territory want to attack?", and return a list of length 1
     vector<Territory*> ownedTerritories = getPlayer()->getTerritories();
     set<Territory*> territoriesToAttackSet;
     auto territoryIterator = ownedTerritories.begin();
@@ -136,25 +140,25 @@ vector<Territory*> HumanPlayerStrategy::toAttack() {
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(Player* p) : PlayerStrategy(p) {}
 bool AggressivePlayerStrategy::issueOrder(vector<Player*> allPlayers) {
-
+    return false;
 }
 vector<Territory*> AggressivePlayerStrategy::toDefend() {
-
+    return vector<Territory*>{};
 }
 vector<Territory*> AggressivePlayerStrategy::toAttack() {
-
+    return vector<Territory*>{};
 }
 
 
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p) : PlayerStrategy(p) {}
 bool BenevolentPlayerStrategy::issueOrder(vector<Player*> allPlayers) {
-
+    return false;
 }
 vector<Territory*> BenevolentPlayerStrategy::toDefend() {
-
+    return vector<Territory*>{};
 }
 vector<Territory*> BenevolentPlayerStrategy::toAttack() {
-
+    return vector<Territory*>{};
 }
 
 
@@ -172,11 +176,11 @@ vector<Territory*> NeutralPlayerStrategy::toAttack() {
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p) : PlayerStrategy(p) {}
 bool CheaterPlayerStrategy::issueOrder(vector<Player*> allPlayers) {
-
+    return false;
 }
 vector<Territory*> CheaterPlayerStrategy::toDefend() {
-
+    return vector<Territory*>{};
 }
 vector<Territory*> CheaterPlayerStrategy::toAttack() {
-
+    return vector<Territory*>{};
 }

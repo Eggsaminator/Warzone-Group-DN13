@@ -87,7 +87,7 @@ cout<<"my hand is \n";
 (*h_p).display();
 
 vector<Player*> allPlayers;
-(*((*h_p).hand_content[1])).play(allPlayers);
+//(*((*h_p).hand_content[1])).play(allPlayers);
 
 cout<<"my new hand is\n";
 
@@ -193,11 +193,11 @@ void testCards()
 
     vector<Player*> allPlayers;
 
+    /*(*((*h_p).hand_content[0])).play(allPlayers);
     (*((*h_p).hand_content[0])).play(allPlayers);
     (*((*h_p).hand_content[0])).play(allPlayers);
     (*((*h_p).hand_content[0])).play(allPlayers);
-    (*((*h_p).hand_content[0])).play(allPlayers);
-    (*((*h_p).hand_content[0])).play(allPlayers);
+    (*((*h_p).hand_content[0])).play(allPlayers);*/
 
     cout<<"After playing my new hand is:"<<endl;
 

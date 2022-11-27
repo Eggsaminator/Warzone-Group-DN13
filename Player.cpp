@@ -114,14 +114,6 @@ void Player::setOrdersList(OrderList* newOrdersList){
 	ordersList = newOrdersList;
 }
 
-void Player::setTerritoriesToAttack(vector<Territory*> territoriesList) {
-	territoriesToAttack = territoriesList;
-}
-
-void Player::setTerritoriesToDefend(vector<Territory*> territoriesList) {
-	territoriesToDefend = territoriesList;
-}
-
 OrderList* Player::getOrdersList(){
 	return ordersList;
 }
