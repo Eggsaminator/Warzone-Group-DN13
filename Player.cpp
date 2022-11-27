@@ -25,58 +25,8 @@ void Player::addTerritory(Territory* newTerritory){
 //method for a player to issue an order, takes the order's name
 bool Player::issueOrder(vector<Player*> allPlayers) {
 	return strategy->issueOrder(allPlayers);
-	//if (reinforcementPoolLeftToDeploy > 0 && name != "Deploy") {
-	//	return;
-	//}
 
-	//if (name == "Deploy") {
-	//	if (reinforcementPoolLeftToDeploy > 0) {
-	//		int numberArmyUnits = (rand() % reinforcementPoolLeftToDeploy) + 1;
-	//		reinforcementPoolLeftToDeploy -= numberArmyUnits;
-
-	//		if (toDefend().size() > 0) {
-	//			int randomToDefendIndex = rand() % toDefend().size();
-	//			Territory* destinationTerritory = toDefend().at(randomToDefendIndex);
-
-	//			Orders* orderToAdd = new Deploy(nameP, numberArmyUnits, destinationTerritory);
-	//			(*ordersList).addOrder(orderToAdd);
-	//		}
-	//	}
-	//}
-	//else if (name == "Advance") {
-	//	Territory* destinationTerritory = nullptr;
-	//	int randomSourceIndex = rand() % territories.size();
-	//	Territory* sourceTerritory = territories.at(randomSourceIndex);
-
-	//	string advanceTypes[] = { "Attack", "Defend" };
-	//	string advanceType = advanceTypes[rand() % 2];
-
-	//	if (advanceType == "Attack") {
-	//		cout << "WOOO2!\n" << endl;
-	//		if (toAttack().size() > 0) {
-	//			int randomToAttackIndex = rand() % toAttack().size();
-	//			destinationTerritory = toAttack().at(randomToAttackIndex);
-
-	//			int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
-
-	//			Orders* orderToAdd = new Advance(nameP, numberArmyUnits, sourceTerritory, destinationTerritory);
-	//			(*ordersList).addOrder(orderToAdd);
-	//		}
-	//	}
-	//	else
-	//	{
-	//		if (toDefend().size() > 0) {
-	//			int randomToDefendIndex = rand() % toDefend().size();
-	//			destinationTerritory = toDefend().at(randomToDefendIndex);
-
-	//			int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
-
-	//			Orders* orderToAdd = new Advance(nameP, numberArmyUnits, sourceTerritory, destinationTerritory);
-	//			(*ordersList).addOrder(orderToAdd);
-	//		}
-	//	}
-	//}
-	//else if (name == "Bomb") {
+	//if (name == "Bomb") {
 	//	if (toAttack().size() > 0) {
 	//		int randomToAttackIndex = rand() % toAttack().size();
 	//		Territory* destinationTerritory = toAttack().at(randomToAttackIndex);

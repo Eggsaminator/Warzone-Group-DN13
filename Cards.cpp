@@ -66,7 +66,7 @@ void Card::display()
 }
 
 
-void Card::play(vector<Player*> allPlayers)
+void Card::play(Territory* sourceTerritory, Territory* targetTerritory, int nbArmyUnits, Player* targetPlayer)
 {   //Assert that thecard belong to a deck and a hand and that the hand is indeed asigned to a player
     assert(belong_to_deck!=NULL);
     assert(belong_to_hand!=NULL);
@@ -74,38 +74,33 @@ void Card::play(vector<Player*> allPlayers)
 
     if (card_type == "Bomb")
     {
-      
-    belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, allPlayers, "Bomb");
-      
+        Orders* orderToAdd = new Bomb(belong_to_hand->my_player, targetTerritory);
+        belong_to_hand->my_player->addOrder(orderToAdd);
     }
-    if (card_type == "Reinforcement")
+    else if (card_type == "Reinforcement")
     {
-        //belong_to_hand->my_player->issueOrder("Reinforcement");
+        //WHAT DO WE DO WITH REINFORCEMENT CARDS??
     }
-    if (card_type == "Airlift")
+    else if (card_type == "Airlift")
     {
-      
-        belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, allPlayers, "Airlift");
-      
+        Orders* orderToAdd = new Airlift(belong_to_hand->my_player, nbArmyUnits, sourceTerritory, targetTerritory);
+        belong_to_hand->my_player->addOrder(orderToAdd);      
     }
-    if (card_type == "Diplomacy")
+    else if (card_type == "Diplomacy")
     {
-      
-        belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, allPlayers, "Negotiate");
-      
+        Orders* orderToAdd = new Negotiate(belong_to_hand->my_player, targetPlayer);
+        belong_to_hand->my_player->addOrder(orderToAdd);
     }   
-    if(card_type=="Blockade")
+    else if(card_type=="Blockade")
     {
-        
-        belong_to_hand->my_player->issueOrder(belong_to_hand->my_player, allPlayers, "Blockade");
-      
+        Orders* orderToAdd = new Blockade(belong_to_hand->my_player, targetTerritory);
+        belong_to_hand->my_player->addOrder(orderToAdd);
     }
 
     // remove from hand
     (*belong_to_hand).remove_card(this);
 
     // place back in deck
-
     (*belong_to_deck).add_card(this);
 }
 

@@ -12,6 +12,7 @@ public:
 	virtual bool issueOrder(vector<Player*> allPlayers) = 0;
 	virtual vector<Territory*> toDefend() = 0;
 	virtual vector<Territory*> toAttack() = 0;
+	Player* getPlayer();
 private:
 	Player* player;
 };
