@@ -8,7 +8,7 @@ using namespace std;
 class Deck;
 class Hand;
 class Player;
-
+class Territory;
 
 
 
@@ -35,7 +35,7 @@ class Card
     void setDeck(Deck* mydeck);
 
     //Service method
-    void play(vector<Player*> allPlayers);
+    void play(Territory* sourceTerritory, Territory* targetTerritory, int nbArmyUnits, Player* targetPlayer);
 
     
     
