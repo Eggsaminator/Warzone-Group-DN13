@@ -5,54 +5,59 @@ using std::vector;
 using std::string;
 class Territory;
 class Player;
+class Map;
 
 class PlayerStrategy {
 public:
-	PlayerStrategy(Player* p);
-	virtual bool issueOrder(vector<Player*> allPlayers) = 0;
+	PlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
+	virtual bool issueOrder() = 0;
 	virtual vector<Territory*> toDefend() = 0;
 	virtual vector<Territory*> toAttack() = 0;
 	Player* getPlayer();
+	vector<Player*> getAllPlayers();
+	Map* getMap();
 private:
 	Player* player;
+	vector<Player*> allPlayers;
+	Map* gameMap;
 };
 
 class HumanPlayerStrategy : public PlayerStrategy {
 public:
-	HumanPlayerStrategy(Player* p);
-	bool issueOrder(vector<Player*> allPlayers);
+	HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
+	bool issueOrder();
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
 };
 
 class AggressivePlayerStrategy : public PlayerStrategy {
 public:
-	AggressivePlayerStrategy(Player* p);
-	bool issueOrder(vector<Player*> allPlayers);
+	AggressivePlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
+	bool issueOrder();
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
 };
 
 class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
-	BenevolentPlayerStrategy(Player* p);
-	bool issueOrder(vector<Player*> allPlayers);
+	BenevolentPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
+	bool issueOrder();
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
 };
 
 class NeutralPlayerStrategy : public PlayerStrategy {
 public:
-	NeutralPlayerStrategy(Player* p);
-	bool issueOrder(vector<Player*> allPlayers);
+	NeutralPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
+	bool issueOrder();
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
 };
 
 class CheaterPlayerStrategy : public PlayerStrategy {
 public:
-	CheaterPlayerStrategy(Player* p);
-	bool issueOrder(vector<Player*> allPlayers);
+	CheaterPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
+	bool issueOrder();
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
 };

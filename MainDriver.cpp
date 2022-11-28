@@ -20,10 +20,10 @@ int main()
 
     //Part 5: logging
     //testLoggingObesrver();
-
+	Map gameMap;
 	vector<Player*> players;
 	Player* player1 = new Player("player1");
-	HumanPlayerStrategy* strat = new HumanPlayerStrategy(player1);
+	HumanPlayerStrategy* strat = new HumanPlayerStrategy(player1, players, &gameMap);
 	player1->strategy = strat;
 
 	Player* player2 = new Player("player2");
@@ -80,7 +80,6 @@ int main()
 	player2->addTerritory(terr5);
 	player3->addTerritory(terr6);
 
-	Map gameMap;
 	gameMap.addContinent(continent1);
 	gameMap.addContinent(continent2);
 	gameMap.addContinent(continent3);
@@ -104,5 +103,5 @@ int main()
 	player1->getHand()->add_card(newCard3);
 	player1->getHand()->add_card(newCard4);
 
-	player1->issueOrder(players);
+	player1->issueOrder();
 }
