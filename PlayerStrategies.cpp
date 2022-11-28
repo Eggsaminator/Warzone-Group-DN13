@@ -18,6 +18,14 @@ Player* PlayerStrategy::getPlayer() {
     return player;
 }
 
+Map* PlayerStrategy::getMap() {
+    return gameMap;
+}
+
+vector<Player*> PlayerStrategy::getAllPlayers() {
+    return allPlayers;
+}
+
 HumanPlayerStrategy::HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map) : PlayerStrategy(p, allPls, map) {}
 
 bool HumanPlayerStrategy::issueOrder() {

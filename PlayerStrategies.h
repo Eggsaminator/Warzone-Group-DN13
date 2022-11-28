@@ -1,11 +1,13 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "Map.h"
 using std::vector;
 using std::string;
-class Territory;
+
 class Player;
 class Map;
+class Territory;
 
 class PlayerStrategy {
 public:

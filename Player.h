@@ -6,6 +6,8 @@
 #include "Orders.h"
 #include "PlayerStrategies.h"
 
+class PlayerStrategy;
+
 using namespace std;
 
 class Player {
