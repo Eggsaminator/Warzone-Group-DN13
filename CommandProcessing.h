@@ -25,6 +25,7 @@ public:
     void chooseInputMethod();
     Command* getCommand();
     Command* getCommand(string promptMessage);
+    Command* getSimpleCommandNoValidation(string promptMessage);
     bool validate(State* state, Command* command);
     void saveCommand(Command* command);
 protected:
@@ -73,3 +74,5 @@ private:
 };
 
 void testCommandProcessor();
+
+extern CommandProcessor* mainCommandProcessor;

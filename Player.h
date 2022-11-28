@@ -15,7 +15,7 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	bool issueOrder(vector<Player*> allPlayers);
+	bool issueOrder();
 
 
 	void addTerritory(Territory*);
@@ -48,10 +48,10 @@ public:
 
 	void addArmy(int army);
 	void removeArmy(int army);
+	PlayerStrategy* strategy;
 private:
 	string name;
 	string nameT;
-	PlayerStrategy* strategy;
 	Hand* hand;
 	bool territoryConquered = false;
 	int reinforcementPool = 50;

@@ -457,7 +457,7 @@ void Engine::issueOrdersPhase() {
 		iterator = activePlayersIndexes.begin();
 		while (iterator != activePlayersIndexes.end()) {
 			//int currentReinforcementPool = myPlayers.at(*iterator)->getReinforcementPoolLeftToDeploy();
-			bool wantsToContinueIssuingOrders = myPlayers.at(*iterator)->issueOrder(myPlayers);
+			bool wantsToContinueIssuingOrders = myPlayers.at(*iterator)->issueOrder();
 
 			if (!wantsToContinueIssuingOrders) {
 				iterator = activePlayersIndexes.erase(iterator);
