@@ -64,6 +64,23 @@ Command* CommandProcessor::getCommand(string promptMessage) {
     return getCommand();
 }
 
+Command* CommandProcessor::getSimpleCommandNoValidation(string promptMessage) {
+    cout << promptMessage << endl;
+    Command* command;
+
+    string userInput;
+    string cmd;
+
+    getline(cin, userInput);
+    int delimiterIndex = userInput.find(' ');
+
+    cmd = userInput.substr(0, delimiterIndex);
+
+    command = new Command(cmd, "");
+
+    return command;
+}
+
 // Checks if the entered strings correspond to a valid command
 bool CommandProcessor::inputIsValid(string command, string argument) {
     // Ensure command exists

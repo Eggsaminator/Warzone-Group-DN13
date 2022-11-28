@@ -1,7 +1,12 @@
 #include "PlayerStrategies.h"
 #include "set"
 #include "Map.h"
+#include "CommandProcessing.h"
+
 using std::set;
+using std::stoi;
+using std::invalid_argument;
+using std::cout;
 
 PlayerStrategy::PlayerStrategy(Player* p) {
 	player = p;
@@ -14,96 +19,335 @@ Player* PlayerStrategy::getPlayer() {
 HumanPlayerStrategy::HumanPlayerStrategy(Player* p) : PlayerStrategy(p){}
 
 bool HumanPlayerStrategy::issueOrder(vector<Player*> allPlayers) {
+
+    cout << "----------------------\n";
+    cout << "* " << getPlayer()->getName() << " *\n";
+    cout << "----------------------\n\n";
+
+    //ask if want to issue order
+    Command* mCommand;
+    bool cmdIsValid = false;
+    while (!cmdIsValid) {
+        try {
+            mCommand = mainCommandProcessor->getSimpleCommandNoValidation("Do you want to issue an order? [Y/N]");
+            string mCommand_name = mCommand->getName();
+
+            if (mCommand_name == "Y" || mCommand_name == "y") {
+                break;
+            }
+            else if (mCommand_name == "N" || mCommand_name == "n") {
+                return false;
+            }
+        }
+        catch (invalid_argument e) {
+
+        }
+        if (!cmdIsValid) {
+            cout << "Invalid command. Enter Y or N.\n\n";
+        }
+    }
+
     if (getPlayer()->getReinforcementPoolLeftToDeploy() > 0) {
         //MUST ISSUE DEPLOY ORDERS
         int remainingReinforcementPool = getPlayer()->getReinforcementPoolLeftToDeploy();
-        int numberArmyUnits = (rand() % remainingReinforcementPool) + 1;
+        cout << "You still have "<< remainingReinforcementPool << " army units to deploy so you must issue a deploy order.\n";
+
+        //pick nb army units to deploy
+        int numberArmyUnits = 0;
+        cmdIsValid = false;
+        while (!cmdIsValid) {
+            
+            try {
+                mCommand = mainCommandProcessor->getSimpleCommandNoValidation("How many units do you want to deploy? (minimum 1)");
+                string mCommand_name = mCommand->getName();
+
+                numberArmyUnits = stoi(mCommand_name);
+                if (numberArmyUnits > 0 && numberArmyUnits <= remainingReinforcementPool) {
+                    break;
+                }
+            }
+            catch (invalid_argument e) {
+
+            }
+            cout << "Invalid number of army units.\n\n";
+        }
+        cout << "\n";
 
         getPlayer()->setReinforcementPoolLeftToDeploy(remainingReinforcementPool - numberArmyUnits);
 
-        if (toDefend().size() > 0) {
-            Orders* orderToAdd = new Deploy(getPlayer(), numberArmyUnits, toDefend().at(0));
+        vector<Territory*> listToDefend = toDefend();
+
+        if (listToDefend.size() > 0) {
+            Orders* orderToAdd = new Deploy(getPlayer(), numberArmyUnits, listToDefend.at(0));
             getPlayer()->addOrder(orderToAdd);
         }
     }else {
         //ISSUE ANY ORDER EXCEPT DEPLOY
 
+        //create dynamic choice of possible orders to issue
+        set<string> setOfPossibleOrders = { "Advance" };
 
-
-        //ADVANCE
-        Territory* destinationTerritory = nullptr;
-        int randomSourceIndex = rand() % getPlayer()->getTerritories().size();
-        Territory* sourceTerritory = getPlayer()->getTerritories().at(randomSourceIndex);
-
-        string advanceTypes[] = { "Attack", "Defend" };
-        string advanceType = advanceTypes[rand() % 2];
-
-        if (advanceType == "Attack") {
-        	if (toAttack().size() > 0) {
-        		int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
-
-        		Orders* orderToAdd = new Advance(getPlayer(), numberArmyUnits, sourceTerritory, toAttack().at(0));
-                getPlayer()->addOrder(orderToAdd);
-        	}
-        }
-        else
-        {
-        	if (toDefend().size() > 0) {
-        		int numberArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
-
-        		Orders* orderToAdd = new Advance(getPlayer(), numberArmyUnits, sourceTerritory, toDefend().at(0));
-                getPlayer()->addOrder(orderToAdd);
-        	}
+        vector<Card*> cardsInHand = getPlayer()->getHand()->hand_content;
+        for (int i = 0; i < cardsInHand.size(); i++) {
+            setOfPossibleOrders.insert(cardsInHand.at(i)->card_type);
         }
 
+        vector<string> possibleOrders(setOfPossibleOrders.begin(), setOfPossibleOrders.end());
 
+        //pick what type of order to issue
+        string instructions = "What type of order do you want to issue? (enter number):\n";
 
+        for (int i = 0; i < possibleOrders.size(); i++) {
+            string partialString = to_string(i + 1) + ") " + possibleOrders.at(i) + "\n";
+            instructions += partialString;
+        }
 
-        //GET CARDS
-        if (getPlayer()->getHand()->hand_content.size() > 0) {
-            vector<Card*> cardsInHand = getPlayer()->getHand()->hand_content;
-            int randomCardIndex = rand() % cardsInHand.size();
-            Card* cardPtr = cardsInHand.at(randomCardIndex);
+        int orderIndex = 0;
+        bool cmdIsValid = false;
 
+        while (!cmdIsValid) {
 
-            if (cardPtr->card_type == "Bomb")
-            {
-                if (toAttack().size() > 0) {
-                    cardPtr->play(nullptr, toAttack().at(0), NULL, nullptr);
+            try {
+                mCommand = mainCommandProcessor->getSimpleCommandNoValidation(instructions);
+                string mCommand_name = mCommand->getName();
+
+                orderIndex = stoi(mCommand_name);
+
+                if (orderIndex > 0 && orderIndex <= possibleOrders.size()) {
+                    break;
                 }
             }
-            else if (cardPtr->card_type == "Reinforcement")
+            catch (invalid_argument e) {
+
+            }
+            cout << "Invalid order number.\n";
+        }
+
+        string orderType = possibleOrders.at(orderIndex-1);
+
+        if (orderType == "Advance") {
+
+            //pick source territory
+            int choiceInt = 0;
+            cmdIsValid = false;
+            instructions = "From which territory do you want to advance your army units? (enter number):\n";
+
+            for (int i = 0; i < getPlayer()->getTerritories().size(); i++) {
+                string partialString = to_string(i + 1) + ") " + getPlayer()->getTerritories().at(i)->getName() + "\n";
+                instructions += partialString;
+            }
+
+            while (!cmdIsValid) {
+                try {
+                    mCommand = mainCommandProcessor->getSimpleCommandNoValidation(instructions);
+                    string mCommand_name = mCommand->getName();
+
+                    choiceInt = stoi(mCommand_name);
+
+                    if (choiceInt > 0 && choiceInt <= getPlayer()->getTerritories().size()) {
+                        break;
+                    }
+                }
+                catch (invalid_argument e) {
+
+                }
+                cout << "Invalid territory number.\n";
+            }
+
+            Territory* sourceTerritory = getPlayer()->getTerritories().at(choiceInt-1);
+
+            //pick if attack/defend
+            choiceInt = 0;
+            cmdIsValid = false;
+            instructions = "Do you want to attack or defend? (enter number):\n1) Attack\n2) Defend";
+
+            while (!cmdIsValid) {
+                try {
+                    mCommand = mainCommandProcessor->getSimpleCommandNoValidation(instructions);
+                    string mCommand_name = mCommand->getName();
+
+                    choiceInt = stoi(mCommand_name);
+
+                    if (choiceInt > 0 && choiceInt <= 2) {
+                        break;
+                    }
+                }
+                catch (invalid_argument e) {
+
+                }
+                cout << "Invalid choice number.\n";
+            }
+
+            string advanceTypes[] = { "Attack", "Defend" };
+            string advanceType = advanceTypes[choiceInt-1];
+
+            //pick nb army units
+            int numberArmyUnits = 0;
+            cmdIsValid = false;
+            instructions = "How many army units do you want to advance? (minimum 0 and maximum "+to_string(sourceTerritory->getArmies()) + "):";
+
+            while (!cmdIsValid) {
+                try {
+                    mCommand = mainCommandProcessor->getSimpleCommandNoValidation(instructions);
+                    string mCommand_name = mCommand->getName();
+
+                    numberArmyUnits = stoi(mCommand_name);
+
+                    if (numberArmyUnits >= 0 && numberArmyUnits <= sourceTerritory->getArmies()) {
+                        break;
+                    }
+                }
+                catch (invalid_argument e) {
+
+                }
+                cout << "Invalid amount of army units.\n";
+            }
+
+            //issue order
+            if (advanceType == "Attack") {
+                vector<Territory*> listToAttack = toAttack();
+                if (listToAttack.size() > 0) {
+                    Orders* orderToAdd = new Advance(getPlayer(), numberArmyUnits, sourceTerritory, listToAttack.at(0));
+                    getPlayer()->addOrder(orderToAdd);
+                }
+            }
+            else
+            {
+                vector<Territory*> listToDefend = toDefend();
+                if (listToDefend.size() > 0) {
+                    Orders* orderToAdd = new Advance(getPlayer(), numberArmyUnits, sourceTerritory, listToDefend.at(0));
+                    getPlayer()->addOrder(orderToAdd);
+                }
+            }
+        }
+        else 
+        {
+            //retrieve picked card from hand
+            Card* cardPtr = nullptr;
+            for (int i = 0; i < cardsInHand.size(); i++) {
+                
+                if (cardsInHand.at(i)->card_type == orderType) {
+                    cardPtr = cardsInHand.at(i);
+                    break;
+                }
+            }
+
+            if (cardPtr == nullptr) {
+                return true;
+            }
+
+            if (orderType == "Bomb")
+            {
+                vector<Territory*> listToAttack = toAttack();
+                if (listToAttack.size() > 0) {
+                    cardPtr->play(nullptr, listToAttack.at(0), NULL, nullptr);
+                }
+            }
+            else if (orderType == "Reinforcement")
             {
                 //WHAT DO WE DO WITH REINFORCEMENT CARDS??
             }
-            else if (cardPtr->card_type == "Airlift")
+            else if (orderType == "Airlift")
             {
-                if (toDefend().size() > 0) {
-                    int randomSourceIndex = rand() % getPlayer()->getTerritories().size();
-                    Territory* sourceTerritory = getPlayer()->getTerritories().at(randomSourceIndex);
+                vector<Territory*> listToDefend = toDefend();
+                if (listToDefend.size() > 0) {
+                    //pick source territory
+                    int choiceInt = 0;
+                    cmdIsValid = false;
+                    instructions = "From which territory do you want to airlift your army units? (enter number):\n";
 
-                    int randomNbArmyUnits = rand() % (sourceTerritory->getArmies() + 1);
-                    cardPtr->play(sourceTerritory, toDefend().at(0), randomNbArmyUnits, nullptr);
+                    for (int i = 0; i < getPlayer()->getTerritories().size(); i++) {
+                        string partialString = to_string(i + 1) + ") " + getPlayer()->getTerritories().at(i)->getName() + "\n";
+                        instructions += partialString;
+                    }
+
+                    while (!cmdIsValid) {
+                        try {
+                            mCommand = mainCommandProcessor->getSimpleCommandNoValidation(instructions);
+                            string mCommand_name = mCommand->getName();
+
+                            choiceInt = stoi(mCommand_name);
+
+                            if (choiceInt > 0 && choiceInt <= getPlayer()->getTerritories().size()) {
+                                break;
+                            }
+                        }
+                        catch (invalid_argument e) {
+
+                        }
+                        cout << "Invalid territory number.\n";
+                    }
+
+                    Territory* sourceTerritory = getPlayer()->getTerritories().at(choiceInt-1);
+
+                    //pick nb army units
+                    int numberArmyUnits = 0;
+                    cmdIsValid = false;
+                    instructions = "How many army units do you want to airlift? (minimum 0 and maximum " + to_string(sourceTerritory->getArmies()) + "):";
+
+                    while (!cmdIsValid) {
+                        try {
+                            mCommand = mainCommandProcessor->getSimpleCommandNoValidation(instructions);
+                            string mCommand_name = mCommand->getName();
+
+                            numberArmyUnits = stoi(mCommand_name);
+
+                            if (numberArmyUnits >= 0 && numberArmyUnits <= sourceTerritory->getArmies()) {
+                                break;
+                            }
+                        }
+                        catch (invalid_argument e) {
+
+                        }
+                        cout << "Invalid amount of army units.\n";
+                    }
+                    cardPtr->play(sourceTerritory, listToDefend.at(0), numberArmyUnits, nullptr);
                 }
             }
-            else if (cardPtr->card_type == "Diplomacy")
+            else if (orderType == "Diplomacy")
             {
-                bool randomPlayerPicked = false;
-                Player* randomPlayer = nullptr;
+                //pick player to negotiate with
+                int choiceInt = 0;
+                cmdIsValid = false;
+                instructions = "With which player do you want to negotiate? (enter number):\n";
 
-                while (!randomPlayerPicked) {
-                    int randomPlayerIndex = rand() % allPlayers.size();
-                    if (allPlayers[randomPlayerIndex] != getPlayer()) {
-                        randomPlayerPicked = true;
-                        randomPlayer = allPlayers[randomPlayerIndex];
+                vector<Player*> newAllPlayers = allPlayers;
+
+                for (int i = 0; i < newAllPlayers.size(); i++) {
+                    if (newAllPlayers.at(i) == getPlayer()) {
+                        newAllPlayers.erase(newAllPlayers.begin() + i);
+                        i--;
+                        continue;
                     }
+                    string partialString = to_string(i + 1) + ") " + newAllPlayers.at(i)->getName() + "\n";
+                    instructions += partialString;
                 }
+
+                while (!cmdIsValid) {
+                    try {
+                        mCommand = mainCommandProcessor->getSimpleCommandNoValidation(instructions);
+                        string mCommand_name = mCommand->getName();
+
+                        choiceInt = stoi(mCommand_name);
+
+                        if (choiceInt > 0 && choiceInt <= newAllPlayers.size()) {
+                            break;
+                        }
+                    }
+                    catch (invalid_argument e) {
+
+                    }
+                    cout << "Invalid player number.\n";
+                }
+
+                Player* randomPlayer = newAllPlayers[choiceInt-1];
                 cardPtr->play(nullptr, nullptr, NULL, randomPlayer);
             }
-            else if (cardPtr->card_type == "Blockade")
+            else if (orderType == "Blockade")
             {
-                if (toDefend().size() > 0) {
-                    cardPtr->play(nullptr, toDefend().at(0), NULL, nullptr);
+                vector<Territory*> listToDefend = toDefend();
+                if (listToDefend.size() > 0) {
+                    cardPtr->play(nullptr, listToDefend.at(0), NULL, nullptr);
                 }
             }
         }
@@ -112,9 +356,46 @@ bool HumanPlayerStrategy::issueOrder(vector<Player*> allPlayers) {
     return true;
 }
 vector<Territory*> HumanPlayerStrategy::toDefend() {
-    //NEED TO COUT "Which territory want to defend?", and return a list of length 1
+    string instructions = "Which territory do you want to defend? (enter number):\n";
+
     vector<Territory*> ownedTerritories = getPlayer()->getTerritories();
-    return ownedTerritories;
+
+    if (ownedTerritories.size() < 1) {
+        return vector<Territory*>{};
+    }
+
+    for (int i = 0; i < ownedTerritories.size();i++) {
+        string partialString = to_string(i + 1) + ") " + ownedTerritories.at(i)->getName() + "\n";
+        instructions += partialString;
+    }
+
+
+    Command* mCommand;
+    int cmdInt = 0;
+    bool cmdIsValid = false;
+
+    while (!cmdIsValid) {
+
+        try {
+            mCommand = mainCommandProcessor->getSimpleCommandNoValidation(instructions);
+            string mCommand_name = mCommand->getName();
+
+            cmdInt = stoi(mCommand_name);
+
+            if (cmdInt > 0 && cmdInt <= ownedTerritories.size()) {
+                break;
+            }
+        }
+        catch (invalid_argument e) {
+
+        }
+        cout << "Invalid territory number.\n";
+    }
+
+    vector<Territory*> toDefend;
+    toDefend.push_back(ownedTerritories.at(cmdInt-1));
+
+    return toDefend;
 }
 vector<Territory*> HumanPlayerStrategy::toAttack() {
     //NEED TO COUT "Which territory want to attack?", and return a list of length 1
