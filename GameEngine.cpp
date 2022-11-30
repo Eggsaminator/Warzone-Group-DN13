@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <cmath>
 #include "Cards.h"
 #include "Player.h"
 #include "Map.h"
@@ -187,6 +188,12 @@ void Engine::buildLevels() {
 	State* state8 = new State("end");
 
 	//create maps of possible transitions
+
+	//TODO add transition for the tournament mode
+
+
+
+
 	map<string, State*>* state0Transitions = new map<string, State*>{
 		{string("loadmap"), state1}
 	};
@@ -255,7 +262,7 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 			cout <<"loadmap ok\n";
 			
 			MapLoader* mMapLoader =new MapLoader();
-			myMap=new Map(mMapLoader->loadMap(mCommand->getArgument()));
+			myMap=new Map(mMapLoader->loadMap(mCommand->getArguments()[0]));
 		// transition to state map loaded
 			this->setCurrentState(this->launchTransitionCommand("loadmap"));
 
@@ -279,7 +286,7 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 
 			}
 			
-			myPlayers.push_back(new Player(mCommand->getArgument())); // need to get the name from the command ?
+			myPlayers.push_back(new Player(mCommand->getArguments()[0])); // need to get the name from the command ?
 
 		}
 

@@ -13,6 +13,7 @@ using std::endl;
 using std::string;
 using std::vector;
 
+
 void testStartupPhase()
 {
 	cout<<"Demonstration of the start up phase"<<endl;
@@ -32,4 +33,9 @@ void testStartupPhase()
 		cout << "number of owned territories :" << myTerr.size() << endl;
 		cout << "The reinforcement pool of the player contains : " << myListPlayer[i]->getReinforcementPool() << " army." << endl;
 	}
+}
+
+int main()
+{
+testStartupPhase();	
 }

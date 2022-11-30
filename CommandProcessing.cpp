@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "CommandProcessing.h"
 
 // -----CommandProcessor-----
@@ -13,6 +14,8 @@ CommandProcessor::~CommandProcessor() {
 }
 
 map<string, vector<string>> CommandProcessor::s_commandValidStates = {
+    // TODO Add command tournament + valid state
+    {"tournament",{"start"}},
     {"loadmap", {"start", "maploaded"}},
     {"validatemap", {"maploaded"}},
     {"addplayer", {"mapvalidated", "playersadded"}},
@@ -21,10 +24,16 @@ map<string, vector<string>> CommandProcessor::s_commandValidStates = {
     {"quit", {"win"}}
 };
 
+
+
+
 Command* CommandProcessor::readCommand() {
     string userInput;
     string cmd;
-    string argument;
+    vector<string> arguments;
+    
+    string current_arr;
+    
 
     do {
         cout << "Please enter a valid command:" << endl;
@@ -32,13 +41,39 @@ Command* CommandProcessor::readCommand() {
         int delimiterIndex = userInput.find(' ');
 
         cmd = userInput.substr(0, delimiterIndex);
-        argument = (delimiterIndex != string::npos) ? userInput.substr(delimiterIndex + 1, userInput.length()) : "";
+
+        if(cmd=="tournament")
+        {
+        string arg_m;
+        string arg_p;
+        string arg_d;
+        string arg_g;
+
+        arg_m=userInput.substr(userInput.find("-M")+2,userInput.find("-P")-5-userInput.find("-M")+2);
+        arguments.push_back(arg_m);
+        arg_p=userInput.substr(userInput.find("-P")+2,userInput.find("-G")-5-userInput.find("-P")+2);
+        arguments.push_back(arg_p);
+        arg_g=userInput.substr(userInput.find("-G")+2,userInput.find("-D")-5-userInput.find("-G")+2);
+        arguments.push_back(arg_g);
+        arg_d=userInput.substr(userInput.find("-D")+2,userInput.length());
+        arguments.push_back(arg_d);
+
+        }
+        else
+        {
+            current_arr = (delimiterIndex != string::npos) ? userInput.substr(delimiterIndex + 1, userInput.length()) : "";
+            arguments.push_back(current_arr);
+        }
+        
+       
+        //temp_cmd=userInput.substr(delimiterIndex,userInput.length()); // we take the rest of the command just after the ' '
+        //current_arr = (delimiterIndex != string::npos) ? userInput.substr(delimiterIndex + 1, userInput.length()) : "";
 
         cout << "Command: " << cmd << endl;
-        cout << "Argument: " << ((argument.compare("") != 0) ? argument : "None") << endl;
-    } while (!inputIsValid(cmd, argument));
+        //cout << "Argument: " << ((argument.compare("") != 0) ? argument : "None") << endl;
+    } while (!inputIsValid(cmd, arguments));
 
-    Command* command = new Command(cmd, argument);
+    Command* command = new Command(cmd, arguments);
     saveCommand(command);
     return command;
 }
@@ -76,17 +111,38 @@ Command* CommandProcessor::getSimpleCommandNoValidation(string promptMessage) {
 
     cmd = userInput.substr(0, delimiterIndex);
 
-    command = new Command(cmd, "");
+    command = new Command(cmd, vector<string>{""});
 
     return command;
 }
 
 // Checks if the entered strings correspond to a valid command
-bool CommandProcessor::inputIsValid(string command, string argument) {
+
+//TODO assure that command tournament is valid
+
+bool CommandProcessor::inputIsValid(string command, vector<string> arguments) {
     // Ensure command exists
     if (!s_commandValidStates.count(command)) {
         return false;
     }
+
+    if((command.compare("tournament")==0))
+    {
+        //TODO check number of arguments
+        for(int i=0;i<4;i++)
+        {
+            if(arguments[i].compare("") == 0)
+            {
+                //empty arg
+                return false;
+            }
+
+        }
+        return true;
+    }
+    else{
+    string argument;
+    argument=arguments[0];
 
     if ((command.compare("loadmap") == 0)
         || (command.compare("addplayer") == 0)) {
@@ -94,6 +150,7 @@ bool CommandProcessor::inputIsValid(string command, string argument) {
     } else {
         return (argument.compare("") == 0);
     }
+}
 }
 
 // Ensures the command is valid in the current state
@@ -175,14 +232,14 @@ bool CommandProcessor::isValidInputMethod(string command, string argument) {
 // -----Command-----
 Command::Command(string command) {
     m_command = command;
-    m_argument = "";
+    //m_arguments = "";
     m_effect = "";
     new LogObserver(this);
 }
 
-Command::Command(string command, string argument) {
+Command::Command(string command, vector<string> arguments) {
     m_command = command;
-    m_argument = argument;
+    m_arguments = arguments;
     m_effect = "";
     new LogObserver(this);
 }
@@ -205,8 +262,8 @@ string Command::getName() {
     return m_command;
 }
 
-string Command::getArgument() {
-    return m_argument;
+vector<string> Command::getArguments() {
+    return m_arguments;
 }
 
 string Command::getEffect() {
@@ -273,15 +330,15 @@ Command* FileCommandProcessorAdapter::readCommand() {
 
         cout << "Command: " << cmd << endl;
         cout << "Argument: " << ((argument.compare("") != 0) ? argument : "None") << endl;
-    } while (!inputIsValid(cmd, argument) && !m_fileContents->empty());
+    } while (!inputIsValid(cmd, vector<string>{argument}) && !m_fileContents->empty());  //ATTENTION!!!!!!
 
-    if (m_fileContents->empty() && !inputIsValid(cmd, argument))
+    if (m_fileContents->empty() && !inputIsValid(cmd, vector<string>{argument}))
     {
         cout << "File " << m_filePath << " is out of valid commands! Error!" << endl;
         return nullptr;
     }
 
-    Command* command = new Command(cmd, argument);
+    Command* command = new Command(cmd, vector<string>{argument});
     saveCommand(command);
     return command;
 }

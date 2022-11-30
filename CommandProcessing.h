@@ -32,7 +32,7 @@ protected:
     virtual Command* readCommand();
     
     string stringToLog();
-    bool inputIsValid(string command, string argument);
+    bool inputIsValid(string command, vector<string> arguments);
     bool isValid(State* state, Command* command);
     bool isValidInputMethod(string command, string argument);
     Engine* m_engine;
@@ -45,17 +45,17 @@ private:
 class Command : public ILoggable, public Subject  {
 public:
     Command(string command);
-    Command(string command, string argument);
+    Command(string command, vector<string> arguments);
     ~Command();
     void execute(Engine* engine);
     string getName();
-    string getArgument();
+    vector<string> getArguments();
     string getEffect();
     void saveEffect(string effect);
     string stringToLog();
 private:
     string m_command;
-    string m_argument;
+    vector<string> m_arguments;
     string m_effect;
 };
 

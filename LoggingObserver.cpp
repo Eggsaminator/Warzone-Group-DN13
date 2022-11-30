@@ -1,6 +1,6 @@
 #include <vector>
 #include "LoggingObesrver.h"
-#include "player.h"
+#include "Player.h"
 #include "GameEngine.h"
 #include "CommandProcessing.h"
 
