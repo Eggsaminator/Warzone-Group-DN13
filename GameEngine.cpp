@@ -3,6 +3,8 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <fstream>
+#include <cmath>
 #include "Cards.h"
 #include "Player.h"
 #include "Map.h"
@@ -11,7 +13,7 @@
 using std::ostream;
 using std::cin;
 using std::cout;
-using std::floor;
+//using std::floor;
 using std::map;
 using std::set;
 
@@ -333,8 +335,95 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 			}
 
 			this->setCurrentState(this->launchTransitionCommand("gamestart"));
+			
+
+			//ADD the main gameLoop function
+			if(mCommandProcess->getTournament())
+			{
+				this->mainTournamentLoop(mCommandProcess);
+
+			}
+			else
+			{
+				this->mainGameLoop(mCommandProcess);
+			}
 		}
 	}
+}
+
+void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
+{
+	
+	int max_D;
+
+	ifstream stream;
+    stream.open("tournament_report.txt");
+	if(stream.is_open()){
+    
+        string tp;
+        getline(stream, tp); //read data from file object and put it into string.
+        getline(stream, tp);
+        getline(stream, tp);
+        getline(stream, tp);
+		getline(stream, tp);
+        max_D=stoi(tp.substr(tp.length()-3,tp.length()));
+	stream.close();
+	}
+	else
+	{
+		cout<<"non existing tournament"<<endl;
+	}
+
+    
+
+
+
+
+
+	ofstream strm;
+	// we open the file at the end of it
+	strm.open("tournament_report.txt",ios::app);
+	bool isGameOver = false;
+	int round_played=0;
+	while (!isGameOver && round_played<max_D) {
+		//run game loop
+		reinforcementPhase();
+		issueOrdersPhase();
+		executeOrdersPhase();
+		round_played++;
+
+		isGameOver = gameLoopWinnerLoserCheckup();
+	}
+	if(isGameOver)
+	{
+		strm << "THE WINNER IS " << myPlayers.at(0)->getName() << "!!" << endl;
+	}
+	else
+	{
+		strm << "It is a drawn !"<<endl;
+	}
+	
+	launchTransitionCommand("win");
+	//cout << "Do you want to [quit] or [replay]?" << endl;
+	Command* mCommand = cmdProcessor->getCommand();
+
+	bool isCommandValid = false;
+	while (!isCommandValid) {
+		string mCommand_name;
+		if (cmdProcessor->validate(getCurrentState(), mCommand)) {
+			mCommand_name = mCommand->getName();
+		}
+
+		if (mCommand_name == "replay") {
+			return startupPhase(cmdProcessor);
+		}
+		else if (mCommand_name == "quit") {
+			return;
+		}
+	}
+
+strm.close();
+
 }
 
 

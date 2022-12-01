@@ -58,6 +58,7 @@ public:
 	void setMyMap(Map* map);
 	void setMyPlayers(vector <Player*> players);
 	void startupPhase(CommandProcessor* mCommandProcess);
+	void mainTournamentLoop(CommandProcessor* cmdProcessor);
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
 
 

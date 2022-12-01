@@ -1,0 +1,6 @@
+loadmap Canada.map
+validatemap
+addplayer Neutral
+addplayer Cheater
+gamestart
+replay

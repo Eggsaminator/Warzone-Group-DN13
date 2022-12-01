@@ -88,8 +88,10 @@ bool CommandProcessor::inputIsValid(string command, string argument) {
         return false;
     }
 
+
     if ((command.compare("loadmap") == 0)
         || (command.compare("addplayer") == 0)) {
+            
         return (argument.compare("") != 0);
     } else {
         return (argument.compare("") == 0);
@@ -143,7 +145,7 @@ void CommandProcessor::chooseInputMethod() {
     string cmd = "";
     string argument = "";
     while (!isValidInputMethod(cmd, argument)) {
-        cout << "Please enter a valid input method (-console or -file <filename>):" << endl;
+        cout << "Please enter a valid input method (-console or -file <filename> or tournament):" << endl;
         getline(cin, userInput);
         int delimiterIndex = userInput.find(' ');
 
@@ -162,14 +164,34 @@ void CommandProcessor::chooseInputMethod() {
         fileProcessor->setFile(argument);
         fileProcessor->processFile();
     }
+
+    if(cmd.compare("tournament")==0)
+    {
+        cout<<"hello"<<endl;
+        generate_tournament(userInput);
+        FileCommandProcessorAdapter* fileProcessor = new FileCommandProcessorAdapter(m_engine);
+        fileProcessor->setTournament(true); // Added the tournament status !!!!
+        fileProcessor->setFile("tournament.txt");
+        fileProcessor->processFile();
+    }
 }
 
 bool CommandProcessor::isValidInputMethod(string command, string argument) {
     if ((command.compare("-console") == 0 && argument.compare("") == 0)
-        || (command.compare("-file") == 0 && argument.compare("") != 0)) {
+        || (command.compare("-file") == 0 && argument.compare("") != 0) ||(command.compare("tournament") == 0 && argument.compare("") != 0)) {
         return true;
     }
     return false;
+}
+
+void CommandProcessor::setTournament(bool b)
+{
+    is_tournament=b;
+}
+
+bool CommandProcessor::getTournament()
+{
+    return is_tournament;
 }
 
 // -----Command-----
@@ -284,4 +306,114 @@ Command* FileCommandProcessorAdapter::readCommand() {
     Command* command = new Command(cmd, argument);
     saveCommand(command);
     return command;
+}
+
+void generate_tournament(string userInput)
+{
+    string cmd=userInput.substr(0,userInput.find(' '));
+    
+
+    string arg_m;
+    string arg_p;
+    string arg_d;
+    string arg_g;
+    vector<string> arguments;
+
+        arg_m=userInput.substr(userInput.find("-M")+2,userInput.find("-P")-5-userInput.find("-M")+2);
+        cout<<arg_m<<endl;
+        arguments.push_back(arg_m);
+        arg_p=userInput.substr(userInput.find("-P")+2,userInput.find("-G")-5-userInput.find("-P")+2);
+        cout<<arg_p<<endl;
+        arguments.push_back(arg_p);
+        arg_g=userInput.substr(userInput.find("-G")+2,userInput.find("-D")-5-userInput.find("-G")+2);
+        cout<<arg_g<<endl;
+        arguments.push_back(arg_g);
+        arg_d=userInput.substr(userInput.find("-D")+2,userInput.length());
+        cout<<arg_d<<endl;
+        arguments.push_back(arg_d);
+
+
+
+
+    if(cmd.compare("tournament")!=0 ||arguments.size()!=4)
+    {
+        cout<<"This command is not valid a tournament command";
+    }
+    else
+    {
+        // The command is valid we can start to write the file
+        ofstream strm;
+        strm.open("tournament.txt");
+        ofstream stream;
+        stream.open("tournament_report.txt");
+        stream<<"Tournament mode:"<<endl;
+        stream<<"M: ";
+        
+        vector<string> maps;
+        string list_map=arguments[0];
+        int delim_index=list_map.find(',');
+        int previous=0;
+        maps.push_back(list_map.substr(1,delim_index-1));
+        stream<<list_map.substr(1,delim_index-1)<<", ";
+        while(delim_index!=string::npos){
+        previous=delim_index;
+        delim_index=list_map.find(',',delim_index+1);
+        maps.push_back(list_map.substr(previous+1,delim_index-previous));
+        stream<<list_map.substr(previous+1,delim_index-previous)<<", ";
+        }
+        stream<<endl;
+
+        stream<<"P: ";
+
+        
+
+        // TODO Separate list of players
+        vector<string> players;
+        string list_player=arguments[1];
+        delim_index=list_player.find(',');
+        previous=0;
+        players.push_back(list_player.substr(1,delim_index-1));
+        stream<<list_player.substr(1,delim_index-1)<<", ";
+        while(delim_index!=string::npos){
+        previous=delim_index;
+        delim_index=list_player.find(',',delim_index+1);
+        players.push_back(list_player.substr(previous+1,delim_index-previous));
+        stream<<list_player.substr(previous+1,delim_index-previous)<<", ";
+        }
+        stream<<endl;
+
+
+        int number_game;
+        number_game=stoi(arguments[2]);
+        stream<<"G: "<<number_game<<endl;
+        int max_loop;
+        max_loop=stoi(arguments[3]);
+        stream<<"D: "<<max_loop<<endl;
+
+        for(int i=0;i<number_game;i++)
+        {
+            for(int j=0;j<maps.size();j++)
+            {
+                strm<<"loadmap "<<maps[i]<<endl;
+                strm<<"validatemap"<<endl;
+                for(int k=0;k<players.size();k++)
+                {
+                    strm<<"addplayer "<<players[k]<<endl;
+
+                }
+                strm<<"gamestart"<<endl;
+                strm<<"replay"<<endl;
+            }
+        }
+        strm<<"quit"<<endl;
+
+        strm.close();
+        stream.close();
+
+        
+        
+
+
+
+    }
 }
