@@ -4,6 +4,9 @@
 #include "Cards.h"
 #include "Map.h"
 #include "Orders.h"
+#include "PlayerStrategies.h"
+
+class PlayerStrategy;
 
 using namespace std;
 
@@ -14,7 +17,7 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	void issueOrder(Player* nameP, vector<Player*> allPlayers, string name);
+	bool issueOrder();
 
 
 	void addTerritory(Territory*);
@@ -38,9 +41,6 @@ public:
 	
 	vector<Territory*> getTerritories();
 	void setTerritories(vector<Territory*> newTerritories);
-  
-	void setTerritoriesToAttack(vector<Territory*>);
-	void setTerritoriesToDefend(vector<Territory*>);
 
 	void setTruce(Player* tp);
 	string getTruce();
@@ -50,15 +50,15 @@ public:
 
 	void addArmy(int army);
 	void removeArmy(int army);
+	PlayerStrategy* strategy;
 private:
-	string name, nameT;
+	string name;
+	string nameT;
 	Hand* hand;
 	bool territoryConquered = false;
 	int reinforcementPool = 50;
 	int reinforcementPoolLeftToDeploy = 0;
 	vector<Territory*> territories;
-	vector<Territory*> territoriesToAttack;
-	vector<Territory*> territoriesToDefend;
 };
 
 void testPlayers();

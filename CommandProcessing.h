@@ -25,10 +25,12 @@ public:
     void chooseInputMethod();
     Command* getCommand();
     Command* getCommand(string promptMessage);
+    Command* getSimpleCommandNoValidation(string promptMessage);
     bool validate(State* state, Command* command);
+    void saveCommand(Command* command);
 protected:
     virtual Command* readCommand();
-    void saveCommand(Command* command);
+    
     string stringToLog();
     bool inputIsValid(string command, string argument);
     bool isValid(State* state, Command* command);
@@ -72,3 +74,5 @@ private:
 };
 
 void testCommandProcessor();
+
+extern CommandProcessor* mainCommandProcessor;

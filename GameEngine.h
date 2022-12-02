@@ -49,25 +49,22 @@ public:
 	Map* getMap();
 	vector<Player*> getPlayers();
 	void setCurrentState(State* newState);
-	void mainGameLoop();
-	void gameLoopWinnerLoserCheckup();
+	void mainGameLoop(CommandProcessor* cmdProcessor);
+	bool gameLoopWinnerLoserCheckup();
 	void reinforcementPhase();
 	void issueOrdersPhase();
 	void executeOrdersPhase();
 	void buildLevels();
 	void setMyMap(Map* map);
 	void setMyPlayers(vector <Player*> players);
-	void startupPhase(
-		CommandProcessor* mCommandProcess
-		);
+	void startupPhase(CommandProcessor* mCommandProcess);
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
 
 
 private:
-	Map* mMap;
 	State* currentState;
 	Map* myMap;
-  Deck* myDeck;
+	Deck* myDeck;
 	vector <Player*> myPlayers;
 };
 
