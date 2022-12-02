@@ -5,6 +5,7 @@
 // -----CommandProcessor-----
 CommandProcessor::CommandProcessor(Engine* engine) {
     m_engine = engine;
+    new LogObserver(this);
 }
 
 CommandProcessor::~CommandProcessor() {
@@ -61,6 +62,23 @@ Command* CommandProcessor::getCommand() {
 Command* CommandProcessor::getCommand(string promptMessage) {
     cout << promptMessage << endl;
     return getCommand();
+}
+
+Command* CommandProcessor::getSimpleCommandNoValidation(string promptMessage) {
+    cout << promptMessage << endl;
+    Command* command;
+
+    string userInput;
+    string cmd;
+
+    getline(cin, userInput);
+    int delimiterIndex = userInput.find(' ');
+
+    cmd = userInput.substr(0, delimiterIndex);
+
+    command = new Command(cmd, "");
+
+    return command;
 }
 
 // Checks if the entered strings correspond to a valid command
@@ -159,12 +177,14 @@ Command::Command(string command) {
     m_command = command;
     m_argument = "";
     m_effect = "";
+    new LogObserver(this);
 }
 
 Command::Command(string command, string argument) {
     m_command = command;
     m_argument = argument;
     m_effect = "";
+    new LogObserver(this);
 }
 
 Command::~Command() {

@@ -5,7 +5,7 @@
 using namespace std;
 
 void testCommandProcessor() {
-    Engine* engine = &Engine();
+    Engine* engine = new Engine();
     CommandProcessor* processor = new CommandProcessor(engine);
 
     cout << "---------------------------------------------" << endl;
