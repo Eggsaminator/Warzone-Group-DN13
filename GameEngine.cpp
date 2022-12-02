@@ -240,13 +240,18 @@ void Engine::buildLevels() {
 
 void Engine::startupPhase(CommandProcessor* mCommandProcess)
 {
+	cout<<"startupPhase"<<endl;
 	State* currentState = this->getCurrentState();
+	
 	while(this->getCurrentState()->getStateName()!="assignreinforcement") {
 		// we get a new command
+		cout<< "state before read is:"<<this->getCurrentState()->getStateName()<<endl;
+
 		Command* mCommand= mCommandProcess->getCommand();
+		cout<< "state after read is:"<<this->getCurrentState()->getStateName()<<endl;
 
 		string mCommand_name;
-		if(mCommandProcess->validate(getCurrentState(), mCommand))
+		if(mCommandProcess->validate(getCurrentState(), mCommand) || mCommand->getName()=="gamestart")
 			mCommand_name=mCommand->getName();
 		// if the command is valid in the current state of the Game Engine then we can apply its effect
 		
@@ -282,6 +287,7 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 			}
 			
 			myPlayers.push_back(new Player(mCommand->getArgument())); // need to get the name from the command ?
+			
 
 		}
 
@@ -334,26 +340,38 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 
 			}
 
-			this->setCurrentState(this->launchTransitionCommand("gamestart"));
-			
+			//this->setCurrentState(this->launchTransitionCommand("gamestart"));
+			//cout<<"finished !"<<endl;
 
 			//ADD the main gameLoop function
-			if(mCommandProcess->getTournament())
+			
+		}
+
+	}
+	cout<<"next step"<<"start main loop"<<endl;
+	//cout<<mCommandProcess->getTournament()<<endl;
+	//bool tour=mCommandProcess->getTournament();
+	//cout <<"start main loop";
+	this->mainTournamentLoop(mCommandProcess);
+	/*
+	if(tour)
 			{
+				cout <<"start main loop";
 				this->mainTournamentLoop(mCommandProcess);
 
 			}
 			else
 			{
+				cout <<"argggggg";
 				this->mainGameLoop(mCommandProcess);
 			}
-		}
-	}
+			*/
+			
 }
 
 void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
 {
-	
+	cout<<"hi";
 	int max_D;
 
 	ifstream stream;

@@ -1,5 +1,5 @@
 Tournament mode:
 M: Canada.map, 
-P: Neutral, Cheater, 
+P: Ch, CF, 
 G: 2
 D: 10

@@ -13,8 +13,9 @@ using namespace std;
 void testTournament()
 {
     Engine* engine = new Engine();
-    FileCommandProcessorAdapter* adapter = new FileCommandProcessorAdapter(engine);
+    CommandProcessor* adapter = new CommandProcessor(engine);
     adapter->chooseInputMethod();
+    delete adapter;
 
 }
 

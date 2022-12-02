@@ -167,12 +167,15 @@ void CommandProcessor::chooseInputMethod() {
 
     if(cmd.compare("tournament")==0)
     {
-        cout<<"hello"<<endl;
+        cout<<"hello it is a tournament"<<endl;
         generate_tournament(userInput);
+        cout<<"generate file is done"<<endl;
         FileCommandProcessorAdapter* fileProcessor = new FileCommandProcessorAdapter(m_engine);
         fileProcessor->setTournament(true); // Added the tournament status !!!!
         fileProcessor->setFile("tournament.txt");
-        fileProcessor->processFile();
+        cout<<"processfile begins"<<endl;
+        //fileProcessor->processFile();
+        fileProcessor->m_engine->startupPhase(fileProcessor);
     }
 }
 
@@ -394,7 +397,7 @@ void generate_tournament(string userInput)
         {
             for(int j=0;j<maps.size();j++)
             {
-                strm<<"loadmap "<<maps[i]<<endl;
+                strm<<"loadmap "<<maps[j]<<endl;
                 strm<<"validatemap"<<endl;
                 for(int k=0;k<players.size();k++)
                 {
@@ -402,10 +405,15 @@ void generate_tournament(string userInput)
 
                 }
                 strm<<"gamestart"<<endl;
-                strm<<"replay"<<endl;
+                if(i==number_game-1 && j==maps.size()-1)
+                {
+                    strm<<"quit"<<endl;
+                }
+                else{
+                strm<<"replay"<<endl;}
             }
         }
-        strm<<"quit"<<endl;
+        //strm<<"quit"<<endl;
 
         strm.close();
         stream.close();
