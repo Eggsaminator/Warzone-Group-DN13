@@ -84,7 +84,7 @@ void testMainGameLoop() {
 
 	mainEngine.reinforcementPhase();
 
-	
+
 
 	// (1) a player receives the correct number of army units in the reinforcement phase(showing different cases)
 	cout << "(1) a player receives the correct number of army units in the reinforcement phase (showing different cases)\nAt startup phase:" << endl;
@@ -110,10 +110,10 @@ void testMainGameLoop() {
 		{
 			string continentName = iter->first;
 			int nbTerritories = iter->second;
-			
+
 			Continent* continentPtr = gameMap.getContinentByName(continentName);
 			if (continentPtr != nullptr) {
-				cout << "He owns " << nbTerritories << " territories in the "  << continentName << " continent. ";
+				cout << "He owns " << nbTerritories << " territories in the " << continentName << " continent. ";
 				if (continentPtr->getTerritories().size() == nbTerritories) {
 					cout << "He owns the continent (bonus of " << continentPtr->getBonusValue() << ").";
 				}
@@ -121,7 +121,7 @@ void testMainGameLoop() {
 			cout << "\n";
 		}
 
-		cout << "He has " << players[i]->getReinforcementPool() << " armies in his reinforcement pool." <<endl;
+		cout << "He has " << players[i]->getReinforcementPool() << " armies in his reinforcement pool." << endl;
 
 		cout << "\n";
 
@@ -134,7 +134,7 @@ void testMainGameLoop() {
 
 	// (2) a player will only issue deploy orders and no other kind of orders if they still have army units in their reinforcement pool 
 	cout << "(2) a player will only issue deploy orders and no other kind of orders if they still have army units in their reinforcement pool:" << endl;
-	
+
 	//set the toDefend, toAttack lists, and reinforcementLeftToDeploy of every player
 	auto iterator = players.begin();
 	while (iterator != players.end()) {
@@ -169,7 +169,7 @@ void testMainGameLoop() {
 	cout << "Issuing an Advance order... " << endl;
 	player1->issueOrder(player1, players, "Advance");
 	cout << "Qantity of orders in orderslist after issuing an Advance order: " << player1->getOrdersList()->orders.size() << endl;
-	cout << "Number of army units left to deploy: "<< player1->getReinforcementPoolLeftToDeploy() << endl;
+	cout << "Number of army units left to deploy: " << player1->getReinforcementPoolLeftToDeploy() << endl;
 	player1->issueOrder(player1, players, "Deploy");
 	cout << "Qantity of orders in orderslist after issuing a Deploy order: " << player1->getOrdersList()->orders.size() << endl;
 	cout << "Number of army units left to deploy: " << player1->getReinforcementPoolLeftToDeploy() << endl;
@@ -199,8 +199,8 @@ void testMainGameLoop() {
 	// (3) a player can issue advance orders to either defend or attack, based on the toAttack() and toDefend() lists 
 	cout << "(3) a player can issue advance orders to either defend or attack, based on the toAttack() and toDefend() lists:" << endl;
 
-	cout << "toDefend() = ["<< player1->toDefend()[0]->getName();
-	for (int i = 1; i < player1->toDefend().size();i++) {
+	cout << "toDefend() = [" << player1->toDefend()[0]->getName();
+	for (int i = 1; i < player1->toDefend().size(); i++) {
 		cout << ", " << player1->toDefend()[i]->getName();
 	}
 	cout << "]" << endl;
@@ -209,7 +209,7 @@ void testMainGameLoop() {
 	for (int i = 1; i < player1->toAttack().size(); i++) {
 		cout << ", " << player1->toAttack()[i]->getName();
 	}
-  cout << "]" << endl;
+	cout << "]" << endl;
 
 	cout << "Player " << player1->getName() << " issues an Advance order. According to the toAttack() method, he will attack: " << player1->toAttack()[0]->getName() << " territory." << endl;
 	cout << "Player " << player1->getName() << " issues an Advance order. According to the toDefend() method, he will defend: " << player1->toDefend()[2]->getName() << " territory." << endl;
@@ -218,7 +218,7 @@ void testMainGameLoop() {
 
 	// (4) a player can play cards to issue orders 
 	cout << "(4) a player can play cards to issue orders:" << endl;
-	
+
 	cout << "Adding a Bomb card to " << player1->getName() << "'s hand..." << endl;
 	Card* newCard = new Card("Bomb", nullptr, nullptr);
 	Deck* newDeck = new Deck();
@@ -254,7 +254,7 @@ void testMainGameLoop() {
 	cout << "Player player2 has lost all his territories..." << endl;
 	player2->setTerritories(vector<Territory*>{});
 	cout << "Player player2 has " << player2->getTerritories().size() << " territories and the game has " << mainEngine.getPlayers().size() << " players." << endl;
-	
+
 	player1->addTerritory(terr4);
 	player1->addTerritory(terr4_1);
 	player1->addTerritory(terr4_2);
@@ -272,6 +272,7 @@ void testMainGameLoop() {
 	mainEngine.gameLoopWinnerLoserCheckup();
 }
 
+
 void testStartupPhase()
 {
 	cout<<"Demonstration of the start up phase"<<endl;
@@ -282,13 +283,13 @@ void testStartupPhase()
 	vector<Player*> myListPlayer=mEngine->getPlayers();
 	Hand * myHand;
 	vector<Territory*> myTerr;
-	for(int i=0;i<size(myListPlayer);i++)
+	for (int i = 0; i < size(myListPlayer); i++)
 	{
-		cout <<"Player "<<i<<" :"<<myListPlayer[i]->getName()<<endl;
-		myHand=myListPlayer[i]->getHand();
+		cout << "Player " << i << " :" << myListPlayer[i]->getName() << endl;
+		myHand = myListPlayer[i]->getHand();
 		myHand->display();
-		myTerr=myListPlayer[i]->getTerritories();
-		cout<<"number of owned territories :"<<myTerr.size()<<endl;
-		cout<<"The reinforcement pool of the player contains : "<<myListPlayer[i]->getReinforcementPool()<< " army."<<endl;
-
+		myTerr = myListPlayer[i]->getTerritories();
+		cout << "number of owned territories :" << myTerr.size() << endl;
+		cout << "The reinforcement pool of the player contains : " << myListPlayer[i]->getReinforcementPool() << " army." << endl;
+	}
 }

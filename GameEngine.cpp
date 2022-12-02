@@ -1,12 +1,19 @@
 #include "GameEngine.h"
 #include <iostream>
+#include <vector>
 #include <algorithm>
-
+#include <set>
+#include "Cards.h"
+#include "Player.h"
+#include "Map.h"
 #include "CommandProcessing.h"
 
 using std::ostream;
 using std::cin;
 using std::cout;
+using std::floor;
+using std::map;
+using std::set;
 
 class Deck;
 class Player;
@@ -91,16 +98,19 @@ void State::setTransitions(map<string, State*>* transitionsMap) {
 
 Engine::Engine() {
 	buildLevels();
+	new LogObserver(this);
 };
 
 //copy constructor
 Engine::Engine(const Engine& copyEngine) {
 	currentState = copyEngine.currentState;
+	new LogObserver(this);
 }
 
 //assignment operator
 Engine& Engine::operator=(const Engine& copyEngine) {
 	currentState = copyEngine.currentState;
+	new LogObserver(this);//I think this is necessary here, since you can't copy the _observers
 	return *this;
 }
 
@@ -142,11 +152,18 @@ vector<Player*> Engine::getPlayers(){
 }
 
 Map* Engine::getMap(){
-	return mMap;
+	return myMap;
 }
 
 void Engine::setCurrentState(State* newState) {
 	currentState = newState;
+}
+
+void Engine::setMyMap(Map* map) {
+	myMap = map;
+}
+void Engine::setMyPlayers(vector <Player*> players) {
+	myPlayers = players;
 }
 
 void Engine::buildLevels() {
@@ -221,132 +238,164 @@ void Engine::buildLevels() {
 
 void Engine::startupPhase(CommandProcessor* mCommandProcess)
 {
-State* currentState = this->getCurrentState();
-while(this->getCurrentState()->getStateName()!="assignreinforcement")
-{
-	// we get a new command
-	Command* mCommand= mCommandProcess->getCommand();
+	State* currentState = this->getCurrentState();
+	while(this->getCurrentState()->getStateName()!="assignreinforcement") {
+		// we get a new command
+		Command* mCommand= mCommandProcess->getCommand();
 
-	string mCommand_name;
-	if(
-		mCommandProcess->validate(getCurrentState(), mCommand)
-		)
-		mCommand_name=mCommand->getName();
-	// if the command is valid in the current state of the Game Engine then we can apply its effect
-	{
-
-	if(mCommand_name=="loadmap")
-	{
-		mCommand_name.pop_back();
-		cout <<"loadmap ok\n";
+		string mCommand_name;
+		if(mCommandProcess->validate(getCurrentState(), mCommand))
+			mCommand_name=mCommand->getName();
+		// if the command is valid in the current state of the Game Engine then we can apply its effect
 		
-		MapLoader* mMapLoader =new MapLoader();
-		mMap=new Map(mMapLoader->loadMap(mCommand->getArgument()));
-// transition to state map loaded
-		this->setCurrentState(this->launchTransitionCommand("loadmap"));
 
-	}
-	if(mCommand_name=="validatemap")
-	{
-		cout<<"validatemap\n";
-		if(mMap->validate()){
-		//TODO this.launchTransitionCommand("validatemap")
-		this->setCurrentState(this->launchTransitionCommand("validatemap"));
-		}
-	}
-
-	if(mCommand_name=="addplayer")
-	{
-		cout<<"new player !\n";
-		mCommand_name.pop_back();
-		if(this->getCurrentState()->getStateName()!="playersadded")
+		if(mCommand_name=="loadmap")
 		{
-			this->setCurrentState(this->launchTransitionCommand("addplayer"));
+			mCommand_name.pop_back();
+			cout <<"loadmap ok\n";
+			
+			MapLoader* mMapLoader =new MapLoader();
+			myMap=new Map(mMapLoader->loadMap(mCommand->getArgument()));
+		// transition to state map loaded
+			this->setCurrentState(this->launchTransitionCommand("loadmap"));
 
 		}
-		
-		myPlayers.push_back(new Player(mCommand->getArgument())); // need to get the name from the command ?
+		if(mCommand_name=="validatemap")
+		{
+			cout<<"validatemap\n";
+			if(myMap->validate()){
+			//TODO this.launchTransitionCommand("validatemap")
+			this->setCurrentState(this->launchTransitionCommand("validatemap"));
+			}
+		}
 
-	}
+		if(mCommand_name=="addplayer")
+		{
+			cout<<"new player !\n";
+			mCommand_name.pop_back();
+			if(this->getCurrentState()->getStateName()!="playersadded")
+			{
+				this->setCurrentState(this->launchTransitionCommand("addplayer"));
 
-	if(mCommand_name=="gamestart")
-	{
-		cout<<"let's start\n";
-		// have to make somehow the transition to that
+			}
+			
+			myPlayers.push_back(new Player(mCommand->getArgument())); // need to get the name from the command ?
 
-		// Game Start
-	//fair distribution
-	// random order of play
-	// 50 army/person
-	//2 cards /player
+		}
 
-	myDeck=new Deck(50);
+		if (mCommand_name == "gamestart")
+		{
+			cout << "let's start\n";
+			// have to make somehow the transition to that
 
-	// we get the list of territories
-	
-	vector <Territory*> list_of_territories=mMap->getTerritories();
+			// Game Start
+			//fair distribution
+			// random order of play
+			// 50 army/person
+			//2 cards /player
 
-	 std::random_shuffle(list_of_territories.begin(), list_of_territories.end());
+			myDeck = new Deck(50);
 
-	// fair distribution of the territories
+			// we get the list of territories
 
-	for(int j=0;j<size(list_of_territories);j++)
-	{
-		list_of_territories[j]->setOwner(myPlayers[j%size(myPlayers)]);
-		myPlayers[j%size(myPlayers)]->addTerritory(list_of_territories[j]);
+			vector <Territory*> list_of_territories = myMap->getTerritories();
 
-	}
+			std::random_shuffle(list_of_territories.begin(), list_of_territories.end());
 
-	// shuffle order of the player
+			// fair distribution of the territories
 
-	 std::random_shuffle(myPlayers.begin(), myPlayers.end());
+			for (int j = 0; j < size(list_of_territories); j++)
+			{
+				list_of_territories[j]->setOwner(myPlayers[j % size(myPlayers)]);
+				myPlayers[j % size(myPlayers)]->addTerritory(list_of_territories[j]);
+
+			}
+
+			// shuffle order of the player
+
+			std::random_shuffle(myPlayers.begin(), myPlayers.end());
 
 
-	 // 50 army in the reinforcement pool of the player
+			// 50 army in the reinforcement pool of the player
 
 
-	 // each player shall draw 2 cards
+			// each player shall draw 2 cards
 
-	for(int i=0;i<size(myPlayers);i++)
-	{
-		Hand* h_p=new Hand();
-		h_p->setPlayer(myPlayers[i]);
-		myPlayers[i]->setHand(h_p);
-		myPlayers[i]->addArmy(50);
-		myDeck->draw(h_p);
-		myDeck->draw(h_p);
+			for (int i = 0; i < size(myPlayers); i++)
+			{
+				Hand* h_p = new Hand();
+				h_p->setPlayer(myPlayers[i]);
+				myPlayers[i]->setHand(h_p);
+				myPlayers[i]->addArmy(50);
+				myDeck->draw(h_p);
+				myDeck->draw(h_p);
 
-	}
+			}
 
-this->setCurrentState(this->launchTransitionCommand("gamestart"));
+			this->setCurrentState(this->launchTransitionCommand("gamestart"));
+		}
 	}
 }
-}
 
-void Engine::mainGameLoop() {
-	int i = 0;
-	while (i < 1) {
+
+void Engine::mainGameLoop(CommandProcessor* cmdProcessor) {
+	bool isGameOver = false;
+	while (!isGameOver) {
 		//run game loop
 		reinforcementPhase();
 		issueOrdersPhase();
 		executeOrdersPhase();
 
-		gameLoopWinnerLoserCheckup();
+		isGameOver = gameLoopWinnerLoserCheckup();
+	}
+	cout << "THE WINNER IS " << myPlayers.at(0)->getName() << "!!" << endl;
+	launchTransitionCommand("win");
+	cout << "Do you want to [quit] or [replay]?" << endl;
+	Command* mCommand = cmdProcessor->getCommand();
+
+	bool isCommandValid = false;
+	while (!isCommandValid) {
+		string mCommand_name;
+		if (cmdProcessor->validate(getCurrentState(), mCommand)) {
+			mCommand_name = mCommand->getName();
+		}
+
+		if (mCommand_name == "replay") {
+			return startupPhase(cmdProcessor);
+		}
+		else if (mCommand_name == "quit") {
+			return;
+		}
 	}
 }
 
-void Engine::gameLoopWinnerLoserCheckup() {
+bool Engine::gameLoopWinnerLoserCheckup() {
 	//check if a player has no territories owned, then eliminate him
 	auto iterator = myPlayers.begin();
 	while (iterator != myPlayers.end()) {
-		if ((*iterator)->getTerritories().empty()) {
+		if ((*iterator)->getTerritories().size() < 1) {
 			iterator = myPlayers.erase(iterator);
+			continue;
 		}
+		++iterator;
 	}
 
 	//check if a player owns all the territories
 	if (myPlayers.size() == 1) {
+		int numberTerritoriesOwned = myPlayers.at(0)->getTerritories().size();
+		auto allContinents = myMap->getContinents();
+
+		int totalNbTerritories = 0;
+		for (int i = 0; i < allContinents.size(); i++) {
+			totalNbTerritories += allContinents[i]->getTerritories().size();
+		}
+
+		if (totalNbTerritories == numberTerritoriesOwned) {
+			return true;
+		}
 	}
+
+	return false;
 }
 
 void Engine::reinforcementPhase() {
@@ -400,58 +449,20 @@ void Engine::issueOrdersPhase() {
 	auto iterator = activePlayersIndexes.begin();
 	while (iterator != activePlayersIndexes.end()) {
 		myPlayers.at(*iterator)->setReinforcementPoolLeftToDeploy(myPlayers.at(*iterator)->getReinforcementPool());
-
-		vector<Territory*> ownedTerritories = myPlayers.at(*iterator)->getTerritories();
-		myPlayers.at(*iterator)->setTerritoriesToDefend(ownedTerritories);
-
-		set<Territory*> territoriesToAttackSet;
-		auto territoryIterator = ownedTerritories.begin();
-		while (territoryIterator != ownedTerritories.end()) {
-			vector<Territory*> adjacentTerr = (*territoryIterator)->getAdjacencyList();
-			for (int i = 0; i < adjacentTerr.size(); i++) {
-				territoriesToAttackSet.insert(adjacentTerr[i]);
-			}
-			++territoryIterator;
-		}
-		vector<Territory*> territoriesToAttack;
-		auto territoryIteratorSet = territoriesToAttackSet.begin();
-		while (territoryIteratorSet != territoriesToAttackSet.end()) {
-			if ((*territoryIteratorSet)->getOwner() != myPlayers.at(*iterator)) {
-				territoriesToAttack.push_back(*territoryIteratorSet);
-			}
-			++territoryIteratorSet;
-		}
-		myPlayers.at(*iterator)->setTerritoriesToAttack(territoriesToAttack);
-
 		++iterator;
 	}
+
 
 	while (!activePlayersIndexes.empty()) {
 		iterator = activePlayersIndexes.begin();
 		while (iterator != activePlayersIndexes.end()) {
-			//TODO: get parameters from console
-			string randomOrderList[] = { "End", "Deploy", "Advance", "PickCard" };
-			string order = randomOrderList[rand() % 4];
+			//int currentReinforcementPool = myPlayers.at(*iterator)->getReinforcementPoolLeftToDeploy();
+			bool wantsToContinueIssuingOrders = myPlayers.at(*iterator)->issueOrder();
 
-			int currentReinforcmentPool = myPlayers.at(*iterator)->getReinforcementPoolLeftToDeploy();
-
-			if (order == "End" && currentReinforcmentPool < 1) {
-				//Can only stop issuing orders if all army units have been deployed
+			if (!wantsToContinueIssuingOrders) {
 				iterator = activePlayersIndexes.erase(iterator);
 				continue;
 			}
-			else if (order == "Advance" || order == "Deploy") {
-				myPlayers.at(*iterator)->issueOrder(myPlayers.at(*iterator), order);
-			}
-			else if (order == "PickCard") {
-				if (myPlayers.at(*iterator)->getHand()->hand_content.size() > 0) {
-					vector<Card*> cardsInHand = myPlayers.at(*iterator)->getHand()->hand_content;
-					int randomCardIndex = rand() % cardsInHand.size();
-					Card* cardPtr = cardsInHand.at(randomCardIndex);
-					cardPtr->play();
-				}
-			}
-
 			++iterator;
 		}
 	}
@@ -494,24 +505,15 @@ void Engine::executeOrdersPhase() {
 					myPlayers.at(*iterator)->getOrdersList()->orders.at(0)->execute();
 					myPlayers.at(*iterator)->getOrdersList()->remove(0);
 				}
-				
+
 				++iterator;
 			}
-			else 
+			else
 			{
 				iterator = activePlayersIndexes.erase(iterator);
 			}
 		}
 	}
-	for (int i = 0; i < myPlayers.size(); i++) {
-		if (myPlayers.at(i)->getConquered() == true) {
-			//draw card for player
-			getDeck().draw(myPlayers.at(i));
-			cout << "Card drawn for player " << myPlayers.at(i)->getName() << endl;
-			myPlayers.at(i)->setConquered(false);
-		}
-	}
-
 }
 
 
