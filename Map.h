@@ -77,8 +77,10 @@ public:
     string getName();
     void setOwner(Player* newOwner);
     void setOwner(Player* newOwner, int newNumArmies);
+    Player* getOwner();
     void setArmies(int newNumArmies);
     void addArmies(int newNumArmies);
+    int getArmies();
 private:
     string name;
     Player* owner;

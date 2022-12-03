@@ -23,7 +23,7 @@ void Player::addTerritory(Territory* newTerritory){
 }
 
 //method for a player to issue an order, takes the order's name
-bool Player::issueOrder() {
+OrderList* Player::issueOrder() {
 	return strategy->issueOrder();
 }
 
