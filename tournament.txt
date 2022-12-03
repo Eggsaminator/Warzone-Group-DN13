@@ -1,12 +1,14 @@
+startup
 loadmap Canada.map
 validatemap
-addplayer Ch
-addplayer CF
+addplayer Neutral
+addplayer Cheater
 gamestart
-replay
+play
+startup
 loadmap Canada.map
 validatemap
-addplayer Ch
-addplayer CF
+addplayer Neutral
+addplayer Cheater
 gamestart
 quit

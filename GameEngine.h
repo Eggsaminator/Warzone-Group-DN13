@@ -59,6 +59,7 @@ public:
 	void setMyPlayers(vector <Player*> players);
 	void startupPhase(CommandProcessor* mCommandProcess);
 	void mainTournamentLoop(CommandProcessor* cmdProcessor);
+	void replay_game(CommandProcessor* cmdProcess);
 	friend ostream& operator << (ostream& o, Engine& currentEngine); //stream insertion operator
 
 

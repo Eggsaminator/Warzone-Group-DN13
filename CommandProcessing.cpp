@@ -13,11 +13,12 @@ CommandProcessor::~CommandProcessor() {
 }
 
 map<string, vector<string>> CommandProcessor::s_commandValidStates = {
+    {"startup",{"start"}}, //new command
     {"loadmap", {"start", "maploaded"}},
     {"validatemap", {"maploaded"}},
     {"addplayer", {"mapvalidated", "playersadded"}},
     {"gamestart", {"playersadded"}},
-    {"replay", {"win"}},
+    {"play", {"win"}},
     {"quit", {"win"}}
 };
 
@@ -55,6 +56,11 @@ Command* CommandProcessor::getCommand() {
     Command* command = readCommand();
     if (validate(m_engine->getCurrentState(), command)) {
         command->execute(m_engine);
+        if(command->getName()=="startup")
+        {
+            cout<<"i need to start a game! "<<endl;
+            m_engine->startupPhase(this);
+        }
     }
     return command;
 }
@@ -174,8 +180,10 @@ void CommandProcessor::chooseInputMethod() {
         fileProcessor->setTournament(true); // Added the tournament status !!!!
         fileProcessor->setFile("tournament.txt");
         cout<<"processfile begins"<<endl;
-        //fileProcessor->processFile();
-        fileProcessor->m_engine->startupPhase(fileProcessor);
+        fileProcessor->processFile();
+        //fileProcessor->m_engine->startupPhase(fileProcessor);
+        //fileProcessor->m_engine->mainTournamentLoop(fileProcessor);
+        //cout<<"start up finished";
     }
 }
 
@@ -224,6 +232,7 @@ void Command::execute(Engine* engine) {
 
     saveEffect(m_command);
     engine->launchTransitionCommand(m_command);
+    
 }
 
 string Command::getName() {
@@ -264,10 +273,25 @@ void FileCommandProcessorAdapter::processFile() {
     // readCommand() pops m_fileContents, thus this will never be infinite
     while (m_fileContents->size() > 0) {
         Command* command = readCommand();
+        //cout<<"i got a new command"<<endl;
         if (validate(m_engine->getCurrentState(), command)) {
             command->execute(m_engine);
+            //cout<<"command done";
+            if(command->getName()=="startup")
+        {
+            //cout<<"i need to start a game! "<<endl;
+            m_engine->startupPhase(this);
+
+            //cout <<"finish complete game loop"<<endl;
+        }
+        if(command->getName()=="play")
+        {
+            //cout<<"i want to replay"<<endl;
+            m_engine->replay_game(this);
+        }
         }
     }
+    cout<<"exiting process file"<<endl;
 }
 
 queue<string>* FileCommandProcessorAdapter::readFile(string path) {
@@ -396,7 +420,7 @@ void generate_tournament(string userInput)
         for(int i=0;i<number_game;i++)
         {
             for(int j=0;j<maps.size();j++)
-            {
+            {   strm<<"startup"<<endl;
                 strm<<"loadmap "<<maps[j]<<endl;
                 strm<<"validatemap"<<endl;
                 for(int k=0;k<players.size();k++)
@@ -410,7 +434,9 @@ void generate_tournament(string userInput)
                     strm<<"quit"<<endl;
                 }
                 else{
-                strm<<"replay"<<endl;}
+                strm<<"play"<<endl;
+                
+                }
             }
         }
         //strm<<"quit"<<endl;

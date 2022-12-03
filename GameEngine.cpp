@@ -190,6 +190,7 @@ void Engine::buildLevels() {
 
 	//create maps of possible transitions
 	map<string, State*>* state0Transitions = new map<string, State*>{
+		{string("startup"),state0},
 		{string("loadmap"), state1}
 	};
 	state0->setTransitions(state0Transitions);
@@ -348,31 +349,36 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 		}
 
 	}
-	cout<<"next step"<<"start main loop"<<endl;
+	//cout<<"next step"<<"start main loop"<<endl;
 	//cout<<mCommandProcess->getTournament()<<endl;
-	//bool tour=mCommandProcess->getTournament();
+	bool tour=mCommandProcess->getTournament();
 	//cout <<"start main loop";
-	this->mainTournamentLoop(mCommandProcess);
-	/*
+	//this->mainTournamentLoop(mCommandProcess);
+	
 	if(tour)
 			{
-				cout <<"start main loop";
+				cout << "entering main loop"<<endl;
+				
 				this->mainTournamentLoop(mCommandProcess);
 
 			}
 			else
 			{
-				cout <<"argggggg";
+				
 				this->mainGameLoop(mCommandProcess);
 			}
-			*/
+	
+	cout<<"exiting startup phase"<<endl;
+			
 			
 }
 
 void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
 {
-	cout<<"hi";
+	
 	int max_D;
+
+	
 
 	ifstream stream;
     stream.open("tournament_report.txt");
@@ -385,12 +391,13 @@ void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
         getline(stream, tp);
 		getline(stream, tp);
         max_D=stoi(tp.substr(tp.length()-3,tp.length()));
-	stream.close();
+	
 	}
 	else
 	{
 		cout<<"non existing tournament"<<endl;
 	}
+	stream.close();
 
     
 
@@ -403,11 +410,12 @@ void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
 	strm.open("tournament_report.txt",ios::app);
 	bool isGameOver = false;
 	int round_played=0;
+	strm<<"Result of this game: "<<endl;
 	while (!isGameOver && round_played<max_D) {
 		//run game loop
-		reinforcementPhase();
-		issueOrdersPhase();
-		executeOrdersPhase();
+		//reinforcementPhase();
+		//issueOrdersPhase();
+		//executeOrdersPhase();
 		round_played++;
 
 		isGameOver = gameLoopWinnerLoserCheckup();
@@ -420,27 +428,65 @@ void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
 	{
 		strm << "It is a drawn !"<<endl;
 	}
+
+	//this->setCurrentState(this->launchTransitionCommand("issueorder"));
+	//this->setCurrentState(this->launchTransitionCommand("endissueorders"));
+	//this->setCurrentState(this->launchTransitionCommand("endexecorders"));
+	//this->setCurrentState(this->launchTransitionCommand("win"));
+	//cout<<this->getCurrentState()->getStateName();
 	
+	launchTransitionCommand("issueorder");
+	launchTransitionCommand("endissueorders");
+	//launchTransitionCommand("executeorders");
+	//launchTransitionCommand("endexecorders");
+
 	launchTransitionCommand("win");
+
+	//launchTransitionCommand("play");
+
+	
+	
+	
 	//cout << "Do you want to [quit] or [replay]?" << endl;
-	Command* mCommand = cmdProcessor->getCommand();
+	//Command* mCommand = cmdProcessor->getCommand();
+	//cout<<"my last command: "<<mCommand->getName()<<endl;
+	/*
 
 	bool isCommandValid = false;
+	if(mCommand->getName()!="quit")
+	{
+		launchTransitionCommand("play");
+	}
+
+	else
+	{
+		launchTransitionCommand("quit");
+	}
+	/*
 	while (!isCommandValid) {
 		string mCommand_name;
 		if (cmdProcessor->validate(getCurrentState(), mCommand)) {
 			mCommand_name = mCommand->getName();
 		}
 
-		if (mCommand_name == "replay") {
-			return startupPhase(cmdProcessor);
+		if (mCommand_name == "play") {
+			launchTransitionCommand("play");
+			//return startupPhase(cmdProcessor);
 		}
 		else if (mCommand_name == "quit") {
-			return;
+			launchTransitionCommand("end");
+			//return;
 		}
-	}
+	}*/
 
 strm.close();
+cout <<"exiting main loop "<<endl;
+
+}
+
+void Engine::replay_game(CommandProcessor* cmdProcess)
+{
+	launchTransitionCommand("play");
 
 }
 
