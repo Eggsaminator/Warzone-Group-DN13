@@ -22,8 +22,12 @@ void Player::addTerritory(Territory* newTerritory){
 	territories.push_back(newTerritory);
 }
 
+void Player::setPlayerStrategy(PlayerStrategy* newStrategy) {
+	strategy = newStrategy;
+}
+
 //method for a player to issue an order, takes the order's name
-bool Player::issueOrder() {
+OrderList* Player::issueOrder() {
 	return strategy->issueOrder();
 }
 

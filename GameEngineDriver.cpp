@@ -136,7 +136,7 @@ void testMainGameLoop() {
 	cout << "(2) a player will only issue deploy orders and no other kind of orders if they still have army units in their reinforcement pool:" << endl;
 
 	//set the toDefend, toAttack lists, and reinforcementLeftToDeploy of every player
-	auto iterator = players.begin();
+	/*auto iterator = players.begin();
 	while (iterator != players.end()) {
 		(*iterator)->setReinforcementPoolLeftToDeploy((*iterator)->getReinforcementPool());
 
@@ -193,7 +193,7 @@ void testMainGameLoop() {
 	cout << "Number of army units left to deploy: " << player1->getReinforcementPoolLeftToDeploy() << endl;
 	player1->issueOrder(player1, players, "Advance");
 	cout << "Qantity of orders in orderslist after issuing an Advance order: " << player1->getOrdersList()->orders.size() << endl;
-
+	*/
 	cout << "\n\n\n";
 
 	// (3) a player can issue advance orders to either defend or attack, based on the toAttack() and toDefend() lists 
@@ -229,7 +229,7 @@ void testMainGameLoop() {
 	newCard->setHand(newHand);
 	player1->getHand()->add_card(newCard);
 	cout << player1->getName() << " plays the Bomb card... " << endl;
-	player1->getHand()->hand_content[0]->play(players);
+	//player1->getHand()->hand_content[0]->play(players);
 
 	cout << "\n\n\n";
 

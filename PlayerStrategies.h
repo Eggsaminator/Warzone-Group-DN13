@@ -1,65 +1,85 @@
 #pragma once
+#include <iostream>
 #include <vector>
 #include <string>
-#include "Map.h"
 using std::vector;
 using std::string;
 
+class OrderList;
 class Player;
 class Map;
 class Territory;
 
 class PlayerStrategy {
 public:
-	PlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
-	virtual bool issueOrder() = 0;
+	PlayerStrategy(Player* p);
+	virtual OrderList* issueOrder() = 0;
 	virtual vector<Territory*> toDefend() = 0;
 	virtual vector<Territory*> toAttack() = 0;
-	Player* getPlayer();
-	vector<Player*> getAllPlayers();
-	Map* getMap();
-private:
+	friend ostream& operator << (ostream& os, const PlayerStrategy& strategy);
+protected:
+	vector<Territory*> getAdjacentEnemyTerritories(Territory* origin);
+	Territory* getStrongestTerritory();
 	Player* player;
-	vector<Player*> allPlayers;
-	Map* gameMap;
 };
 
 class HumanPlayerStrategy : public PlayerStrategy {
 public:
 	HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
-	bool issueOrder();
+	OrderList* issueOrder();
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
+private:
+	vector<Player*> allPlayers;
+	Map* gameMap;
 };
 
 class AggressivePlayerStrategy : public PlayerStrategy {
 public:
-	AggressivePlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
-	bool issueOrder();
-	vector<Territory*> toDefend();
+	AggressivePlayerStrategy(Player* player);
+	~AggressivePlayerStrategy();
+	AggressivePlayerStrategy(AggressivePlayerStrategy* strategy);
+
+	OrderList* issueOrder();
 	vector<Territory*> toAttack();
+	vector<Territory*> toDefend();
+private:
+	vector<Card*>* getAggressiveCards();
 };
 
 class BenevolentPlayerStrategy : public PlayerStrategy {
 public:
-	BenevolentPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
-	bool issueOrder();
-	vector<Territory*> toDefend();
+	BenevolentPlayerStrategy(Player* player);
+	~BenevolentPlayerStrategy();
+	BenevolentPlayerStrategy(BenevolentPlayerStrategy* strategy);
+
+	OrderList* issueOrder();
 	vector<Territory*> toAttack();
+	vector<Territory*> toDefend();
+private:
+	Territory* getWeakestTerritory();
 };
 
 class NeutralPlayerStrategy : public PlayerStrategy {
 public:
-	NeutralPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
-	bool issueOrder();
-	vector<Territory*> toDefend();
+	NeutralPlayerStrategy(Player* player);
+	~NeutralPlayerStrategy();
+	NeutralPlayerStrategy(NeutralPlayerStrategy* strategy);
+
+	OrderList* issueOrder();
 	vector<Territory*> toAttack();
+	vector<Territory*> toDefend();
+private:
 };
 
 class CheaterPlayerStrategy : public PlayerStrategy {
 public:
-	CheaterPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
-	bool issueOrder();
-	vector<Territory*> toDefend();
+	CheaterPlayerStrategy(Player* player);
+	~CheaterPlayerStrategy();
+	CheaterPlayerStrategy(CheaterPlayerStrategy* strategy);
+
+	OrderList* issueOrder();
 	vector<Territory*> toAttack();
+	vector<Territory*> toDefend();
+private:
 };
