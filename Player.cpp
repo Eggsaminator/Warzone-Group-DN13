@@ -30,13 +30,11 @@ OrderList* Player::issueOrder() {
 //method that prints out teritories to defend, would return them in future
 vector<Territory*> Player::toDefend() {
 	return strategy->toDefend();
-	//return territoriesToDefend;
 }
 
 //method that prints out teritories to attack, would return them in future
 vector<Territory*> Player::toAttack() {
 	return strategy->toAttack();
-	//return territoriesToAttack;
 }
 
 void Player::setHand(Hand* newHand){

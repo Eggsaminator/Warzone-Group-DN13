@@ -17,7 +17,8 @@ public:
 	virtual vector<Territory*> toDefend() = 0;
 	friend ostream& operator << (ostream& os, const PlayerStrategy& strategy);
 protected:
-	vector<Territory*>* getAdjacentEnemyTerritories(Territory* origin);
+	vector<Territory*> getAdjacentEnemyTerritories(Territory* origin);
+	Territory* getStrongestTerritory();
 	Player* player;
 private:
 };
@@ -46,7 +47,6 @@ public:
 	vector<Territory*> toAttack();
 	vector<Territory*> toDefend();
 private:
-	Territory* getStrongestTerritory();
 	vector<Card*>* getAggressiveCards();
 };
 
