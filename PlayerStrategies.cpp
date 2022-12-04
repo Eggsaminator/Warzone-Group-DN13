@@ -1,37 +1,83 @@
+#include "Player.h"
 #include "PlayerStrategies.h"
-#include "set"
 #include "Map.h"
 #include "CommandProcessing.h"
+#include <set>
+#include <unordered_set>
 
 using std::set;
+using std::unordered_set;
 using std::stoi;
 using std::invalid_argument;
 using std::cout;
 
-PlayerStrategy::PlayerStrategy(Player* p, vector<Player*> allPls, Map* map) {
+PlayerStrategy::PlayerStrategy(Player* p) {
 	player = p;
+}
+
+ostream& operator << (ostream& os, const PlayerStrategy& strategy) {
+    return os << "\nDisplaying strategy: " << typeid(strategy).name() << endl;
+}
+
+// Helper Functions definitions start here
+
+vector<Territory*> PlayerStrategy::getAdjacentEnemyTerritories(Territory* origin) {
+    vector<Territory*> enemyAdjacencies = vector<Territory*>();
+    for (Territory* adjacentTerritory : origin->getAdjacencyList()) {
+        if (adjacentTerritory->getOwner() != player) {
+            enemyAdjacencies.push_back(adjacentTerritory);
+        }
+    }
+
+    return enemyAdjacencies;
+}
+Territory* PlayerStrategy::getStrongestTerritory() {
+    Territory* strongestTerritory = nullptr;
+    for (Territory* territory : player->getTerritories()) {
+        int territoryArmies = territory->getArmies();
+        if (strongestTerritory == nullptr || territoryArmies > strongestTerritory->getArmies()) {
+            strongestTerritory = territory;
+        }
+    }
+
+    return strongestTerritory;
+}
+vector<Card*>* AggressivePlayerStrategy::getAggressiveCards() {
+    vector<Card*>* aggressiveCards = new vector<Card*>();
+    for (Card* card : player->getHand()->hand_content) {
+        if (card->card_type.compare("Bomb") == 0 ||
+            card->card_type.compare("Reinforcement") == 0 ||
+            card->card_type.compare("Airlift") == 0) {
+            aggressiveCards->push_back(card);
+        }
+    }
+
+    return aggressiveCards;
+}
+Territory* BenevolentPlayerStrategy::getWeakestTerritory() {
+    Territory* weakestTerritory = nullptr;
+    for (Territory* territory : player->getTerritories()) {
+        int territoryArmies = territory->getArmies();
+        if (weakestTerritory == nullptr || territoryArmies < weakestTerritory->getArmies()) {
+            weakestTerritory = territory;
+        }
+    }
+
+    return weakestTerritory;
+}
+
+// Helper Function definitions end here
+
+HumanPlayerStrategy::HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map) : PlayerStrategy(p) {
     allPlayers = allPls;
     gameMap = map;
 }
 
-Player* PlayerStrategy::getPlayer() {
-    return player;
-}
-
-Map* PlayerStrategy::getMap() {
-    return gameMap;
-}
-
-vector<Player*> PlayerStrategy::getAllPlayers() {
-    return allPlayers;
-}
-
-HumanPlayerStrategy::HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map) : PlayerStrategy(p, allPls, map) {}
-
-bool HumanPlayerStrategy::issueOrder() {
+OrderList* HumanPlayerStrategy::issueOrder() {
+    OrderList* orderList = new OrderList(player->getName());
 
     cout << "----------------------\n";
-    cout << "* " << getPlayer()->getName() << " *\n";
+    cout << "* " << player->getName() << " *\n";
     cout << "----------------------\n\n";
 
     //ask if want to issue order
@@ -57,9 +103,9 @@ bool HumanPlayerStrategy::issueOrder() {
         }
     }
 
-    if (getPlayer()->getReinforcementPoolLeftToDeploy() > 0) {
+    if (player->getReinforcementPoolLeftToDeploy() > 0) {
         //MUST ISSUE DEPLOY ORDERS
-        int remainingReinforcementPool = getPlayer()->getReinforcementPoolLeftToDeploy();
+        int remainingReinforcementPool = player->getReinforcementPoolLeftToDeploy();
         cout << "You still have " << remainingReinforcementPool << " army units to deploy so you must issue a deploy order.\n";
 
         //pick nb army units to deploy
@@ -83,13 +129,13 @@ bool HumanPlayerStrategy::issueOrder() {
         }
         cout << "\n";
 
-        getPlayer()->setReinforcementPoolLeftToDeploy(remainingReinforcementPool - numberArmyUnits);
+        player->setReinforcementPoolLeftToDeploy(remainingReinforcementPool - numberArmyUnits);
 
         vector<Territory*> listToDefend = toDefend();
 
         if (listToDefend.size() > 0) {
-            Orders* orderToAdd = new Deploy(getPlayer(), numberArmyUnits, listToDefend.at(0));
-            getPlayer()->addOrder(orderToAdd);
+            Orders* orderToAdd = new Deploy(player, numberArmyUnits, listToDefend.at(0));
+            player->addOrder(orderToAdd);
         }
     }
     else {
@@ -98,7 +144,7 @@ bool HumanPlayerStrategy::issueOrder() {
         //create dynamic choice of possible orders to issue
         set<string> setOfPossibleOrders = { "Advance" };
 
-        vector<Card*> cardsInHand = getPlayer()->getHand()->hand_content;
+        vector<Card*> cardsInHand = player->getHand()->hand_content;
         for (int i = 0; i < cardsInHand.size(); i++) {
             setOfPossibleOrders.insert(cardsInHand.at(i)->card_type);
         }
@@ -143,8 +189,8 @@ bool HumanPlayerStrategy::issueOrder() {
             cmdIsValid = false;
             instructions = "From which territory do you want to advance your army units? (enter number):\n";
 
-            for (int i = 0; i < getPlayer()->getTerritories().size(); i++) {
-                string partialString = to_string(i + 1) + ") " + getPlayer()->getTerritories().at(i)->getName() + "\n";
+            for (int i = 0; i < player->getTerritories().size(); i++) {
+                string partialString = to_string(i + 1) + ") " + player->getTerritories().at(i)->getName() + "\n";
                 instructions += partialString;
             }
 
@@ -155,7 +201,7 @@ bool HumanPlayerStrategy::issueOrder() {
 
                     choiceInt = stoi(mCommand_name);
 
-                    if (choiceInt > 0 && choiceInt <= getPlayer()->getTerritories().size()) {
+                    if (choiceInt > 0 && choiceInt <= player->getTerritories().size()) {
                         break;
                     }
                 }
@@ -165,7 +211,7 @@ bool HumanPlayerStrategy::issueOrder() {
                 cout << "Invalid territory number.\n";
             }
 
-            Territory* sourceTerritory = getPlayer()->getTerritories().at(choiceInt - 1);
+            Territory* sourceTerritory = player->getTerritories().at(choiceInt - 1);
 
             //pick if attack/defend
             choiceInt = 0;
@@ -218,16 +264,16 @@ bool HumanPlayerStrategy::issueOrder() {
             if (advanceType == "Attack") {
                 vector<Territory*> listToAttack = toAttack();
                 if (listToAttack.size() > 0) {
-                    Orders* orderToAdd = new Advance(getPlayer(), numberArmyUnits, sourceTerritory, listToAttack.at(0));
-                    getPlayer()->addOrder(orderToAdd);
+                    Orders* orderToAdd = new Advance(player, numberArmyUnits, sourceTerritory, listToAttack.at(0));
+                    orderList->addOrder(orderToAdd);
                 }
             }
             else
             {
                 vector<Territory*> listToDefend = toDefend();
                 if (listToDefend.size() > 0) {
-                    Orders* orderToAdd = new Advance(getPlayer(), numberArmyUnits, sourceTerritory, listToDefend.at(0));
-                    getPlayer()->addOrder(orderToAdd);
+                    Orders* orderToAdd = new Advance(player, numberArmyUnits, sourceTerritory, listToDefend.at(0));
+                    orderList->addOrder(orderToAdd);
                 }
             }
         }
@@ -244,14 +290,15 @@ bool HumanPlayerStrategy::issueOrder() {
             }
 
             if (cardPtr == nullptr) {
-                return true;
+                return orderList;
             }
 
             if (orderType == "Bomb")
             {
                 vector<Territory*> listToAttack = toAttack();
                 if (listToAttack.size() > 0) {
-                    cardPtr->play(nullptr, listToAttack.at(0), NULL, nullptr);
+                    Bomb* bomb = new Bomb(player, listToAttack.at(0));
+                    orderList->addOrder(bomb);
                 }
             }
             else if (orderType == "Reinforcement")
@@ -267,8 +314,8 @@ bool HumanPlayerStrategy::issueOrder() {
                     cmdIsValid = false;
                     instructions = "From which territory do you want to airlift your army units? (enter number):\n";
 
-                    for (int i = 0; i < getPlayer()->getTerritories().size(); i++) {
-                        string partialString = to_string(i + 1) + ") " + getPlayer()->getTerritories().at(i)->getName() + "\n";
+                    for (int i = 0; i < player->getTerritories().size(); i++) {
+                        string partialString = to_string(i + 1) + ") " + player->getTerritories().at(i)->getName() + "\n";
                         instructions += partialString;
                     }
 
@@ -279,7 +326,7 @@ bool HumanPlayerStrategy::issueOrder() {
 
                             choiceInt = stoi(mCommand_name);
 
-                            if (choiceInt > 0 && choiceInt <= getPlayer()->getTerritories().size()) {
+                            if (choiceInt > 0 && choiceInt <= player->getTerritories().size()) {
                                 break;
                             }
                         }
@@ -289,7 +336,7 @@ bool HumanPlayerStrategy::issueOrder() {
                         cout << "Invalid territory number.\n";
                     }
 
-                    Territory* sourceTerritory = getPlayer()->getTerritories().at(choiceInt - 1);
+                    Territory* sourceTerritory = player->getTerritories().at(choiceInt - 1);
 
                     //pick nb army units
                     int numberArmyUnits = 0;
@@ -312,7 +359,8 @@ bool HumanPlayerStrategy::issueOrder() {
                         }
                         cout << "Invalid amount of army units.\n";
                     }
-                    cardPtr->play(sourceTerritory, listToDefend.at(0), numberArmyUnits, nullptr);
+                    Airlift* airlift = new Airlift(player, numberArmyUnits, sourceTerritory, listToDefend.at(0));
+                    orderList->addOrder(airlift);
                 }
             }
             else if (orderType == "Diplomacy")
@@ -322,10 +370,10 @@ bool HumanPlayerStrategy::issueOrder() {
                 cmdIsValid = false;
                 instructions = "With which player do you want to negotiate? (enter number):\n";
 
-                vector<Player*> newAllPlayers = getAllPlayers();
+                vector<Player*> newAllPlayers = allPlayers;
 
                 for (int i = 0; i < newAllPlayers.size(); i++) {
-                    if (newAllPlayers.at(i) == getPlayer()) {
+                    if (newAllPlayers.at(i) == player) {
                         newAllPlayers.erase(newAllPlayers.begin() + i);
                         i--;
                         continue;
@@ -352,24 +400,26 @@ bool HumanPlayerStrategy::issueOrder() {
                 }
 
                 Player* randomPlayer = newAllPlayers[choiceInt - 1];
-                cardPtr->play(nullptr, nullptr, NULL, randomPlayer);
+                Negotiate* negotiate = new Negotiate(player, randomPlayer);
+                orderList->addOrder(negotiate);
             }
             else if (orderType == "Blockade")
             {
                 vector<Territory*> listToDefend = toDefend();
                 if (listToDefend.size() > 0) {
-                    cardPtr->play(nullptr, listToDefend.at(0), NULL, nullptr);
+                    Blockade* blockade = new Blockade(player, listToDefend.at(0));
+                    orderList->addOrder(blockade);
                 }
             }
         }
     }
 
-    return true;
+    return orderList;
 }
 vector<Territory*> HumanPlayerStrategy::toDefend() {
     string instructions = "Which territory do you want to defend? (enter number):\n";
 
-    vector<Territory*> ownedTerritories = getPlayer()->getTerritories();
+    vector<Territory*> ownedTerritories = player->getTerritories();
 
     if (ownedTerritories.size() < 1) {
         return vector<Territory*>{};
@@ -412,9 +462,9 @@ vector<Territory*> HumanPlayerStrategy::toAttack() {
 
     vector<Territory*> territoriesToConquer;
 
-    for (int i = 0; i < getMap()->getTerritories().size(); i++) {
-        if (getMap()->getTerritories().at(i)->getOwner() != getPlayer()) {
-            territoriesToConquer.push_back(getMap()->getTerritories().at(i));
+    for (int i = 0; i < gameMap->getTerritories().size(); i++) {
+        if (gameMap->getTerritories().at(i)->getOwner() != player) {
+            territoriesToConquer.push_back(gameMap->getTerritories().at(i));
         }
     }
 
@@ -455,50 +505,166 @@ vector<Territory*> HumanPlayerStrategy::toAttack() {
     return toAttack;
 }
 
+AggressivePlayerStrategy::AggressivePlayerStrategy(Player* player) : PlayerStrategy(player) {
 
-AggressivePlayerStrategy::AggressivePlayerStrategy(Player* p, vector<Player*> allPls, Map* map) : PlayerStrategy(p, allPls, map) {}
-bool AggressivePlayerStrategy::issueOrder() {
-    return false;
 }
-vector<Territory*> AggressivePlayerStrategy::toDefend() {
-    return vector<Territory*>{};
+AggressivePlayerStrategy::~AggressivePlayerStrategy() {
+
+}
+AggressivePlayerStrategy::AggressivePlayerStrategy(AggressivePlayerStrategy* strategy) : PlayerStrategy(strategy->player) {
+
+}
+OrderList* AggressivePlayerStrategy::issueOrder() {
+    OrderList* orderList = new OrderList(player->getName());
+
+    // Reinforce
+    Territory* strongestTerritory = getStrongestTerritory();
+    if (player->getReinforcementPoolLeftToDeploy() > 0) {
+        Deploy* deployOrder = new Deploy(player, player->getReinforcementPoolLeftToDeploy(), strongestTerritory);
+        orderList->addOrder(deployOrder);
+    }
+
+    // Bomb
+    for (Card* card : player->getHand()->hand_content) {
+        vector<Territory*> territories = player->getTerritories();
+        if (territories.size() <= 0) {
+            break;
+        }
+        vector<Territory*> someEnemyTerritories = getAdjacentEnemyTerritories(territories[0]);
+        if (someEnemyTerritories.size() <= 0) {
+            break;
+        }
+
+        if (card->card_type.compare("Bomb") == 0) {
+            Bomb* bombOrder = new Bomb(player, someEnemyTerritories[0]);
+            orderList->addOrder(bombOrder);
+        }
+    }
+
+    // Advance
+    for (Territory* territory : player->getTerritories()) {
+        vector<Territory*> enemyTerritories = getAdjacentEnemyTerritories(territory);
+        // Split the army evenly
+        int armiesPerTerritory = (int)(territory->getArmies() / enemyTerritories.size());
+        for (Territory* enemyTerritory : enemyTerritories) {
+            Advance* advanceOrder = new Advance(player, armiesPerTerritory, territory, enemyTerritory);
+            orderList->addOrder(advanceOrder);
+        }
+    }
+
+    // Does not defend
+
+    return orderList;
 }
 vector<Territory*> AggressivePlayerStrategy::toAttack() {
-    return vector<Territory*>{};
+    unordered_set<Territory*> uniqueTerritories;
+    for (Territory* territory : player->getTerritories()) {
+        vector<Territory*> enemyTerritories = getAdjacentEnemyTerritories(territory);
+        for (Territory* enemyTerritory : enemyTerritories) {
+            uniqueTerritories.insert(enemyTerritory);
+        }
+    }
+
+    vector<Territory*> adjacentEnemyTerritories(uniqueTerritories.begin(), uniqueTerritories.end());
+    return adjacentEnemyTerritories;
+}
+vector<Territory*> AggressivePlayerStrategy::toDefend() {
+    return vector<Territory*>();
 }
 
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* player) : PlayerStrategy(player) {
 
-BenevolentPlayerStrategy::BenevolentPlayerStrategy(Player* p, vector<Player*> allPls, Map* map) : PlayerStrategy(p, allPls, map) {}
-bool BenevolentPlayerStrategy::issueOrder() {
-    return false;
 }
-vector<Territory*> BenevolentPlayerStrategy::toDefend() {
-    return vector<Territory*>{};
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {
+
+}
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(BenevolentPlayerStrategy* strategy) : PlayerStrategy(strategy->player) {
+
+}
+OrderList* BenevolentPlayerStrategy::issueOrder() {
+    OrderList* orderList = new OrderList(player->getName());
+
+    Territory* strongestTerritory = getStrongestTerritory();
+    Territory* weakestTerritory = getWeakestTerritory();
+    // Reinforce
+    if (player->getReinforcementPoolLeftToDeploy() > 0) {
+        Deploy* deployOrder = new Deploy(player, player->getReinforcementPoolLeftToDeploy(), weakestTerritory);
+        orderList->addOrder(deployOrder);
+    }
+
+    // Airlift - half from strongest territory to weakest
+    // Blockade - strongest territory
+    for (Card* card : player->getHand()->hand_content) {
+        if (card->card_type.compare("Airlift") == 0) {
+            Airlift* airliftOrder = new Airlift(player, (int)(strongestTerritory->getArmies() / 2), strongestTerritory, weakestTerritory);
+            orderList->addOrder(airliftOrder);
+        }
+
+        if (card->card_type.compare("Blockade") == 0) {
+            Blockade* blockadeOrder = new Blockade(player, strongestTerritory);
+            orderList->addOrder(blockadeOrder);
+        }
+    }
+
+    return orderList;
 }
 vector<Territory*> BenevolentPlayerStrategy::toAttack() {
-    return vector<Territory*>{};
+    return vector<Territory*>();
+}
+vector<Territory*> BenevolentPlayerStrategy::toDefend() {
+    return player->getTerritories();
 }
 
+NeutralPlayerStrategy::NeutralPlayerStrategy(Player* player) : PlayerStrategy(player) {
 
-NeutralPlayerStrategy::NeutralPlayerStrategy(Player* p, vector<Player*> allPls, Map* map) : PlayerStrategy(p, allPls, map) {}
-bool NeutralPlayerStrategy::issueOrder() {
-    return false;
 }
-vector<Territory*> NeutralPlayerStrategy::toDefend() {
-    return vector<Territory*>{};
+NeutralPlayerStrategy::~NeutralPlayerStrategy() {
+
+}
+NeutralPlayerStrategy::NeutralPlayerStrategy(NeutralPlayerStrategy* strategy) : PlayerStrategy(strategy->player) {
+
+}
+OrderList* NeutralPlayerStrategy::issueOrder() {
+    return nullptr;
 }
 vector<Territory*> NeutralPlayerStrategy::toAttack() {
-    return vector<Territory*>{};
+    return vector<Territory*>();
+}
+vector<Territory*> NeutralPlayerStrategy::toDefend() {
+    return vector<Territory*>();
 }
 
+CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player) : PlayerStrategy(player) {
 
-CheaterPlayerStrategy::CheaterPlayerStrategy(Player* p, vector<Player*> allPls, Map* map) : PlayerStrategy(p, allPls, map) {}
-bool CheaterPlayerStrategy::issueOrder() {
-    return false;
 }
-vector<Territory*> CheaterPlayerStrategy::toDefend() {
-    return vector<Territory*>{};
+CheaterPlayerStrategy::~CheaterPlayerStrategy() {
+
+}
+CheaterPlayerStrategy::CheaterPlayerStrategy(CheaterPlayerStrategy* strategy) : PlayerStrategy(strategy->player) {
+
+}
+OrderList* CheaterPlayerStrategy::issueOrder() {
+    OrderList* orderList = new OrderList(player->getName());
+
+    for (Territory* territory : toAttack()) {
+        territory->setOwner(player);
+        territory->setArmies(1);
+    }
+
+    return orderList;
 }
 vector<Territory*> CheaterPlayerStrategy::toAttack() {
-    return vector<Territory*>{};
+    unordered_set<Territory*> uniqueTerritories;
+    for (Territory* territory : player->getTerritories()) {
+        vector<Territory*> enemyTerritories = getAdjacentEnemyTerritories(territory);
+        for (Territory* enemyTerritory : enemyTerritories) {
+            uniqueTerritories.insert(enemyTerritory);
+        }
+    }
+
+    vector<Territory*> adjacentEnemyTerritories(uniqueTerritories.begin(), uniqueTerritories.end());
+    return adjacentEnemyTerritories;
+}
+vector<Territory*> CheaterPlayerStrategy::toDefend() {
+    return vector<Territory*>();
 }

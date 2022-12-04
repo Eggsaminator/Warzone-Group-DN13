@@ -24,7 +24,7 @@ int main()
 	vector<Player*> players;
 	Player* player1 = new Player("player1");
 	HumanPlayerStrategy* strat = new HumanPlayerStrategy(player1, players, &gameMap);
-	player1->strategy = strat;
+	player1->setPlayerStrategy(strat);
 
 	Player* player2 = new Player("player2");
 	Player* player3 = new Player("player3");

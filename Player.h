@@ -17,7 +17,7 @@ public:
 	Player(string name);
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
-	bool issueOrder();
+	OrderList* issueOrder();
 
 
 	void addTerritory(Territory*);
@@ -50,7 +50,7 @@ public:
 
 	void addArmy(int army);
 	void removeArmy(int army);
-	PlayerStrategy* strategy;
+	void setPlayerStrategy(PlayerStrategy* newStrategy);
 private:
 	string name;
 	string nameT;
@@ -59,6 +59,7 @@ private:
 	int reinforcementPool = 50;
 	int reinforcementPoolLeftToDeploy = 0;
 	vector<Territory*> territories;
+	PlayerStrategy* strategy;
 };
 
 void testPlayers();
