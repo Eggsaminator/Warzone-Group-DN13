@@ -347,28 +347,28 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 				}
 				if(mStrat=="Aggressive")
 				{
-					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i]);
+					PlayerStrategy* mStrategy=new AggressivePlayerStrategy(myPlayers[i]);
 					myPlayers[i]->setPlayerStrategy(mStrategy);
 					cout<<"added aggressive"<<endl;
 
 				}
 				if(mStrat=="Benevolent")
 				{
-					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i]);
+					PlayerStrategy* mStrategy=new BenevolentPlayerStrategy(myPlayers[i]);
 					myPlayers[i]->setPlayerStrategy(mStrategy);
 					cout<<"added benevolent"<<endl;
 					
 				}
 				if(mStrat=="Neutral")
 				{
-					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers);
+					PlayerStrategy* mStrategy=new NeutralPlayerStrategy(myPlayers[i]);
 					myPlayers[i]->setPlayerStrategy(mStrategy);
 					cout<<"added neutral"<<endl;
 					
 				}
 				if(mStrat=="Cheater")
 				{
-					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers);
+					PlayerStrategy* mStrategy=new CheaterPlayerStrategy(myPlayers[i]);
 					myPlayers[i]->setPlayerStrategy(mStrategy);
 					cout<<"added cheater"<<endl;
 					
