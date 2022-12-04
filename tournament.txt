@@ -1,0 +1,14 @@
+startup
+loadmap Canada.map
+validatemap
+addplayer Neutral
+addplayer Cheater
+gamestart
+play
+startup
+loadmap Canada.map
+validatemap
+addplayer Neutral
+addplayer Cheater
+gamestart
+quit

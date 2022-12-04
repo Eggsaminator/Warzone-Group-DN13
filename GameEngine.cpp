@@ -3,15 +3,18 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <fstream>
+#include <cmath>
 #include "Cards.h"
 #include "Player.h"
 #include "Map.h"
 #include "CommandProcessing.h"
+#include "PlayerStrategies.h"
 
 using std::ostream;
 using std::cin;
 using std::cout;
-using std::floor;
+//using std::floor;
 using std::map;
 using std::set;
 
@@ -188,6 +191,7 @@ void Engine::buildLevels() {
 
 	//create maps of possible transitions
 	map<string, State*>* state0Transitions = new map<string, State*>{
+		{string("startup"),state0},
 		{string("loadmap"), state1}
 	};
 	state0->setTransitions(state0Transitions);
@@ -238,13 +242,18 @@ void Engine::buildLevels() {
 
 void Engine::startupPhase(CommandProcessor* mCommandProcess)
 {
+	cout<<"startupPhase"<<endl;
 	State* currentState = this->getCurrentState();
+	
 	while(this->getCurrentState()->getStateName()!="assignreinforcement") {
 		// we get a new command
+		cout<< "state before read is:"<<this->getCurrentState()->getStateName()<<endl;
+
 		Command* mCommand= mCommandProcess->getCommand();
+		cout<< "state after read is:"<<this->getCurrentState()->getStateName()<<endl;
 
 		string mCommand_name;
-		if(mCommandProcess->validate(getCurrentState(), mCommand))
+		if(mCommandProcess->validate(getCurrentState(), mCommand) || mCommand->getName()=="gamestart")
 			mCommand_name=mCommand->getName();
 		// if the command is valid in the current state of the Game Engine then we can apply its effect
 		
@@ -280,6 +289,7 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 			}
 			
 			myPlayers.push_back(new Player(mCommand->getArgument())); // need to get the name from the command ?
+			
 
 		}
 
@@ -315,6 +325,64 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 
 			std::random_shuffle(myPlayers.begin(), myPlayers.end());
 
+			//add the player_strategy
+			for(int i=0;i<myPlayers.size();i++)
+			{
+				//HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
+				//AggressivePlayerStrategy(Player* player);
+				//BenevolentPlayerStrategy(Player* player);
+				//NeutralPlayerStrategy(Player* player);
+				//CheaterPlayerStrategy(Player* player);
+
+
+
+
+				string mStrat=myPlayers[i]->getName();
+				if(mStrat=="Human")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers,this->getMap());
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added human"<<endl;
+
+				}
+				if(mStrat=="Aggressive")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i]);
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added aggressive"<<endl;
+
+				}
+				if(mStrat=="Benevolent")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i]);
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added benevolent"<<endl;
+					
+				}
+				if(mStrat=="Neutral")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers);
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added neutral"<<endl;
+					
+				}
+				if(mStrat=="Cheater")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers);
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added cheater"<<endl;
+					
+				}
+
+
+
+
+
+
+
+
+			}
+
 
 			// 50 army in the reinforcement pool of the player
 
@@ -332,9 +400,153 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 
 			}
 
-			this->setCurrentState(this->launchTransitionCommand("gamestart"));
+			//this->setCurrentState(this->launchTransitionCommand("gamestart"));
+			//cout<<"finished !"<<endl;
+
+			//ADD the main gameLoop function
+			
 		}
+
 	}
+	//cout<<"next step"<<"start main loop"<<endl;
+	//cout<<mCommandProcess->getTournament()<<endl;
+	bool tour=mCommandProcess->getTournament();
+	//cout <<"start main loop";
+	//this->mainTournamentLoop(mCommandProcess);
+	
+	if(tour)
+			{
+				cout << "entering main loop"<<endl;
+				
+				this->mainTournamentLoop(mCommandProcess);
+
+			}
+			else
+			{
+				
+				this->mainGameLoop(mCommandProcess);
+			}
+	
+	cout<<"exiting startup phase"<<endl;
+			
+			
+}
+
+void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
+{
+	
+	int max_D;
+
+	
+
+	ifstream stream;
+    stream.open("tournament_report.txt");
+	if(stream.is_open()){
+    
+        string tp;
+        getline(stream, tp); //read data from file object and put it into string.
+        getline(stream, tp);
+        getline(stream, tp);
+        getline(stream, tp);
+		getline(stream, tp);
+        max_D=stoi(tp.substr(tp.length()-3,tp.length()));
+	
+	}
+	else
+	{
+		cout<<"non existing tournament"<<endl;
+	}
+	stream.close();
+
+    
+
+
+
+
+
+	ofstream strm;
+	// we open the file at the end of it
+	strm.open("tournament_report.txt",ios::app);
+	bool isGameOver = false;
+	int round_played=0;
+	strm<<"Result of this game: "<<endl;
+	while (!isGameOver && round_played<max_D) {
+		//run game loop
+		//reinforcementPhase();
+		//issueOrdersPhase();
+		//executeOrdersPhase();
+		round_played++;
+
+		isGameOver = gameLoopWinnerLoserCheckup();
+	}
+	if(isGameOver)
+	{
+		strm << "THE WINNER IS " << myPlayers.at(0)->getName() << "!!" << endl;
+	}
+	else
+	{
+		strm << "It is a drawn !"<<endl;
+	}
+
+	//this->setCurrentState(this->launchTransitionCommand("issueorder"));
+	//this->setCurrentState(this->launchTransitionCommand("endissueorders"));
+	//this->setCurrentState(this->launchTransitionCommand("endexecorders"));
+	//this->setCurrentState(this->launchTransitionCommand("win"));
+	//cout<<this->getCurrentState()->getStateName();
+	
+	launchTransitionCommand("issueorder");
+	launchTransitionCommand("endissueorders");
+	//launchTransitionCommand("executeorders");
+	//launchTransitionCommand("endexecorders");
+
+	launchTransitionCommand("win");
+
+	//launchTransitionCommand("play");
+
+	
+	
+	
+	//cout << "Do you want to [quit] or [replay]?" << endl;
+	//Command* mCommand = cmdProcessor->getCommand();
+	//cout<<"my last command: "<<mCommand->getName()<<endl;
+	/*
+
+	bool isCommandValid = false;
+	if(mCommand->getName()!="quit")
+	{
+		launchTransitionCommand("play");
+	}
+
+	else
+	{
+		launchTransitionCommand("quit");
+	}
+	/*
+	while (!isCommandValid) {
+		string mCommand_name;
+		if (cmdProcessor->validate(getCurrentState(), mCommand)) {
+			mCommand_name = mCommand->getName();
+		}
+
+		if (mCommand_name == "play") {
+			launchTransitionCommand("play");
+			//return startupPhase(cmdProcessor);
+		}
+		else if (mCommand_name == "quit") {
+			launchTransitionCommand("end");
+			//return;
+		}
+	}*/
+
+strm.close();
+cout <<"exiting main loop "<<endl;
+
+}
+
+void Engine::replay_game(CommandProcessor* cmdProcess)
+{
+	launchTransitionCommand("play");
+
 }
 
 

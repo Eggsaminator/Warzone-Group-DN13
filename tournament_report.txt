@@ -1,0 +1,9 @@
+Tournament mode:
+M: Canada.map, 
+P: Neutral, Cheater, 
+G: 2
+D: 10
+Result of this game: 
+It is a drawn !
+Result of this game: 
+It is a drawn !

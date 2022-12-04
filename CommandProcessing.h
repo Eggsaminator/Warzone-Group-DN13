@@ -28,6 +28,8 @@ public:
     Command* getSimpleCommandNoValidation(string promptMessage);
     bool validate(State* state, Command* command);
     void saveCommand(Command* command);
+    void setTournament(bool b);
+    bool getTournament();
 protected:
     virtual Command* readCommand();
     
@@ -38,6 +40,7 @@ protected:
     Engine* m_engine;
     static map<string, vector<string>> s_commandValidStates;
     vector<Command*> m_commandList;
+    bool is_tournament=false;
 private:
     static CommandProcessor* s_instance;
 };
@@ -74,5 +77,6 @@ private:
 };
 
 void testCommandProcessor();
+void generate_tournament(string userInput);
 
 extern CommandProcessor* mainCommandProcessor;
