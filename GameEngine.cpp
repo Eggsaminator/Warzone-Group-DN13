@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Map.h"
 #include "CommandProcessing.h"
+#include "PlayerStrategies.h"
 
 using std::ostream;
 using std::cin;
@@ -323,6 +324,64 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 			// shuffle order of the player
 
 			std::random_shuffle(myPlayers.begin(), myPlayers.end());
+
+			//add the player_strategy
+			for(int i=0;i<myPlayers.size();i++)
+			{
+				//HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
+				//AggressivePlayerStrategy(Player* player);
+				//BenevolentPlayerStrategy(Player* player);
+				//NeutralPlayerStrategy(Player* player);
+				//CheaterPlayerStrategy(Player* player);
+
+
+
+
+				string mStrat=myPlayers[i]->getName();
+				if(mStrat=="Human")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers,this->getMap());
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added human"<<endl;
+
+				}
+				if(mStrat=="Aggressive")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i]);
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added aggressive"<<endl;
+
+				}
+				if(mStrat=="Benevolent")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i]);
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added benevolent"<<endl;
+					
+				}
+				if(mStrat=="Neutral")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers);
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added neutral"<<endl;
+					
+				}
+				if(mStrat=="Cheater")
+				{
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers);
+					myPlayers[i]->setPlayerStrategy(mStrategy);
+					cout<<"added cheater"<<endl;
+					
+				}
+
+
+
+
+
+
+
+
+			}
 
 
 			// 50 army in the reinforcement pool of the player
