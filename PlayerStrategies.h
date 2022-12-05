@@ -86,3 +86,5 @@ public:
 	vector<Territory*> toDefend();
 private:
 };
+
+void testPlayerStrategies();

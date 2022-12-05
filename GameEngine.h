@@ -72,3 +72,4 @@ private:
 
 void testStartupPhase();
 void testMainGameLoop();
+void testTournament();
