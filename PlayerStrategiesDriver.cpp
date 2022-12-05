@@ -96,6 +96,15 @@ void testPlayerStrategies() {;
 
 	//part 1) different players can be assigned different strategies that lead to different behavior using the Strategy design pattern
 	cout << "\n\n1) different players can be assigned different strategies that lead to different behavior using the Strategy design pattern" << endl;
+	cout << "Player1 is currently adopting Benevolent Strategy." << endl;
+	
+	NeutralPlayerStrategy* neutralStrat2 = new NeutralPlayerStrategy(player2);
+	player2->setPlayerStrategy(neutralStrat2);
+	cout << "Player2 is currently adopting Neutral Strategy." << endl;
+
+	AggressivePlayerStrategy* aggressStrat3 = new AggressivePlayerStrategy(player3);
+	player3->setPlayerStrategy(aggressStrat3);
+	cout << "Player3 is currently adopting Aggressive Strategy." << endl;
 
 	//part 2) the strategy adopted by a player can be changed dynamically during play
 	cout << "\n\n2) the strategy adopted by a player can be changed dynamically during play" << endl;
