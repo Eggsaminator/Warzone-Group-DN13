@@ -1,9 +1,9 @@
 Tournament mode:
 M: Canada.map, 
-P: Neutral, Cheater, 
+P: Cheater, Benevolent, 
 G: 2
 D: 10
-Result of this game: 
+Result of this game with map Canada :
 It is a drawn !
-Result of this game: 
+Result of this game with map Canada :
 It is a drawn !
