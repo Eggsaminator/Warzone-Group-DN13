@@ -1,14 +1,14 @@
 startup
 loadmap Canada.map
 validatemap
-addplayer Neutral
 addplayer Cheater
+addplayer Benevolent
 gamestart
 play
 startup
 loadmap Canada.map
 validatemap
-addplayer Neutral
 addplayer Cheater
+addplayer Benevolent
 gamestart
 quit

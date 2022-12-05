@@ -30,6 +30,7 @@ public:
     void saveCommand(Command* command);
     void setTournament(bool b);
     bool getTournament();
+    string current_map;
 protected:
     virtual Command* readCommand();
     

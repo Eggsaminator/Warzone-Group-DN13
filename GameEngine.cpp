@@ -265,6 +265,15 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 			
 			MapLoader* mMapLoader =new MapLoader();
 			myMap=new Map(mMapLoader->loadMap(mCommand->getArgument()));
+			mCommandProcess->current_map=mCommand->getArgument();
+			mCommandProcess->current_map.pop_back();
+			mCommandProcess->current_map.pop_back();
+
+			mCommandProcess->current_map.pop_back();
+			mCommandProcess->current_map.pop_back();
+
+
+
 		// transition to state map loaded
 			this->setCurrentState(this->launchTransitionCommand("loadmap"));
 
@@ -469,7 +478,7 @@ void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
 	strm.open("tournament_report.txt",ios::app);
 	bool isGameOver = false;
 	int round_played=0;
-	strm<<"Result of this game: "<<endl;
+	strm<<"Result of this game with map "<<cmdProcessor->current_map<<" :"<<endl;
 	while (!isGameOver && round_played<max_D) {
 		//run game loop
 		//reinforcementPhase();
