@@ -1,17 +1,15 @@
 #include "CommandProcessing.h"
 #include "GameEngine.h"
+using std::cout;
 
-Engine* mainEngine = new Engine();
-CommandProcessor* commandProcessor = new CommandProcessor(mainEngine);
 
 void testPlayerStrategies() {
 	//setup a fake game
+	Engine* mainEngine = new Engine();
+	CommandProcessor* commandProcessor = new CommandProcessor(mainEngine);
 	Map gameMap;
 	vector<Player*> players;
 	Player* player1 = new Player("player1");
-	HumanPlayerStrategy* strat = new HumanPlayerStrategy(player1, players, &gameMap, commandProcessor);
-	player1->setPlayerStrategy(strat);
-
 	Player* player2 = new Player("player2");
 	Player* player3 = new Player("player3");
 
@@ -89,13 +87,20 @@ void testPlayerStrategies() {
 	player1->getHand()->add_card(newCard3);
 	player1->getHand()->add_card(newCard4);
 
-	player1->issueOrder();
+	HumanPlayerStrategy* humanStrat = new HumanPlayerStrategy(player1, players, &gameMap, commandProcessor);
+	player1->setPlayerStrategy(humanStrat);
+
+	//player1->issueOrder();
 
 
 	//part 1) different players can be assigned different strategies that lead to different behavior using the Strategy design pattern
 
 
 	//part 2) the strategy adopted by a player can be changed dynamically during play
+	cout << "Player1 is currently adopting Human Strategy." << endl;
+	NeutralPlayerStrategy* neutralStrat = new NeutralPlayerStrategy(player1);
+	player1->setPlayerStrategy(neutralStrat);
+	cout << "Player1 is currently adopting Neutral Strategy." << endl;
 
 	
 	//part 3) the human player makes decisions according to user interaction, and computer players make decisions automatically, which are both implemented using the strategy pattern
