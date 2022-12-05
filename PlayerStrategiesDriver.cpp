@@ -3,7 +3,8 @@
 using std::cout;
 
 
-void testPlayerStrategies() {
+void testPlayerStrategies() {;
+	cout << "Part 1: TEST PLAYER STRATEGIES" << endl;
 	//setup a fake game
 	Engine* mainEngine = new Engine();
 	CommandProcessor* commandProcessor = new CommandProcessor(mainEngine);
@@ -87,21 +88,30 @@ void testPlayerStrategies() {
 	player1->getHand()->add_card(newCard3);
 	player1->getHand()->add_card(newCard4);
 
-	HumanPlayerStrategy* humanStrat = new HumanPlayerStrategy(player1, players, &gameMap, commandProcessor);
-	player1->setPlayerStrategy(humanStrat);
+	BenevolentPlayerStrategy* benevolentStrat = new BenevolentPlayerStrategy(player1);
+	player1->setPlayerStrategy(benevolentStrat);
 
-	//player1->issueOrder();
+	
 
 
 	//part 1) different players can be assigned different strategies that lead to different behavior using the Strategy design pattern
-
+	cout << "\n\n1) different players can be assigned different strategies that lead to different behavior using the Strategy design pattern" << endl;
 
 	//part 2) the strategy adopted by a player can be changed dynamically during play
+	cout << "\n\n2) the strategy adopted by a player can be changed dynamically during play" << endl;
+	cout << "Player1 is currently adopting Benevolent Strategy." << endl;
+	HumanPlayerStrategy* humanStrat = new HumanPlayerStrategy(player1, players, &gameMap, commandProcessor);
+	player1->setPlayerStrategy(humanStrat);
 	cout << "Player1 is currently adopting Human Strategy." << endl;
-	NeutralPlayerStrategy* neutralStrat = new NeutralPlayerStrategy(player1);
-	player1->setPlayerStrategy(neutralStrat);
-	cout << "Player1 is currently adopting Neutral Strategy." << endl;
 
-	
 	//part 3) the human player makes decisions according to user interaction, and computer players make decisions automatically, which are both implemented using the strategy pattern
+	cout << "\n\n3) the human player makes decisions according to user interaction, and computer players make decisions automatically, which are both implemented using the strategy pattern" << endl;
+	cout << "Player1 currently has " << player1->getReinforcementPoolLeftToDeploy() << " army units left to deploy." << endl;
+	player1->issueOrder();
+	cout << "Player1 currently has " << player1 ->getReinforcementPoolLeftToDeploy() << " army units left to deploy." << endl;
+	player1->setPlayerStrategy(benevolentStrat);
+	cout << "Player1 is currently adopting Benevolent Strategy." << endl;
+	player1->issueOrder();
+	cout << "Player1 issues an order." << endl;
+	cout << "Player1 currently has " << player1->getReinforcementPoolLeftToDeploy() << " army units left to deploy." << endl;
 }
