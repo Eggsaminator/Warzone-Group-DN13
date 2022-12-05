@@ -340,7 +340,7 @@ void Engine::startupPhase(CommandProcessor* mCommandProcess)
 				string mStrat=myPlayers[i]->getName();
 				if(mStrat=="Human")
 				{
-					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers,this->getMap());
+					PlayerStrategy* mStrategy=new HumanPlayerStrategy(myPlayers[i],myPlayers,this->getMap(), mCommandProcess);
 					myPlayers[i]->setPlayerStrategy(mStrategy);
 					cout<<"added human"<<endl;
 
@@ -669,9 +669,9 @@ void Engine::issueOrdersPhase() {
 		iterator = activePlayersIndexes.begin();
 		while (iterator != activePlayersIndexes.end()) {
 			//int currentReinforcementPool = myPlayers.at(*iterator)->getReinforcementPoolLeftToDeploy();
-			bool wantsToContinueIssuingOrders = myPlayers.at(*iterator)->issueOrder();
+			OrderList* issuedOrders = myPlayers.at(*iterator)->issueOrder();
 
-			if (!wantsToContinueIssuingOrders) {
+			if (issuedOrders == nullptr) {
 				iterator = activePlayersIndexes.erase(iterator);
 				continue;
 			}

@@ -68,9 +68,10 @@ Territory* BenevolentPlayerStrategy::getWeakestTerritory() {
 
 // Helper Function definitions end here
 
-HumanPlayerStrategy::HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map) : PlayerStrategy(p) {
+HumanPlayerStrategy::HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map, CommandProcessor* cmdPro) : PlayerStrategy(p) {
     allPlayers = allPls;
     gameMap = map;
+    mainCommandProcessor = cmdPro;
 }
 
 OrderList* HumanPlayerStrategy::issueOrder() {

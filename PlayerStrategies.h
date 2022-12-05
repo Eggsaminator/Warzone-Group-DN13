@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
 using std::vector;
 using std::string;
 
@@ -9,6 +10,7 @@ class OrderList;
 class Player;
 class Map;
 class Territory;
+class CommandProcessor;
 
 class PlayerStrategy {
 public:
@@ -25,13 +27,14 @@ protected:
 
 class HumanPlayerStrategy : public PlayerStrategy {
 public:
-	HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map);
+	HumanPlayerStrategy(Player* p, vector<Player*> allPls, Map* map, CommandProcessor* cmdPro);
 	OrderList* issueOrder();
 	vector<Territory*> toDefend();
 	vector<Territory*> toAttack();
 private:
 	vector<Player*> allPlayers;
 	Map* gameMap;
+	CommandProcessor* mainCommandProcessor;
 };
 
 class AggressivePlayerStrategy : public PlayerStrategy {

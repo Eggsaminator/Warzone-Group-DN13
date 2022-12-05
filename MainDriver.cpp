@@ -2,7 +2,7 @@
 #include "GameEngine.h"
 
 Engine* mainEngine = new Engine();
-CommandProcessor* mainCommandProcessor = new CommandProcessor(mainEngine);
+CommandProcessor* commandProcessor = new CommandProcessor(mainEngine);
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
 	Map gameMap;
 	vector<Player*> players;
 	Player* player1 = new Player("player1");
-	HumanPlayerStrategy* strat = new HumanPlayerStrategy(player1, players, &gameMap);
+	HumanPlayerStrategy* strat = new HumanPlayerStrategy(player1, players, &gameMap, commandProcessor);
 	player1->setPlayerStrategy(strat);
 
 	Player* player2 = new Player("player2");
