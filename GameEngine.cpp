@@ -481,9 +481,12 @@ void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
 	strm<<"Result of this game with map "<<cmdProcessor->current_map<<" :"<<endl;
 	while (!isGameOver && round_played<max_D) {
 		//run game loop
-		//reinforcementPhase();
-		//issueOrdersPhase();
-		//executeOrdersPhase();
+		cout<<"reinforcePhase"<<endl;
+		reinforcementPhase();
+		cout<<"issueorderPhase"<<endl;
+		issueOrdersPhase();
+		cout<<"execiteorderPhase"<<endl;
+		executeOrdersPhase();
 		round_played++;
 
 		isGameOver = gameLoopWinnerLoserCheckup();
@@ -494,6 +497,9 @@ void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
 	}
 	else
 	{
+		launchTransitionCommand("issueorder");
+		launchTransitionCommand("endissueorders");
+		launchTransitionCommand("win");
 		strm << "It is a drawn !"<<endl;
 	}
 
@@ -503,12 +509,12 @@ void Engine::mainTournamentLoop(CommandProcessor* cmdProcessor)
 	//this->setCurrentState(this->launchTransitionCommand("win"));
 	//cout<<this->getCurrentState()->getStateName();
 	
-	launchTransitionCommand("issueorder");
-	launchTransitionCommand("endissueorders");
+	//launchTransitionCommand("issueorder");
+	//launchTransitionCommand("endissueorders");
 	//launchTransitionCommand("executeorders");
 	//launchTransitionCommand("endexecorders");
 
-	launchTransitionCommand("win");
+	//launchTransitionCommand("win");
 
 	//launchTransitionCommand("play");
 

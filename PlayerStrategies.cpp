@@ -632,7 +632,8 @@ vector<Territory*> NeutralPlayerStrategy::toAttack() {
     return vector<Territory*>();
 }
 vector<Territory*> NeutralPlayerStrategy::toDefend() {
-    return vector<Territory*>();
+    player->setPlayerStrategy(new AggressivePlayerStrategy(player));
+    return player->toDefend();
 }
 
 CheaterPlayerStrategy::CheaterPlayerStrategy(Player* player) : PlayerStrategy(player) {
