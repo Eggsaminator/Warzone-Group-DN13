@@ -18,8 +18,3 @@ void testTournament()
     delete adapter;
 
 }
-
-int main()
-{
-    testTournament();
-}

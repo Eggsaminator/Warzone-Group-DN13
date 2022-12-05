@@ -101,6 +101,7 @@ void testPlayerStrategies() {;
 	NeutralPlayerStrategy* neutralStrat2 = new NeutralPlayerStrategy(player2);
 	player2->setPlayerStrategy(neutralStrat2);
 	cout << "Player2 is currently adopting Neutral Strategy." << endl;
+	player2->toDefend();
 
 	AggressivePlayerStrategy* aggressStrat3 = new AggressivePlayerStrategy(player3);
 	player3->setPlayerStrategy(aggressStrat3);
