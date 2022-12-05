@@ -92,7 +92,7 @@ OrderList* HumanPlayerStrategy::issueOrder() {
                 break;
             }
             else if (mCommand_name == "N" || mCommand_name == "n") {
-                return false;
+                return orderList;
             }
         }
         catch (invalid_argument e) {
